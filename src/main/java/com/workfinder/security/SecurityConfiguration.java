@@ -1,5 +1,7 @@
 package com.workfinder.security;
 
+import com.workfinder.oauth2.OAuth2SuccessHandler;
+import com.workfinder.oauth2.security.OAuth2UserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -21,20 +23,16 @@ import java.util.List;
 public class SecurityConfiguration {
 
     private final JWTFilter jwtFilter;
+    private final OAuth2UserDetailsService oAuth2UserDetailsService;
+    private final OAuth2SuccessHandler successHandler;
 
-    public SecurityConfiguration(JWTFilter jwtFilter) {
+    public SecurityConfiguration(JWTFilter jwtFilter, OAuth2UserDetailsService oAuth2UserDetailsService, OAuth2SuccessHandler successHandler, OAuth2SuccessHandler successHandler1) {
         this.jwtFilter = jwtFilter;
+        this.oAuth2UserDetailsService = oAuth2UserDetailsService;
+        this.successHandler = successHandler1;
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder(){
-        return new BCryptPasswordEncoder();
-    }
 
-    @Bean
-    public RestTemplate restTemplate(){
-        return new RestTemplate();
-    }
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource(){
@@ -63,6 +61,11 @@ public class SecurityConfiguration {
                                 ,"/api/auth/employeeRegistration","/api/auth/verify",
                                 "/api/auth/resend","/api/auth/reset-password","/api/jobs","/api/auth/forgot-password")
                         .permitAll().anyRequest().authenticated())
+
+                .oauth2Login(oauth2 -> oauth2.successHandler(successHandler)
+                        .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserDetailsService)
+                                .oidcUserService(oAuth2UserDetailsService :: loadUser)))
+
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return httpSecurity.build();

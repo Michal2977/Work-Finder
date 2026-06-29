@@ -1,10 +1,8 @@
 package com.workfinder.service.Impl;
 
 import com.workfinder.dto.UserDto;
-import com.workfinder.entity.Employee;
-import com.workfinder.entity.Employer;
-import com.workfinder.entity.Role;
-import com.workfinder.entity.User;
+import com.workfinder.entity.*;
+import com.workfinder.enums.OAuth2UserProvider;
 import com.workfinder.mapper.UserMapper;
 import com.workfinder.repository.EmployeeRepository;
 import com.workfinder.repository.EmployerRepository;
@@ -56,6 +54,7 @@ public class AuthServiceImpl implements AuthService {
         this.restTemplate = restTemplate;
     }
 
+
     @Override
     public UserDto registerEmployee(EmployeeRegistrationRequest request,String siteUrl) throws MessagingException {
 
@@ -69,16 +68,24 @@ public class AuthServiceImpl implements AuthService {
         user.setCreateAt(LocalDateTime.now());
         user.setExpiresAt(LocalDateTime.now().plusHours(24));
 
+
         String verificationCode = RandomString.make(65);
         user.setVerificationCode(verificationCode);
-
-        user = userRepository.save(user);
 
         Employee employee = new Employee();
         employee.setUser(user);
         user.setEmployee(employee);
 
-        employeeRepository.save(employee);
+        user = userRepository.save(user);
+
+        UserProvider userProvider = new UserProvider();
+        userProvider.setProvider(OAuth2UserProvider.LOCAL);
+        userProvider.setProviderId(user.getId().toString());
+        userProvider.setUser(user);
+
+        user.addProvider(userProvider);
+
+        user = userRepository.save(user);
 
         emailService.sendVerificationEmailForEmployee(user,siteUrl);
 
@@ -112,7 +119,10 @@ public class AuthServiceImpl implements AuthService {
         employer.setUser(user);
         user.setEmployer(employer);
 
-        employerRepository.save(employer);
+        UserProvider userProvider = new UserProvider();
+        userProvider.setProvider(OAuth2UserProvider.LOCAL);
+        userProvider.setProviderId(user.getId().toString());
+        user.addProvider(userProvider);
 
         emailService.sendVerificationEmailForEmployer(user,siteUrl);
 
