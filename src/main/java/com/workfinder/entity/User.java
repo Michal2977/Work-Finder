@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +24,18 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
+
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
+
+    @Column(name = "verification_code")
+    private String verificationCode;
+
+    @Column(name = "is_enabled")
+    private boolean isEnabled;
+
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
     @JoinTable(name = "users_roles",joinColumns = @JoinColumn(name = "user_id")
     ,inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -37,9 +50,14 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password, Set<Role> role, Employee employee, Employer employer) {
+    public User(String email, String password, LocalDateTime createAt, LocalDateTime expiresAt,
+                String verificationCode, boolean isEnabled, Set<Role> role, Employee employee, Employer employer) {
         this.email = email;
         this.password = password;
+        this.createAt = createAt;
+        this.expiresAt = expiresAt;
+        this.verificationCode = verificationCode;
+        this.isEnabled = isEnabled;
         this.role = role;
         this.employee = employee;
         this.employer = employer;

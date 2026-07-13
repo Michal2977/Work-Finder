@@ -6,6 +6,7 @@ function EmployerRegistration(){
 
     const [data,setData] = useState({firstName : "",lastName: "" ,phoneNumber : "", nip : "", email : "", password: ""});
     const [message,setMessage] = useState("");
+    const navigate = useNavigate();
 
     const registration = async() => {
         const response = await fetch("http://localhost:8080/api/auth/employer-registration",{
@@ -17,7 +18,9 @@ function EmployerRegistration(){
 
         const text = await response.json();
         if(response.ok){
-            setMessage(text.message);
+            if(text.status === "SUCCESS"){
+                navigate("/verify-email");
+            }
         }else{
             setMessage(text.message);
         }

@@ -48,7 +48,7 @@ public class SecurityConfiguration {
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(request -> request.requestMatchers
                         ("/api/auth/login","/api/auth/employee-registration",
-                                "/api/auth/employer-registration","/api/jobs")
+                                "/api/auth/employer-registration","/api/jobs","/api/auth/verify","/api/auth/resend")
                         .permitAll().anyRequest().authenticated())
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 

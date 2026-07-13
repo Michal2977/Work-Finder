@@ -1,18 +1,22 @@
 package com.workfinder.controller;
 
+import com.workfinder.Util.Utility;
 import com.workfinder.entity.User;
 import com.workfinder.request.EmployeeRegistrationRequest;
 import com.workfinder.request.EmployerRegistrationRequest;
 import com.workfinder.request.LoginRequest;
+import com.workfinder.response.ActionResponse;
 import com.workfinder.response.ApiResponse;
 import com.workfinder.response.JWTResponse;
 import com.workfinder.security.JWTService;
 import com.workfinder.service.impl.AuthServiceImpl;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -42,23 +46,68 @@ public class AuthController {
 
 
     @PostMapping("/employer-registration")
-    public ResponseEntity<?> employerRegistration(@RequestBody EmployerRegistrationRequest request){
+    public ResponseEntity<?> employerRegistration(@RequestBody EmployerRegistrationRequest request
+    , HttpServletRequest requests){
 
         if (authService.emailExist(request.getEmail())){
             return ResponseEntity.badRequest().body(new ApiResponse("Email Already Exists"));
         }
-        authService.employerRegistration(request);
-        return ResponseEntity.ok().body(new ApiResponse("Account Created"));
+        try {
+            String siteUrl  = Utility.servletRequest(requests);
+            authService.employerRegistration(request,siteUrl);
+            return ResponseEntity.ok().body(new ActionResponse("Account Created","SUCCESS"));
+        } catch (Exception e) {
+           return ResponseEntity.internalServerError().body(new ApiResponse("Something Went Wrong Try Again Later"));
+        }
     }
 
     @PostMapping("/employee-registration")
-    public ResponseEntity<?> employeeRegistration(@RequestBody EmployeeRegistrationRequest request){
+    public ResponseEntity<?> employeeRegistration(@RequestBody EmployeeRegistrationRequest request
+    ,HttpServletRequest requests){
 
         if (authService.emailExist(request.getEmail())){
             return ResponseEntity.badRequest().body(new ApiResponse("Email Already Exists"));
         }
+        try {
+            String siteUrl = Utility.servletRequest(requests);
+            authService.employeeRegistration(request,siteUrl);
+            return ResponseEntity.ok().body(new ActionResponse("Account Created","SUCCESS"));
+        } catch (Exception e) {
+      return ResponseEntity.internalServerError().body
+              (new ApiResponse("Something Went Wrong Try Again Later"));
+        }
 
-        authService.employeeRegistration(request);
-        return ResponseEntity.ok().body(new ApiResponse("Account Created"));
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<?> verifyAccount(@RequestParam("code")String code){
+        boolean verify = authService.emailVerification(code);
+        if (verify == false){
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:5173/verify-failed"))
+                    .build();
+        }else {
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:5173/login"))
+                    .build();
+        }
+    }
+
+    @GetMapping("/resend")
+    public ResponseEntity<?> resendEmailActivation(@RequestParam("email")String email,
+                                                   HttpServletRequest request){
+
+        User user = authService.findByEmail(email);
+
+        if (!authService.emailExist(email) || user.isEnabled()){
+            return ResponseEntity.badRequest().body(new ApiResponse
+                    ("If an account exists and has not been activated, a verification email has been sent."));
+        }
+        try {
+            String siteUrl = Utility.servletRequest(request);
+            authService.resendEmailVerification(email,siteUrl);
+            return ResponseEntity.ok().body(new ApiResponse("Activation Email has been Send"));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new ApiResponse
+                    ("Something Went Wrong Try again Later"));
+        }
     }
 }

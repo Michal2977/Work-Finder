@@ -43,6 +43,8 @@ function Login(){
              <Link to={"/employer-registration"}>Employer</Link>
              <br/>
              <Link to={"/employee-registration"}>Employee</Link>
+             <br/>
+             <Link to={"/resend-email"}>Resend Email Activation</Link>
         </div>
     );
 }
