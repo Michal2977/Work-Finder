@@ -16,4 +16,7 @@ public interface AuthService {
     UserDto findByEmailUserDto(String email);
     boolean emailVerification(String code);
     boolean resendEmailVerification(String email,String siteUrl) throws MessagingException;
+    boolean sendResetPasswordToken(String email,String siteUrl) throws MessagingException;
+    void resetPassword(String password, User user);
+    User findByResetPasswordToken(String token);
 }

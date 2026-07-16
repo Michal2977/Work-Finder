@@ -86,4 +86,25 @@ public class EmailServiceImpl implements EmailService {
         helper.setText(htmlContext,true);
         javaMailSender.send(message);
     }
+
+    @Override
+    @Async
+    public void forgotPasswordEmail(User user,String siteUrl) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+
+        String verifyToken = siteUrl + "/api/auth/reset-password?token=" + user.getVerificationToken();
+
+        Context context = new Context();
+        context.setVariable("token",verifyToken);
+
+        String htmlContext = templateEngine.process("email/reset_password_email.html",context);
+
+        helper.setFrom("mkoszalka0@gmail.com");
+        helper.setTo(user.getEmail());
+        helper.setSubject("Reset Password");
+        helper.setText(htmlContext,true);
+
+        javaMailSender.send(message);
+    }
 }

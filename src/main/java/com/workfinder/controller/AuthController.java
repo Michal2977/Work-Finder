@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -108,6 +109,51 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ApiResponse
                     ("Something Went Wrong Try again Later"));
+        }
+    }
+
+    @GetMapping("/forgot-password")
+    public ResponseEntity<?> forgotPasswordForm(@RequestParam("email")String email
+    ,HttpServletRequest request){
+        if (!authService.emailExist(email)){
+            return ResponseEntity.badRequest().body(new ApiResponse
+                    ("If an account with this email exists, a password reset email has been sent"));
+        }
+        try {
+            String siteUrl = Utility.servletRequest(request);
+            authService.sendResetPasswordToken(email,siteUrl);
+            return ResponseEntity.ok().body(new ApiResponse("Email Has Been Send"));
+
+        } catch (Exception e) {
+           return ResponseEntity.internalServerError().body(new ApiResponse("Something Went Wrong Try Again Later"));
+        }
+    }
+
+
+    @GetMapping("/reset-password")
+    public ResponseEntity<?> resetPasswordPage(@RequestParam("token")String token){
+        User user = authService.findByResetPasswordToken(token);
+        if (user == null || user.getExpiresAt().isBefore(LocalDateTime.now())){
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create
+                    ("http://localhost:5173/verify-failed")).build();
+        }else {
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create
+                    ("http://localhost:5173/reset-password?token=" + token)).build();
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<?> resetPasswordProcess(@RequestParam("token")String token,@RequestParam("password")String
+            password){
+        User user = authService.findByResetPasswordToken(token);
+        if (user == null || user.getExpiresAt().isBefore(LocalDateTime.now())){
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create
+                    ("http://localhost:5173/verify-failed")).build();
+        }else if (password == null || password.isBlank()){
+            return ResponseEntity.badRequest().body(new ApiResponse("Password Is Reqiured"));
+        }else {
+            authService.resetPassword(password,user);
+            return ResponseEntity.ok().body(new ApiResponse("Password Changed Correctly"));
         }
     }
 }

@@ -4,8 +4,11 @@ import EmployerRegistration from "./components/EmployerRegistration";
 import Login from "./components/Login";
 import Jobs from "./components/Jobs";
 import VerifyEmail from "./components/VerifyEmail";
-import VerifyFailed from "./components/VerifyFiled";
+import VerifyFailed from "./components/VerifyFailed";
 import ResendEmail from "./components/ResendEmail";
+import ResetPassword from "./components/ResetPassword";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPasswordSend from "./components/ResetPasswordSend";
 
 function App(){
   return(
@@ -18,6 +21,10 @@ function App(){
       <Route path="/verify-email" element={<VerifyEmail/>}/>
       <Route path="/verify-failed" element={<VerifyFailed/>}/>
       <Route path="/resend-email" element={<ResendEmail/>}/>
+      <Route path="/reset-password" element={<ResetPassword/>}/>
+      <Route path="/forgot-password" element={<ForgotPassword/>}/>
+      <Route path="/reset-password-send" element={<ResetPasswordSend/>}/>
+      
     </Routes>
     </BrowserRouter>
   );

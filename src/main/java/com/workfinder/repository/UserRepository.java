@@ -23,4 +23,7 @@ public interface UserRepository  extends JpaRepository<User ,Long> {
     @Query("Update User u Set isEnabled = true Where u.id = ?1")
     void isEnabled(Long id);
 
+    @Query("Select u From User u Where verificationToken = ?1")
+    User findByVerificationToken(String token);
+
 }

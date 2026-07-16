@@ -137,4 +137,31 @@ public class AuthServiceImpl implements AuthService {
             return true;
         }
     }
+    @Override
+    public boolean sendResetPasswordToken(String email,String siteUrl) throws MessagingException {
+        User user = userRepository.findByEmail(email);
+        if (user == null){
+            return false;
+        }else {
+            String token = RandomString.make(45);
+            user.setVerificationToken(token);
+            user.setExpiresAt(LocalDateTime.now().plusHours(24));
+            userRepository.save(user);
+            emailService.forgotPasswordEmail(user,siteUrl);
+            return true;
+        }
+    }
+
+    @Override
+    public User findByResetPasswordToken(String token) {
+        return userRepository.findByVerificationToken(token);
+    }
+
+    @Override
+    public void resetPassword(String password, User user) {
+        user.setPassword(passwordEncoder.encode(password));
+        user.setVerificationToken(null);
+        user.setExpiresAt(null);
+        userRepository.save(user);
+    }
 }

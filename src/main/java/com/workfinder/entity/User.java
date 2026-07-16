@@ -33,6 +33,9 @@ public class User {
     @Column(name = "verification_code")
     private String verificationCode;
 
+    @Column(name = "verification_token")
+    private String verificationToken;
+
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
@@ -51,12 +54,14 @@ public class User {
     }
 
     public User(String email, String password, LocalDateTime createAt, LocalDateTime expiresAt,
-                String verificationCode, boolean isEnabled, Set<Role> role, Employee employee, Employer employer) {
+                String verificationCode, String verificationToken, boolean isEnabled, Set<Role> role,
+                Employee employee, Employer employer) {
         this.email = email;
         this.password = password;
         this.createAt = createAt;
         this.expiresAt = expiresAt;
         this.verificationCode = verificationCode;
+        this.verificationToken = verificationToken;
         this.isEnabled = isEnabled;
         this.role = role;
         this.employee = employee;
