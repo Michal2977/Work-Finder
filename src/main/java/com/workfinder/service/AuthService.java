@@ -19,4 +19,5 @@ public interface AuthService {
     boolean sendResetPasswordToken(String email,String siteUrl) throws MessagingException;
     void resetPassword(String password, User user);
     User findByResetPasswordToken(String token);
+    boolean verifyTurnstile(String token);
 }

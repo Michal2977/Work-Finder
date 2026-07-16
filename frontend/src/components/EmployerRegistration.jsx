@@ -1,19 +1,26 @@
 
 import { useState } from "react";
 import {Link, useNavigate } from "react-router-dom";
+import {Turnstile,useTurnstile} from "react-turnstile"
 
 function EmployerRegistration(){
 
     const [data,setData] = useState({firstName : "",lastName: "" ,phoneNumber : "", nip : "", email : "", password: ""});
     const [message,setMessage] = useState("");
     const navigate = useNavigate();
+    const [turnstileToken,setTurnstileToken] = useState("");
+    const turnstile = useTurnstile();
 
     const registration = async() => {
+        if(!turnstileToken){
+            setMessage("Complete the Turnstile verification.");
+             return;
+        }
         const response = await fetch("http://localhost:8080/api/auth/employer-registration",{
 
             method : "POST",
             headers : {"Content-Type" : "application/json"},
-            body : JSON.stringify(data)
+            body : JSON.stringify({...data,turnstileToken})
         });
 
         const text = await response.json();
@@ -23,6 +30,8 @@ function EmployerRegistration(){
             }
         }else{
             setMessage(text.message);
+            setTurnstileToken("");
+            turnstile.reset();
         }
     }
 
@@ -52,9 +61,10 @@ function EmployerRegistration(){
 
             <br/>
              <Link to={"/login"}>Sing In</Link>
+             <br/>
+             <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
 
         </div>
     );
 }
-
 export default EmployerRegistration;

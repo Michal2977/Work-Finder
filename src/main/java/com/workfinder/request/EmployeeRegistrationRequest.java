@@ -7,6 +7,7 @@ public class EmployeeRegistrationRequest {
 
     private String email;
     private String password;
+    private String turnstileToken;
 
 
     public EmployeeRegistrationRequest() {

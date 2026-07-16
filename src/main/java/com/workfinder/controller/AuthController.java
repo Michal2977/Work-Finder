@@ -5,12 +5,12 @@ import com.workfinder.entity.User;
 import com.workfinder.request.EmployeeRegistrationRequest;
 import com.workfinder.request.EmployerRegistrationRequest;
 import com.workfinder.request.LoginRequest;
+import com.workfinder.request.TurnstileRequest;
 import com.workfinder.response.ActionResponse;
 import com.workfinder.response.ApiResponse;
 import com.workfinder.response.JWTResponse;
 import com.workfinder.security.JWTService;
 import com.workfinder.service.impl.AuthServiceImpl;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +50,9 @@ public class AuthController {
     public ResponseEntity<?> employerRegistration(@RequestBody EmployerRegistrationRequest request
     , HttpServletRequest requests){
 
+        if (!authService.verifyTurnstile(request.getTurnstileToken())){
+            return ResponseEntity.badRequest().body(new ApiResponse("Turnstile verification failed"));
+        }
         if (authService.emailExist(request.getEmail())){
             return ResponseEntity.badRequest().body(new ApiResponse("Email Already Exists"));
         }
@@ -65,6 +68,10 @@ public class AuthController {
     @PostMapping("/employee-registration")
     public ResponseEntity<?> employeeRegistration(@RequestBody EmployeeRegistrationRequest request
     ,HttpServletRequest requests){
+
+        if (!authService.verifyTurnstile(request.getTurnstileToken())){
+            return ResponseEntity.badRequest().body(new ApiResponse("Turnstile verification failed"));
+        }
 
         if (authService.emailExist(request.getEmail())){
             return ResponseEntity.badRequest().body(new ApiResponse("Email Already Exists"));
@@ -92,12 +99,15 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/resend")
+    @PostMapping("/resend")
     public ResponseEntity<?> resendEmailActivation(@RequestParam("email")String email,
-                                                   HttpServletRequest request){
+                                                   HttpServletRequest request, @RequestBody TurnstileRequest requests){
 
         User user = authService.findByEmail(email);
 
+        if (!authService.verifyTurnstile(requests.getTurnstileToken())){
+            return ResponseEntity.badRequest().body(new ApiResponse("Turnstile Verification Failed"));
+        }
         if (!authService.emailExist(email) || user.isEnabled()){
             return ResponseEntity.badRequest().body(new ApiResponse
                     ("If an account exists and has not been activated, a verification email has been sent."));
@@ -112,9 +122,14 @@ public class AuthController {
         }
     }
 
-    @GetMapping("/forgot-password")
+    @PostMapping("/forgot-password")
     public ResponseEntity<?> forgotPasswordForm(@RequestParam("email")String email
-    ,HttpServletRequest request){
+    ,HttpServletRequest request,@RequestBody TurnstileRequest requests){
+
+        if (!authService.verifyTurnstile(requests.getTurnstileToken())){
+            return ResponseEntity.badRequest().body(new ApiResponse("Turnstile Verification Failed"));
+        }
+
         if (!authService.emailExist(email)){
             return ResponseEntity.badRequest().body(new ApiResponse
                     ("If an account with this email exists, a password reset email has been sent"));

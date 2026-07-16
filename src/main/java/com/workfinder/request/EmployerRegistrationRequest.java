@@ -11,6 +11,7 @@ public class EmployerRegistrationRequest {
     private String password;
     private Integer phoneNumber;
     private Integer nip;
+    private String turnstileToken;
 
     public EmployerRegistrationRequest() {
     }
