@@ -28,6 +28,14 @@ function Login(){
         }
     }
 
+    function loginWithGoogle(){
+        window.location.href= "http://localhost:8080/oauth2/authorization/google"
+    }
+
+    function loginWithFacebook(){
+        window.location.href= "http://localhost:8080/oauth2/authorization/facebook"
+    }
+
     return(
         <div>
             {message && <h1>{message}</h1>}
@@ -47,6 +55,10 @@ function Login(){
              <Link to={"/resend-email"}>Resend Email Activation</Link>
              <br/>
              <Link to={"/forgot-password"}>Forgot Password</Link>
+             <br/>
+             <button onClick={loginWithGoogle}>Login With Google</button>
+             <br/>
+             <button onClick={loginWithFacebook}>Login With Facebook</button>
         </div>
     );
 }

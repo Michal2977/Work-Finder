@@ -2,6 +2,7 @@ package com.workfinder.controller;
 
 import com.workfinder.Util.Utility;
 import com.workfinder.entity.User;
+import com.workfinder.enums.OAuth2UserProvider;
 import com.workfinder.request.EmployeeRegistrationRequest;
 import com.workfinder.request.EmployerRegistrationRequest;
 import com.workfinder.request.LoginRequest;
@@ -53,8 +54,16 @@ public class AuthController {
         if (!authService.verifyTurnstile(request.getTurnstileToken())){
             return ResponseEntity.badRequest().body(new ApiResponse("Turnstile verification failed"));
         }
-        if (authService.emailExist(request.getEmail())){
-            return ResponseEntity.badRequest().body(new ApiResponse("Email Already Exists"));
+
+        User existing = authService.findByEmailWithProviders(request.getEmail());
+        if (existing != null){
+            boolean hasLocal = existing.getProviders().stream().anyMatch(p -> p.getProvider()
+                     == OAuth2UserProvider.LOCAL);
+            if (hasLocal){
+                return ResponseEntity.badRequest().body(new ApiResponse("Email Already Exists"));
+            }
+            authService.linkLocalEmployer(existing,request);
+            return ResponseEntity.ok().body(new ActionResponse("Account Linked Successfully","LINKED"));
         }
         try {
             String siteUrl  = Utility.servletRequest(requests);
@@ -72,9 +81,15 @@ public class AuthController {
         if (!authService.verifyTurnstile(request.getTurnstileToken())){
             return ResponseEntity.badRequest().body(new ApiResponse("Turnstile verification failed"));
         }
-
-        if (authService.emailExist(request.getEmail())){
-            return ResponseEntity.badRequest().body(new ApiResponse("Email Already Exists"));
+        User existing = authService.findByEmailWithProviders(request.getEmail());
+        if (existing != null){
+            boolean hasLocal = existing.getProviders().stream().anyMatch(p ->
+                    p.getProvider() == OAuth2UserProvider.LOCAL);
+            if (hasLocal){
+                return ResponseEntity.badRequest().body(new ApiResponse("Email Already Exists"));
+            }
+            authService.linkLocalAccount(existing,request.getPassword());
+            return ResponseEntity.ok().body(new ActionResponse("Account Linked Successfully","LINKED"));
         }
         try {
             String siteUrl = Utility.servletRequest(requests);
@@ -86,7 +101,6 @@ public class AuthController {
         }
 
     }
-
     @GetMapping("/verify")
     public ResponseEntity<?> verifyAccount(@RequestParam("code")String code){
         boolean verify = authService.emailVerification(code);

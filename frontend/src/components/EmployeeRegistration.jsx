@@ -30,6 +30,11 @@ console.log(turnstile.current);
         if(response.ok){
             if(text.status === "SUCCESS"){
              navigate("/verify-email");
+            }else if(text.status === "LINKED"){
+                setMessage(text.message);
+                setTimeout(() => {
+                 navigate("/login");
+                },2000);   
             }
         }else{
             setMessage(text.message);

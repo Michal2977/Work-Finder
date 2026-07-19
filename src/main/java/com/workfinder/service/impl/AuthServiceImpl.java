@@ -1,10 +1,8 @@
 package com.workfinder.service.impl;
 
 import com.workfinder.dto.UserDto;
-import com.workfinder.entity.Employee;
-import com.workfinder.entity.Employer;
-import com.workfinder.entity.Role;
-import com.workfinder.entity.User;
+import com.workfinder.entity.*;
+import com.workfinder.enums.OAuth2UserProvider;
 import com.workfinder.mapper.UserMapper;
 import com.workfinder.repository.RoleRepository;
 import com.workfinder.repository.UserRepository;
@@ -13,6 +11,7 @@ import com.workfinder.request.EmployerRegistrationRequest;
 import com.workfinder.response.TurnstileResponse;
 import com.workfinder.service.AuthService;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -73,7 +72,16 @@ public class AuthServiceImpl implements AuthService {
         employer.setUser(user);
         user.setEmployer(employer);
 
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        UserProvider userProvider = new UserProvider();
+        userProvider.setProvider(OAuth2UserProvider.LOCAL);
+        userProvider.setProviderId(user.getId().toString());
+        userProvider.setUser(user);
+
+        user.addProvider(userProvider);
+
+        user = userRepository.save(user);
 
         emailService.employerAccountVerification(user,siteUrl);
 
@@ -100,12 +108,59 @@ public class AuthServiceImpl implements AuthService {
         user.setEmployee(employee);
         employee.setUser(user);
 
-        userRepository.save(user);
+       user = userRepository.save(user);
+
+        UserProvider userProvider = new UserProvider();
+        userProvider.setProvider(OAuth2UserProvider.LOCAL);
+        userProvider.setProviderId(user.getId().toString());
+        userProvider.setUser(user);
+
+        user.addProvider(userProvider);
+
+        user = userRepository.save(user);
 
         emailService.employeeAccountVerification(user,siteUrl);
         return UserMapper.userDto(user);
     }
+    @Transactional
+    public void linkLocalAccount(User user,String password){
+        user.setPassword(passwordEncoder.encode(password));
+        UserProvider userProvider = new UserProvider();
+        userProvider.setProvider(OAuth2UserProvider.LOCAL);
+        userProvider.setProviderId(user.getId().toString());
+        userProvider.setUser(user);
 
+        user.addProvider(userProvider);
+    }
+
+    @Transactional
+    @Override
+    public  void  linkLocalEmployer(User user,EmployerRegistrationRequest request){
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        Role role = roleRepository.findByRole("EMPLOYER");
+        user.getRole().clear();
+        user.createRole(role);
+
+        Employer employer = new Employer();
+        employer.setFirstName(request.getFirstName());
+        employer.setLastName(request.getLastName());
+        employer.setNip(request.getNip());
+        employer.setPhoneNumber(request.getPhoneNumber());
+        employer.setUser(user);
+        user.setEmployer(employer);
+
+        user = userRepository.save(user);
+
+        UserProvider userProvider = new UserProvider();
+        userProvider.setProvider(OAuth2UserProvider.LOCAL);
+        userProvider.setProviderId(user.getId().toString());
+        userProvider.setUser(user);
+
+        user.addProvider(userProvider);
+
+        userRepository.save(user);
+    }
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -206,6 +261,10 @@ public class AuthServiceImpl implements AuthService {
         return  response.isSuccess();
     }
 
+    @Override
+    public User findByEmailWithProviders(String email) {
+        return userRepository.findByEmailWithProviders(email).orElse(null);
+    }
 
 
 }

@@ -9,6 +9,7 @@ import ResendEmail from "./components/ResendEmail";
 import ResetPassword from "./components/ResetPassword";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPasswordSend from "./components/ResetPasswordSend";
+import OAuth2Success from "./components/OAuth2Success";
 
 function App(){
   return(
@@ -24,6 +25,7 @@ function App(){
       <Route path="/reset-password" element={<ResetPassword/>}/>
       <Route path="/forgot-password" element={<ForgotPassword/>}/>
       <Route path="/reset-password-send" element={<ResetPasswordSend/>}/>
+      <Route path="/oauth2/success" element={<OAuth2Success/>}/>
       
     </Routes>
     </BrowserRouter>

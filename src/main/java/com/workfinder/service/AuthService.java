@@ -20,4 +20,7 @@ public interface AuthService {
     void resetPassword(String password, User user);
     User findByResetPasswordToken(String token);
     boolean verifyTurnstile(String token);
+
+    User findByEmailWithProviders(String email);
+    void  linkLocalEmployer(User user,EmployerRegistrationRequest request);
 }
