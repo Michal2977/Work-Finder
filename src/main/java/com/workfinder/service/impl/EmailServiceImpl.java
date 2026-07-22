@@ -107,4 +107,27 @@ public class EmailServiceImpl implements EmailService {
 
         javaMailSender.send(message);
     }
+
+    @Override
+    @Async
+    public void changeEmail(User user, String siteUrl) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+
+        String verify = siteUrl + "/api/auth/email-update?code=" + user.getVerificationCode();
+
+        Context context = new Context();
+        context.setVariable("verify",verify);
+
+        String htmlContext = templateEngine.process("email/email_update.html",context);
+
+        helper.setFrom("mkoszalka0@gmail.com");
+        helper.setTo(user.getTemporaryEmail());
+        helper.setSubject("Change Email");
+        helper.setText(htmlContext,true);
+
+        javaMailSender.send(message);
+
+
+    }
 }

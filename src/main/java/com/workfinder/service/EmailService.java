@@ -8,5 +8,5 @@ public interface EmailService {
     void  employerAccountVerification(User user,String siteUrl) throws MessagingException;
     void resendVerificationEmail(User user,String siteUrl)throws  MessagingException;
     void forgotPasswordEmail(User user,String siteUrl) throws MessagingException;
-
+    void changeEmail(User user,String siteUrl) throws MessagingException;
 }

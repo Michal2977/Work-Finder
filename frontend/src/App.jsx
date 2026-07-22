@@ -10,6 +10,7 @@ import ResetPassword from "./components/ResetPassword";
 import ForgotPassword from "./components/ForgotPassword";
 import ResetPasswordSend from "./components/ResetPasswordSend";
 import OAuth2Success from "./components/OAuth2Success";
+import AccountInformation from "./components/AccountInformation";
 
 function App(){
   return(
@@ -26,6 +27,7 @@ function App(){
       <Route path="/forgot-password" element={<ForgotPassword/>}/>
       <Route path="/reset-password-send" element={<ResetPasswordSend/>}/>
       <Route path="/oauth2/success" element={<OAuth2Success/>}/>
+      <Route path="/account-information" element={<AccountInformation/>}/>
       
     </Routes>
     </BrowserRouter>

@@ -3,10 +3,9 @@ package com.workfinder.controller;
 import com.workfinder.Util.Utility;
 import com.workfinder.entity.User;
 import com.workfinder.enums.OAuth2UserProvider;
-import com.workfinder.request.EmployeeRegistrationRequest;
-import com.workfinder.request.EmployerRegistrationRequest;
-import com.workfinder.request.LoginRequest;
-import com.workfinder.request.TurnstileRequest;
+import com.workfinder.exception.EmailUpdateException;
+import com.workfinder.exception.PasswordChangeNotAllowedException;
+import com.workfinder.request.*;
 import com.workfinder.response.ActionResponse;
 import com.workfinder.response.ApiResponse;
 import com.workfinder.response.JWTResponse;
@@ -15,6 +14,7 @@ import com.workfinder.service.impl.AuthServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -113,6 +113,8 @@ public class AuthController {
         }
     }
 
+
+
     @PostMapping("/resend")
     public ResponseEntity<?> resendEmailActivation(@RequestParam("email")String email,
                                                    HttpServletRequest request, @RequestBody TurnstileRequest requests){
@@ -183,6 +185,48 @@ public class AuthController {
         }else {
             authService.resetPassword(password,user);
             return ResponseEntity.ok().body(new ApiResponse("Password Changed Correctly"));
+        }
+    }
+
+    @GetMapping("/account-information")
+    public ResponseEntity<?>accountInformation(Authentication authentication){
+        return ResponseEntity.ok(authService.findByEmailUserDto(authentication.getName()));
+    }
+
+    @PutMapping("/account-information/employee")
+    public ResponseEntity<?> updateAccountData(HttpServletRequest request, @RequestBody UpdateEmployeeAccountRequest requests
+    ,Authentication authentication){
+        User user = authService.findByEmail(authentication.getName());
+
+        if (!user.getEmail().equals(requests.getEmail())
+                && authService.emailExist(requests.getEmail())) {
+            return ResponseEntity.badRequest()
+                    .body(new ApiResponse("Email can't be changed"));
+        }
+            try {
+                String siteUrl = Utility.servletRequest(request);
+                authService.updateEmployeeAccountData(user, requests, siteUrl);
+                return ResponseEntity.ok().body(new ApiResponse("Your account information has been updated successfully."));
+            }catch (EmailUpdateException e){
+                return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+            }catch (PasswordChangeNotAllowedException e){
+                return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+            }
+            catch (Exception e) {
+                return ResponseEntity.internalServerError().body(new ApiResponse("Something went Wrong Try Again Later"));
+            }
+
+    }
+
+    @GetMapping("/email-update")
+    public ResponseEntity<?> emailUpdate(@RequestParam("code")String code){
+        boolean verify = authService.emailUpdate(code);
+        if (verify == false){
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:5173/verify-failed"))
+                    .build();
+        }else {
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:5173/login"))
+                    .build();
         }
     }
 }

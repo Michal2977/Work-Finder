@@ -1,5 +1,6 @@
 import {useEffect ,useState} from "react";
 import { useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 function Jobs(){
 
@@ -26,17 +27,28 @@ function Jobs(){
     },[]);
 
     const Employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
+    const employeeName = `${user?.employeeDto?.firstName ?? ""} ${user?.employeeDto?.lastName ?? ""}`.trim();
+    const displayName = employeeName !== "" ? employeeName : user?.displayName;
+
     const Employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
+
+ 
 
    
     return(
         <div>
             {message && <h1>{message}</h1>}
             <h1>Welcome Jobs Page</h1>
-
+          
+             {user && (Employee || Employer) && (
+                <div>
+                    <Link to={"/account-information"}>Account</Link>
+                </div>
+             )}
             {user && Employee && (
                 <div>
                   <h1>employee</h1>
+                  <h1>{displayName}</h1>
                 <h1>{user.email}</h1>
                 </div>
                 

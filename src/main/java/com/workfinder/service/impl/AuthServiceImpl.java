@@ -3,11 +3,14 @@ package com.workfinder.service.impl;
 import com.workfinder.dto.UserDto;
 import com.workfinder.entity.*;
 import com.workfinder.enums.OAuth2UserProvider;
+import com.workfinder.exception.EmailUpdateException;
+import com.workfinder.exception.PasswordChangeNotAllowedException;
 import com.workfinder.mapper.UserMapper;
 import com.workfinder.repository.RoleRepository;
 import com.workfinder.repository.UserRepository;
 import com.workfinder.request.EmployeeRegistrationRequest;
 import com.workfinder.request.EmployerRegistrationRequest;
+import com.workfinder.request.UpdateEmployeeAccountRequest;
 import com.workfinder.response.TurnstileResponse;
 import com.workfinder.service.AuthService;
 import jakarta.mail.MessagingException;
@@ -265,6 +268,56 @@ public class AuthServiceImpl implements AuthService {
     public User findByEmailWithProviders(String email) {
         return userRepository.findByEmailWithProviders(email).orElse(null);
     }
+
+
+    public UserDto updateEmployeeAccountData(User user, UpdateEmployeeAccountRequest request
+    ,String siteUrl) throws MessagingException {
+
+        boolean hasLocal = user.getProviders().stream().anyMatch(p -> p.getProvider()
+                == OAuth2UserProvider.LOCAL);
+
+        if (request.getPassword() != null && !request.getPassword().isBlank() && !hasLocal){
+            throw new PasswordChangeNotAllowedException("Password changes are not available for this sign-in method.");
+        }
+        if (request.getEmail() != null && !request.getEmail().isBlank() && !user.getEmail().equals(request.getEmail())){
+
+            String verificationCode = RandomString.make(65);
+            user.setVerificationCode(verificationCode);
+            user.setExpiresAt(LocalDateTime.now().plusHours(24));
+            user.setTemporaryEmail(request.getEmail());
+
+            userRepository.save(user);
+            emailService.changeEmail(user,siteUrl);
+            throw new EmailUpdateException("We've sent a verification email to your email address");
+        }
+        if (request.getPassword() != null && !request.getPassword().isBlank() && hasLocal ){
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        user.getEmployee().setPhoneNumber(request.getPhoneNumber());
+        user.getEmployee().setFirstName(request.getFirstName());
+        user.getEmployee().setLastName(request.getLastName());
+
+        userRepository.save(user);
+        return UserMapper.userDto(user);
+    }
+
+    public boolean emailUpdate(String code){
+        User user = userRepository.findByVerificationCode(code);
+        if (user == null || user.getExpiresAt().isBefore(LocalDateTime.now())){
+            return false;
+        }else {
+            user.setExpiresAt(null);
+            user.setVerificationCode(null);
+            user.setEmail(user.getTemporaryEmail());
+            user.setTemporaryEmail(null);
+            userRepository.save(user);
+            return true;
+        }
+    }
+
+
+
+
 
 
 }

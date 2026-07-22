@@ -44,6 +44,9 @@ public class User {
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
+    @Column(name = "temporary_email")
+    private String temporaryEmail;
+
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
     @JoinTable(name = "users_roles",joinColumns = @JoinColumn(name = "user_id")
     ,inverseJoinColumns = @JoinColumn(name = "role_id"))
@@ -63,7 +66,7 @@ public class User {
 
     public User(String email, String password, LocalDateTime createAt, LocalDateTime expiresAt,
                 String verificationCode, String verificationToken, String displayName, boolean isEnabled,
-                Set<Role> role, Employee employee, Employer employer, List<UserProvider> providers) {
+                String temporaryEmail, Set<Role> role, Employee employee, Employer employer, List<UserProvider> providers) {
         this.email = email;
         this.password = password;
         this.createAt = createAt;
@@ -72,6 +75,7 @@ public class User {
         this.verificationToken = verificationToken;
         this.displayName = displayName;
         this.isEnabled = isEnabled;
+        this.temporaryEmail = temporaryEmail;
         this.role = role;
         this.employee = employee;
         this.employer = employer;

@@ -57,8 +57,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request.requestMatchers
                         ("/api/auth/login","/api/auth/employee-registration",
                                 "/api/auth/employer-registration","/api/jobs","/api/auth/verify","/api/auth/resend",
-                                "/api/auth/reset-password","/api/auth/forgot-password")
-                        .permitAll().anyRequest().authenticated())
+                                "/api/auth/reset-password","/api/auth/forgot-password","/api/auth/email-update")
+                        .permitAll().
+                        requestMatchers("/api/auth/account-information/employee").hasRole("EMPLOYEE")
+                         .requestMatchers("/api/auth/account-information/employer").hasRole("EMPLOYER")
+                        .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2.successHandler(successHandler)
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserDetailService)
                                 .oidcUserService(oAuth2UserDetailService :: loadUser)))
