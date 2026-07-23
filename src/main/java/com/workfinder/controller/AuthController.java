@@ -4,6 +4,7 @@ import com.workfinder.Util.Utility;
 import com.workfinder.entity.User;
 import com.workfinder.enums.OAuth2UserProvider;
 import com.workfinder.exception.EmailUpdateException;
+import com.workfinder.exception.InvalidFileException;
 import com.workfinder.exception.PasswordChangeNotAllowedException;
 import com.workfinder.request.*;
 import com.workfinder.response.ActionResponse;
@@ -12,10 +13,12 @@ import com.workfinder.response.JWTResponse;
 import com.workfinder.security.JWTService;
 import com.workfinder.service.impl.AuthServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.net.URI;
 import java.time.LocalDateTime;
@@ -194,8 +197,9 @@ public class AuthController {
     }
 
     @PutMapping("/account-information/employee")
-    public ResponseEntity<?> updateAccountData(HttpServletRequest request, @RequestBody UpdateEmployeeAccountRequest requests
-    ,Authentication authentication){
+    public ResponseEntity<?> updateEmployeeAccount(HttpServletRequest request,
+                                                   @RequestPart("request") UpdateEmployeeAccountRequest requests
+    ,Authentication authentication,@RequestPart(value = "file",required = false)MultipartFile file){
         User user = authService.findByEmail(authentication.getName());
 
         if (!user.getEmail().equals(requests.getEmail())
@@ -205,17 +209,44 @@ public class AuthController {
         }
             try {
                 String siteUrl = Utility.servletRequest(request);
-                authService.updateEmployeeAccountData(user, requests, siteUrl);
+                authService.updateEmployeeAccountData(user, requests, siteUrl,file);
                 return ResponseEntity.ok().body(new ApiResponse("Your account information has been updated successfully."));
             }catch (EmailUpdateException e){
                 return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
             }catch (PasswordChangeNotAllowedException e){
                 return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+            }catch (InvalidFileException e){
+                return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
             }
             catch (Exception e) {
                 return ResponseEntity.internalServerError().body(new ApiResponse("Something went Wrong Try Again Later"));
             }
+    }
 
+    @PutMapping("/account-information/employer")
+    public ResponseEntity<?> updateEmployerAccount(HttpServletRequest request,
+       @RequestPart("request") UpdateEmployerAccountRequest requests
+    , Authentication authentication, @RequestPart(value = "file",required = false)MultipartFile file){
+        User user = authService.findByEmail(authentication.getName());
+
+        if (!user.getEmail().equals(requests.getEmail()) && authService.emailExist(requests.getEmail())){
+            return ResponseEntity.badRequest().body(new ApiResponse("Email can't Be Changed"));
+        }
+        try {
+            String siteUrl = Utility.servletRequest(request);
+            authService.updateEmployerAccountData(user,requests,siteUrl,file);
+            return ResponseEntity.ok().body(new ApiResponse("Your account information has been updated successfully."));
+        }catch (EmailUpdateException e){
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+
+        }catch (PasswordChangeNotAllowedException e){
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+        }catch (InvalidFileException e){
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+        }
+        catch (Exception e){
+            return ResponseEntity.internalServerError().body(new ApiResponse("Something Went Wrong Try Again Later"));
+        }
     }
 
     @GetMapping("/email-update")

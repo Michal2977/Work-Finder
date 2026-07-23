@@ -4,6 +4,7 @@ import com.workfinder.dto.UserDto;
 import com.workfinder.entity.*;
 import com.workfinder.enums.OAuth2UserProvider;
 import com.workfinder.exception.EmailUpdateException;
+import com.workfinder.exception.InvalidFileException;
 import com.workfinder.exception.PasswordChangeNotAllowedException;
 import com.workfinder.mapper.UserMapper;
 import com.workfinder.repository.RoleRepository;
@@ -11,9 +12,11 @@ import com.workfinder.repository.UserRepository;
 import com.workfinder.request.EmployeeRegistrationRequest;
 import com.workfinder.request.EmployerRegistrationRequest;
 import com.workfinder.request.UpdateEmployeeAccountRequest;
+import com.workfinder.request.UpdateEmployerAccountRequest;
 import com.workfinder.response.TurnstileResponse;
 import com.workfinder.service.AuthService;
 import jakarta.mail.MessagingException;
+import jakarta.mail.Multipart;
 import jakarta.transaction.Transactional;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +27,13 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -270,12 +277,28 @@ public class AuthServiceImpl implements AuthService {
     }
 
 
+    @Override
     public UserDto updateEmployeeAccountData(User user, UpdateEmployeeAccountRequest request
-    ,String siteUrl) throws MessagingException {
+    , String siteUrl, MultipartFile file) throws MessagingException, IOException {
 
         boolean hasLocal = user.getProviders().stream().anyMatch(p -> p.getProvider()
                 == OAuth2UserProvider.LOCAL);
 
+        if (file != null && !file.isEmpty()){
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            if (fileName.contains("..")){
+                throw new InvalidFileException("Invalid file name");
+            }
+            String contentType = file.getContentType();
+            if (contentType == null || !(contentType.equals("image/png")|| contentType.equals("image/jpeg")
+            || contentType.equals("image/webp"))){
+                throw new InvalidFileException("Only image files are allowed");
+            }
+            if (file.getSize() > 10 * 1024 *1024){
+                throw new InvalidFileException("Maximum file size is 10 MB.");
+            }
+            user.getEmployee().setPicture(file.getBytes());
+        }
         if (request.getPassword() != null && !request.getPassword().isBlank() && !hasLocal){
             throw new PasswordChangeNotAllowedException("Password changes are not available for this sign-in method.");
         }
@@ -293,6 +316,7 @@ public class AuthServiceImpl implements AuthService {
         if (request.getPassword() != null && !request.getPassword().isBlank() && hasLocal ){
             user.setPassword(passwordEncoder.encode(request.getPassword()));
         }
+
         user.getEmployee().setPhoneNumber(request.getPhoneNumber());
         user.getEmployee().setFirstName(request.getFirstName());
         user.getEmployee().setLastName(request.getLastName());
@@ -301,6 +325,59 @@ public class AuthServiceImpl implements AuthService {
         return UserMapper.userDto(user);
     }
 
+    @Override
+    public UserDto updateEmployerAccountData(User user , UpdateEmployerAccountRequest request
+            ,String siteUrl,MultipartFile file) throws MessagingException, IOException {
+
+        boolean hasLocal = user.getProviders().stream().anyMatch(p -> p.getProvider() ==
+                OAuth2UserProvider.LOCAL);
+
+        if (file != null && !file.isEmpty()){
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            if (fileName.contains("..")){
+                throw new InvalidFileException("Invalid file name");
+            }
+            String contentType = file.getContentType();
+            if ( contentType == null || !(contentType.equals("image/png") ||
+                    contentType.equals("image/jpeg")
+            || contentType.equals("image/webp"))){
+                throw new InvalidFileException("Only image files are allowed");
+            }
+            if (file.getSize() >  10 * 1024 * 1024){
+                throw new InvalidFileException("Maximum file size is 10 MB.");
+            }
+            user.getEmployer().setPicture(file.getBytes());
+        }
+
+        if (request.getPassword() != null && !request.getPassword().isBlank() && !hasLocal){
+            throw new PasswordChangeNotAllowedException("Password changes are not available for this sign-in method.");
+        }
+        if (request.getEmail() != null && !request.getEmail().isBlank() && !user.getEmail().equals(request.getEmail())){
+            String verifyCode = RandomString.make(65);
+            user.setVerificationCode(verifyCode);
+            user.setExpiresAt(LocalDateTime.now().plusHours(24));
+            user.setTemporaryEmail(request.getEmail());
+
+            userRepository.save(user);
+
+            emailService.changeEmail(user,siteUrl);
+            throw new EmailUpdateException("We've sent a verification email to your email address");
+        }
+        if (request.getPassword() != null && !request.getPassword().isBlank() && hasLocal){
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+
+        user.getEmployer().setFirstName(request.getFirstName());
+        user.getEmployer().setLastName(request.getLastName());
+        user.getEmployer().setCompanyName(request.getCompanyName());
+        user.getEmployer().setNip(request.getPhoneNumber());
+        user.getEmployer().setPhoneNumber(request.getPhoneNumber());
+
+        userRepository.save(user);
+        return UserMapper.userDto(user);
+    }
+
+    @Override
     public boolean emailUpdate(String code){
         User user = userRepository.findByVerificationCode(code);
         if (user == null || user.getExpiresAt().isBefore(LocalDateTime.now())){

@@ -23,6 +23,10 @@ public class Employee {
     @Column(name = "phone_number")
     private Integer phoneNumber;
 
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] picture;
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -30,10 +34,11 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, Integer phoneNumber, User user) {
+    public Employee(String firstName, String lastName, Integer phoneNumber, byte[] picture, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.picture = picture;
         this.user = user;
     }
 }
