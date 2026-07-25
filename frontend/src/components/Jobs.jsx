@@ -1,13 +1,17 @@
 import {useEffect ,useState} from "react";
-import { useLocation } from "react-router-dom";
+import { data, useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function Jobs(){
 
     const [user,setUser] = useState(null);
     const [message,setMessage] = useState("");
-
+    const [jobs,setJobs] = useState([]);
     const location = useLocation();
+
+    useEffect(() => {
+        fetch("http://localhost:8080/api/jobs").then(response => response.json()).then(data => setJobs(data))
+    },[]);
 
     useEffect(() => {
      if(location.state?.message){
@@ -39,7 +43,15 @@ function Jobs(){
         <div>
             {message && <h1>{message}</h1>}
             <h1>Welcome Jobs Page</h1>
-          
+
+            
+            <h1>{jobs.map(job => (
+                <div key={job.id}>
+                    <p>{job.title}</p>
+                  <p>{job.salary}</p>
+                </div>
+            ))}</h1>
+           
              {user && (Employee || Employer) && (
                 <div>
                     <Link to={"/account-information"}>Account</Link>
@@ -57,6 +69,7 @@ function Jobs(){
             {user && Employer && (
                 <div>
                     <h1>Employer</h1>
+                    <Link to={"/job"}>Create a Job Offer</Link>
                     <h1>{user.employerDto.firstName}</h1>
                      <h1>{user.employerDto.lastName}</h1>
                 </div>

@@ -299,6 +299,7 @@ public class AuthServiceImpl implements AuthService {
             }
             user.getEmployee().setPicture(file.getBytes());
         }
+
         if (request.getPassword() != null && !request.getPassword().isBlank() && !hasLocal){
             throw new PasswordChangeNotAllowedException("Password changes are not available for this sign-in method.");
         }
@@ -391,10 +392,4 @@ public class AuthServiceImpl implements AuthService {
             return true;
         }
     }
-
-
-
-
-
-
 }

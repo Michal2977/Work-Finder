@@ -4,6 +4,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -32,6 +35,9 @@ public class Employer {
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] picture;
+
+    @OneToMany(mappedBy = "employer",cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Job> jobs = new ArrayList<>();
 
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -5,6 +5,7 @@ import com.workfinder.oauth2.security.OAuth2UserDetailService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -18,6 +19,7 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfiguration {
 
 
@@ -61,6 +63,7 @@ public class SecurityConfiguration {
                         .permitAll().
                         requestMatchers("/api/auth/account-information/employee").hasRole("EMPLOYEE")
                          .requestMatchers("/api/auth/account-information/employer").hasRole("EMPLOYER")
+                        .requestMatchers("/api/job/**").hasAnyRole("EMPLOYER","ADMIN")
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2.successHandler(successHandler)
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserDetailService)
