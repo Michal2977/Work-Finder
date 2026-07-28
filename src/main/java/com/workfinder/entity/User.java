@@ -1,6 +1,7 @@
 package com.workfinder.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -20,10 +21,12 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "email",unique = true)
+    @Column(name = "email",unique = true,length = 254,nullable = false)
+    @Size(min = 5 , max = 254)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password",nullable = false,length = 64)
+    @Size(min = 8,max = 64)
     private String password;
 
     @Column(name = "create_at")
@@ -44,8 +47,13 @@ public class User {
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
-    @Column(name = "temporary_email")
+    @Column(name = "temporary_email", length = 254)
+    @Size(min = 5,max = 254)
     private String temporaryEmail;
+
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[] picture;
 
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.DETACH)
     @JoinTable(name = "users_roles",joinColumns = @JoinColumn(name = "user_id")
@@ -64,9 +72,9 @@ public class User {
     public User() {
     }
 
-    public User(String email, String password, LocalDateTime createAt, LocalDateTime expiresAt,
-                String verificationCode, String verificationToken, String displayName, boolean isEnabled,
-                String temporaryEmail, Set<Role> role, Employee employee, Employer employer, List<UserProvider> providers) {
+    public User(String email, String password, LocalDateTime createAt, LocalDateTime expiresAt, String verificationCode,
+                String verificationToken, String displayName, boolean isEnabled, String temporaryEmail,
+                byte[] picture, Set<Role> role, Employee employee, Employer employer, List<UserProvider> providers) {
         this.email = email;
         this.password = password;
         this.createAt = createAt;
@@ -76,6 +84,7 @@ public class User {
         this.displayName = displayName;
         this.isEnabled = isEnabled;
         this.temporaryEmail = temporaryEmail;
+        this.picture = picture;
         this.role = role;
         this.employee = employee;
         this.employer = employer;

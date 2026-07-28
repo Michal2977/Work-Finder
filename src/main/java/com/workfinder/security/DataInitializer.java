@@ -36,6 +36,7 @@ public class DataInitializer implements CommandLineRunner {
             Role admin = roleRepository.findByRole("ADMIN");
             User user = new User();
             user.setEmail("mkoszalka0@gmail.com");
+            user.setEnabled(true);
             user.setPassword(passwordEncoder.encode("raw"));
             user.setRole(Set.of(admin));
 

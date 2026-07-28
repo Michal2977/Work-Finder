@@ -45,23 +45,23 @@ function EmployerRegistration(){
         <div>
             {message && <h1>{message}</h1>}
 
-            <input type="email" placeholder="email" value={data.email}
+            <input type="email" placeholder="email" value={data.email} minLength={5} maxLength={254} required
             onChange={(e) => setData({...data,email : e.target.value})}/>
 
-            <input type="password" placeholder="password" value={data.password}
+            <input type="password" placeholder="password" value={data.password} minLength={8} maxLength={64} required
             onChange={(e) => setData({...data,password : e.target.value})}/>
             
-            <input type="text" placeholder="firstName" value={data.firstName}
+            <input type="text" placeholder="firstName" value={data.firstName} minLength={2} maxLength={40} required
             onChange={(e) => setData({...data,firstName : e.target.value})}/>
 
-            <input type="text" placeholder="lastName" value={data.lastName}
+            <input type="text" placeholder="lastName" value={data.lastName} minLength={2} maxLength={40} required
             onChange={(e) => setData({...data,lastName : e.target.value})}/>
 
-            <input type="text" placeholder="phoneNumber" value={data.phoneNumber}
-            onChange={(e) => setData({...data,phoneNumber : e.target.value})}/>
+            <input type="text" placeholder="phoneNumber" value={data.phoneNumber}  minLength={9} maxLength={15} pattern="\+?[0-9]{9,15}"
+            onChange={(e) => setData({...data,phoneNumber : e.target.value})} required/>
 
-            <input type="text" placeholder="nip" value={data.nip}
-            onChange={(e) => setData({...data,nip : e.target.value})}/>
+            <input type="text" placeholder="nip" value={data.nip} minLength={10} maxLength={10}
+            onChange={(e) => setData({...data,nip : e.target.value})} required/>
 
             <button onClick={registration}>Sign Up</button>
 

@@ -63,7 +63,7 @@ public class SecurityConfiguration {
                         .permitAll().
                         requestMatchers("/api/auth/account-information/employee").hasRole("EMPLOYEE")
                          .requestMatchers("/api/auth/account-information/employer").hasRole("EMPLOYER")
-                        .requestMatchers("/api/job/**").hasAnyRole("EMPLOYER","ADMIN")
+                        .requestMatchers("/api/job").hasAnyRole("EMPLOYER","ADMIN")
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2 -> oauth2.successHandler(successHandler)
                         .userInfoEndpoint(userInfo -> userInfo.userService(oAuth2UserDetailService)

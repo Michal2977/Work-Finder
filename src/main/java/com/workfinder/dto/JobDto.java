@@ -7,31 +7,40 @@ import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Set;
+
 @Getter
 @Setter
 public class JobDto {
 
+    private Long id;
     private String title;
     private String description;
     private Double salary;
     private String location;
-    private ContractType contractType;
+    private Set<ContractType> contractType;
     private String workSchedule;
     private EmploymentType employmentType;
     private JobStart jobStart;
-    private WorkMode workMode;
+    private Set<WorkMode> workMode;
     private String duties;
     private String requirements;
     private String weOffer;
     private JobCategory jobCategory;
+    private SalaryPeriod salaryPeriod;
+    private SalaryType salaryType;
+    private String picture;
     private EmployerDto employerDto;
 
     public JobDto() {
     }
 
-    public JobDto(String title, String description, Double salary, String location, ContractType contractType,
-                  String workSchedule, EmploymentType employmentType, JobStart jobStart,
-                  WorkMode workMode, String duties, String requirements, String weOffer, JobCategory jobCategory, EmployerDto employerDto) {
+    public JobDto(Long id, String title, String description, Double salary, String location, Set<ContractType>
+            contractType, String workSchedule, EmploymentType employmentType, JobStart jobStart,
+                  Set<WorkMode> workMode, String duties, String requirements, String weOffer,
+                  JobCategory jobCategory, SalaryPeriod salaryPeriod, SalaryType salaryType, String picture,
+                  EmployerDto employerDto) {
+        this.id = id;
         this.title = title;
         this.description = description;
         this.salary = salary;
@@ -45,6 +54,9 @@ public class JobDto {
         this.requirements = requirements;
         this.weOffer = weOffer;
         this.jobCategory = jobCategory;
+        this.salaryPeriod = salaryPeriod;
+        this.salaryType = salaryType;
+        this.picture = picture;
         this.employerDto = employerDto;
     }
 }

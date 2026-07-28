@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
@@ -28,8 +31,10 @@ public class Job {
     private String location;
 
     @Column(name = "contract_type")
+    @ElementCollection(targetClass = ContractType.class)
+    @CollectionTable(name = "contract_types")
     @Enumerated(EnumType.STRING)
-    private ContractType contractType;
+    private Set<ContractType> contractType = new HashSet<>();
 
     @Column(name = "work_schedule")
     private String workSchedule;
@@ -47,8 +52,18 @@ public class Job {
     private JobStart jobStart;
 
     @Column(name = "work_mode")
+    @ElementCollection(targetClass = WorkMode.class)
+    @CollectionTable(name = "work_modes")
     @Enumerated(EnumType.STRING)
-    private WorkMode workMode;
+    private Set<WorkMode> workMode = new HashSet<>();
+
+    @Column(name = "salary_period")
+    @Enumerated(EnumType.STRING)
+    private SalaryPeriod salaryPeriod;
+
+    @Column(name = "salary_type")
+    @Enumerated(EnumType.STRING)
+    private SalaryType salaryType;
 
     @Column(name = "duties")
     private String duties;
@@ -59,6 +74,10 @@ public class Job {
     @Column(name = "we_offer")
     private String weOffer;
 
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private byte[]picture;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employer_id")
     private Employer employer;
@@ -67,9 +86,10 @@ public class Job {
     public Job() {
     }
 
-    public Job(String title, String description, Double salary, String location, ContractType contractType,
-               String workSchedule, JobCategory jobCategory, EmploymentType employmentType, JobStart jobStart,
-               WorkMode workMode, String duties, String requirements, String weOffer, Employer employer) {
+    public Job(String title, String description, Double salary, String location, Set<ContractType> contractType,
+               String workSchedule, JobCategory jobCategory, EmploymentType employmentType,
+               JobStart jobStart, Set<WorkMode> workMode, SalaryPeriod salaryPeriod, SalaryType salaryType,
+               String duties, String requirements, String weOffer, byte[] picture, Employer employer) {
         this.title = title;
         this.description = description;
         this.salary = salary;
@@ -80,9 +100,12 @@ public class Job {
         this.employmentType = employmentType;
         this.jobStart = jobStart;
         this.workMode = workMode;
+        this.salaryPeriod = salaryPeriod;
+        this.salaryType = salaryType;
         this.duties = duties;
         this.requirements = requirements;
         this.weOffer = weOffer;
+        this.picture = picture;
         this.employer = employer;
     }
 }

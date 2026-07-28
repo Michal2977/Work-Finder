@@ -4,6 +4,8 @@ import com.workfinder.dto.EmployerDto;
 import com.workfinder.enums.*;
 import lombok.Getter;
 
+import java.util.Set;
+
 @Getter
 public class CreateJobOfferRequest {
 
@@ -17,11 +19,13 @@ public class CreateJobOfferRequest {
     private String requirements;
     private String weOffer;
 
-    private WorkMode workMode;
+    private Set<WorkMode> workMode ;
     private JobStart jobStart;
-    private ContractType contractType;
+    private Set<ContractType> contractType;
     private EmploymentType employmentType;
     private JobCategory jobCategory;
+    private SalaryPeriod salaryPeriod;
+    private SalaryType salaryType;
     private EmployerDto employerDto;
 
     public CreateJobOfferRequest() {

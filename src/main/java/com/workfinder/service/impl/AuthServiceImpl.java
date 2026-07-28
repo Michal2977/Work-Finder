@@ -289,6 +289,8 @@ public class AuthServiceImpl implements AuthService {
             if (fileName.contains("..")){
                 throw new InvalidFileException("Invalid file name");
             }
+
+
             String contentType = file.getContentType();
             if (contentType == null || !(contentType.equals("image/png")|| contentType.equals("image/jpeg")
             || contentType.equals("image/webp"))){
@@ -297,7 +299,7 @@ public class AuthServiceImpl implements AuthService {
             if (file.getSize() > 10 * 1024 *1024){
                 throw new InvalidFileException("Maximum file size is 10 MB.");
             }
-            user.getEmployee().setPicture(file.getBytes());
+            user.setPicture(file.getBytes());
         }
 
         if (request.getPassword() != null && !request.getPassword().isBlank() && !hasLocal){
@@ -347,7 +349,7 @@ public class AuthServiceImpl implements AuthService {
             if (file.getSize() >  10 * 1024 * 1024){
                 throw new InvalidFileException("Maximum file size is 10 MB.");
             }
-            user.getEmployer().setPicture(file.getBytes());
+            user.setPicture(file.getBytes());
         }
 
         if (request.getPassword() != null && !request.getPassword().isBlank() && !hasLocal){

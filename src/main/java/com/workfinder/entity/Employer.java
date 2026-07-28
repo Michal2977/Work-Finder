@@ -1,8 +1,11 @@
 package com.workfinder.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.security.core.parameters.P;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,24 +20,26 @@ public class Employer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name",length = 40,nullable = false)
+    @Size(min = 2,max = 40 )
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name" ,length = 40,nullable = false)
+    @Size(min = 2,max = 40)
     private String lastName;
 
-    @Column(name = "company_name")
+    @Column(name = "company_name",length = 100)
+    @Size(min = 1,max = 100)
     private String companyName;
 
-    @Column(name = "nip")
+    @Column(name = "nip" ,length = 10,nullable = false)
+    @Size(min = 10,max = 10)
+    @Pattern(regexp = "^\\d{10}$")
     private Integer nip;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number",length = 15,nullable = false)
+    @Pattern(regexp = "^\\+?[0-9]{9,15}$")
     private Integer phoneNumber;
-
-    @Lob
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private byte[] picture;
 
     @OneToMany(mappedBy = "employer",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Job> jobs = new ArrayList<>();
@@ -47,13 +52,13 @@ public class Employer {
     }
 
     public Employer(String firstName, String lastName, String companyName, Integer nip,
-                    Integer phoneNumber, byte[] picture, User user) {
+                    Integer phoneNumber, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.companyName = companyName;
         this.nip = nip;
         this.phoneNumber = phoneNumber;
-        this.picture = picture;
+
         this.user = user;
     }
 }

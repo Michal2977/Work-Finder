@@ -1,6 +1,8 @@
 package com.workfinder.controller;
 
-import com.workfinder.dto.JobDto;
+
+import com.workfinder.entity.User;
+import com.workfinder.exception.InvalidFileException;
 import com.workfinder.request.CreateJobOfferRequest;
 import com.workfinder.response.ApiResponse;
 import com.workfinder.service.impl.AuthServiceImpl;
@@ -8,8 +10,10 @@ import com.workfinder.service.impl.JobsServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
+
+
 
 @RestController
 @RequestMapping("/api")
@@ -38,11 +42,20 @@ public class JobsController {
     }
 
     @PostMapping("/job")
-    public ResponseEntity<?> createJobOffer(@RequestBody CreateJobOfferRequest request,Authentication authentication){
+    public ResponseEntity<?> createJobOffer(@RequestPart("request") CreateJobOfferRequest request,
+                                            Authentication authentication,
+                                            @RequestPart(value = "file",required = false)MultipartFile file)  {
 
-        jobsService.createAJobOffer(request,authentication.getName());
-        return ResponseEntity.ok(new ApiResponse("Job offer created successfully."));
+        User user = authService.findByEmail(authentication.getName());
 
+        try {
+            jobsService.createAJobOffer(request,user.getEmail(),file);
+            return ResponseEntity.ok(new ApiResponse("Job offer created successfully."));
+        }catch (InvalidFileException e){
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+        } catch (Exception e) {
+           return ResponseEntity.internalServerError().body(new ApiResponse("Something Went wrong try again later"));
+        }
     }
 
 }

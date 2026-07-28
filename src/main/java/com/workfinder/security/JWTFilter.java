@@ -44,6 +44,7 @@ public class JWTFilter extends OncePerRequestFilter {
 
             UserDetails userDetails = userDetailsService.loadUserByUsername(email);
 
+
             UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails,null
             ,userDetails.getAuthorities());
 

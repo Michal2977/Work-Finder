@@ -93,19 +93,20 @@ function AccountInformation(){
           {message && <h1>{message}</h1>}
         {user && employee && (
              <div>
-            <input type="email" placeholder="email" value={user?.email || ""}
+            <input type="email" placeholder="email" value={user?.email || ""} minLength={5} maxLength={254}
             onChange={(e) => setUser({...user,email : e.target.value})}/>
 
-          <input type="password" placeholder="password" value={user?.password || ""}
+          <input type="password" placeholder="password" value={user?.password || ""} minLength={8} maxLength={64}
           onChange={(e) => setUser({...user,password : e.target.value})}/>
 
-          <input type="text" placeholder="firstName" value={user?.employeeDto?.firstName || ""}
-          onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,firstName : e.target.value}})}/>
+          <input type="text" placeholder="firstName" value={user?.employeeDto?.firstName || ""} minLength={2} maxLength={40}
+          onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,firstName : e.target.value}})}/> 
           
-          <input type="text" placeholder="lastName" value={user?.employeeDto?.lastName || ""}
+          <input type="text" placeholder="lastName" value={user?.employeeDto?.lastName || ""} minLength={2} maxLength={40}
           onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,lastName : e.target.value}})}/>
 
-          <input type="text" placeholder="phone number" value={user?.employeeDto?.phoneNumber || ""}
+          <input type="text" placeholder="phone number" value={user?.employeeDto?.phoneNumber || ""} 
+           minLength={9} maxLength={15} pattern="\+?[0-9]{9,15}"
           onChange={(e) =>setUser({...user,employeeDto : {...user.employeeDto,phoneNumber : e.target.value}})}/>
 
           <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files[0])} />
@@ -116,25 +117,26 @@ function AccountInformation(){
 
         {user && employer && (
           <div>
-           <input type="email" placeholder="email" value={user?.email || ""}
+           <input type="email" placeholder="email" value={user?.email || ""} minLength={5} maxLength={254}
            onChange={(e) => setUser({...user,email : e.target.value})}/>
 
-           <input type="password" placeholder="password" value={user?.password || ""}
+           <input type="password" placeholder="password" value={user?.password || ""} minLength={8} maxLength={64}
            onChange={(e) => setUser({...user,password : e.target.value})}/>
 
-           <input type="text" placeholder="first Name" value={user?.employerDto?.firstName || ""}
+           <input type="text" placeholder="first Name" value={user?.employerDto?.firstName || ""}  minLength={2} maxLength={40}
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,firstName : e.target.value}})}/>
 
-           <input type="text" placeholder="last Name" value={user?.employerDto?.lastName || ""}
+           <input type="text" placeholder="last Name" value={user?.employerDto?.lastName || ""}  minLength={2} maxLength={40}
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,lastName : e.target.value}})}/>
 
-           <input type="text" placeholder="phoneNumber" value={user?.employerDto?.phoneNumber || ""}
+           <input type="text" placeholder="phoneNumber" value={user?.employerDto?.phoneNumber || ""} 
+            minLength={9} maxLength={15} pattern="\+?[0-9]{9,15}"
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,phoneNumber : e.target.value}})}/>
 
-           <input type="text" placeholder="company Name" value={user?.employerDto?.companyName || ""}
+           <input type="text" placeholder="company Name" value={user?.employerDto?.companyName || ""}  minLength={1} maxLength={100}
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,companyName : e.target.value}})}/>
 
-           <input type="text" placeholder="nip" value={user?.employerDto?.nip || ""}
+           <input type="text" placeholder="nip" value={user?.employerDto?.nip || ""}  minLength={10} maxLength={10}
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,nip : e.target.value}})}/>
 
            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])}/>

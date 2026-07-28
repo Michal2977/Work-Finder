@@ -47,10 +47,10 @@ console.log(turnstile.current);
         <div>
             {message && <h1>{message}</h1>}
 
-            <input type="email" placeholder="email" value={data.email}
-            onChange={(e) => setData({...data,email : e.target.value})}/>
+            <input type="email" placeholder="email" value={data.email} required
+            onChange={(e) => setData({...data,email : e.target.value})} minLength={5} maxLength={254}/>
 
-            <input type="password" placeholder="password" value={data.password}
+            <input type="password" placeholder="password" value={data.password} minLength={8} maxLength={64} required
             onChange={(e) => setData({...data,password : e.target.value})}/>
 
             <button onClick={registration}>Sign Up</button>

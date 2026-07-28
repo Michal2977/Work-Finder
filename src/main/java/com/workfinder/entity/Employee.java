@@ -1,6 +1,8 @@
 package com.workfinder.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,18 +16,17 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "first_name")
+    @Column(name = "first_name",length = 40)
+    @Size(min = 2,max = 40)
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "last_name" ,length = 40)
+    @Size(min = 2,max = 40)
     private String lastName;
 
-    @Column(name = "phone_number")
+    @Column(name = "phone_number",length = 15)
+    @Pattern(regexp = "^\\+?[0-9]{9,15}$")
     private Integer phoneNumber;
-
-    @Lob
-    @Column(columnDefinition = "MEDIUMBLOB")
-    private byte[] picture;
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -34,11 +35,10 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, Integer phoneNumber, byte[] picture, User user) {
+    public Employee(String firstName, String lastName, Integer phoneNumber, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.picture = picture;
         this.user = user;
     }
 }

@@ -10,16 +10,15 @@ public class EmployeeDto {
     private String firstName;
     private String lastName;
     private Integer phoneNumber;
-    private String picture;
 
 
     public EmployeeDto() {
     }
 
-    public EmployeeDto(String firstName, String lastName, Integer phoneNumber, String picture) {
+    public EmployeeDto(String firstName, String lastName, Integer phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
-        this.picture = picture;
+
     }
 }

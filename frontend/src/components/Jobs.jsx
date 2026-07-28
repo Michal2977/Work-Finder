@@ -12,7 +12,7 @@ function Jobs(){
     useEffect(() => {
         fetch("http://localhost:8080/api/jobs").then(response => response.json()).then(data => setJobs(data))
     },[]);
-
+ 
     useEffect(() => {
      if(location.state?.message){
         setMessage(location.state.message);
@@ -21,7 +21,6 @@ function Jobs(){
     useEffect(() => {
   
       const token = localStorage.getItem("token");
-
       if(!token){
         return;
       }
@@ -34,6 +33,8 @@ function Jobs(){
     const employeeName = `${user?.employeeDto?.firstName ?? ""} ${user?.employeeDto?.lastName ?? ""}`.trim();
     const displayName = employeeName !== "" ? employeeName : user?.displayName;
 
+    const Admin = user?.roleDto?.some(role => role.role === "ADMIN");
+
     const Employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
 
  
@@ -42,17 +43,30 @@ function Jobs(){
     return(
         <div>
             {message && <h1>{message}</h1>}
-            <h1>Welcome Jobs Page</h1>
-
-            
-            <h1>{jobs.map(job => (
-                <div key={job.id}>
-                    <p>{job.title}</p>
-                  <p>{job.salary}</p>
-                </div>
-            ))}</h1>
+                   
+            {jobs.map(job => (
+                <div className="card" width={"18rem"}  key={job.id}>
+                   {job.picture && (
+                   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  width={"200px"} height={"200px;"}/>
+                    )}
+                   
+  <div className="card-body">
+    <h5 className="card-title"> {job.title}</h5>
+    <p className="card-text">{job.salary}</p>
+     <p className="card-text">{job.salaryPeriod}</p>
+      <p className="card-text">{job.salaryType}</p>
+       <p className="card-text">{job.location}</p>
+       <p className="card-text">{job.jobCategory}</p>
+       <p className="card-text">{job.employmentType}</p>
+        <p className="card-text">{job.contractType}</p>
+        <p className="card-text">{job.jobStart}</p>
+        <p className="card-text">{job.workMode}</p>
+        
+  </div>
+</div>
+))}
            
-             {user && (Employee || Employer) && (
+             {user && (Employee || Employer || Admin) && (
                 <div>
                     <Link to={"/account-information"}>Account</Link>
                 </div>
@@ -66,6 +80,9 @@ function Jobs(){
                 
             )}
 
+              {Admin && (
+                  <Link to={"/job"}>Create a Job Offer</Link>
+              )}
             {user && Employer && (
                 <div>
                     <h1>Employer</h1>

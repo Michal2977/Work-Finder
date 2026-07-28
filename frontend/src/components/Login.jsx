@@ -40,10 +40,10 @@ function Login(){
         <div>
             {message && <h1>{message}</h1>}
 
-            <input type="email" placeholder="email" value={email}
+            <input type="email" placeholder="email" value={email} required
             onChange={(e) => setEmail(e.target.value)}/>
 
-            <input type="password" placeholder="password" value={password}
+            <input type="password" placeholder="password" value={password} required
             onChange={(e) => setPassword(e.target.value)}/> 
 
             <button onClick={handleLogin}>Sign In</button>
