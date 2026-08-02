@@ -55,6 +55,7 @@ public class AuthController {
     , HttpServletRequest requests){
 
         if (!authService.verifyTurnstile(request.getTurnstileToken())){
+
             return ResponseEntity.badRequest().body(new ApiResponse("Turnstile verification failed"));
         }
 

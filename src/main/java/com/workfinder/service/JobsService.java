@@ -10,4 +10,5 @@ import java.util.List;
 public interface JobsService {
     public JobDto createAJobOffer(CreateJobOfferRequest request, String email,MultipartFile file) throws IOException;
     List<JobDto> jobDtoList();
+    JobDto findJobById(Long id);
 }

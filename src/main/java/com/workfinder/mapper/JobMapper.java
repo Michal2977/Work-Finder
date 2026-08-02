@@ -1,11 +1,10 @@
 package com.workfinder.mapper;
 
+import com.workfinder.dto.EmployerDto;
 import com.workfinder.dto.JobDto;
 import com.workfinder.entity.Job;
-import org.springframework.util.StringUtils;
 
 import java.util.Base64;
-import java.util.Objects;
 
 public class JobMapper {
     public static JobDto jobDto(Job job){
@@ -14,10 +13,21 @@ public class JobMapper {
         if (job.getPicture() != null){
             base64Picture = Base64.getEncoder().encodeToString(job.getPicture());
         }
+        String companyName = job.getEmployer() != null
+                ? job.getEmployer().getCompanyName()
+                : job.getCompanyName();
 
-        return new JobDto(job.getId(),job.getTitle(),job.getDescription(),job.getSalary(),job.getLocation()
+        EmployerDto employerDto = job.getEmployer() != null
+                ? EmployerMapper.employerDto(job.getEmployer())
+                : null;
+
+
+        return new JobDto(job.getId(),job.getPosition(),job.getDescription(),job.getSalary(),job.getLocation()
         ,job.getContractType(),job.getWorkSchedule(),job.getEmploymentType(),job.getJobStart(),
                 job.getWorkMode(),job.getDuties(),job.getRequirements(),job.getWeOffer(),job.getJobCategory()
-                ,job.getSalaryPeriod(),job.getSalaryType(),base64Picture,EmployerMapper.employerDto(job.getEmployer()));
+                ,job.getSalaryPeriod(),job.getSalaryType(),base64Picture,companyName
+                ,job.getShiftSystem(),job.getWorkingHours(),job.getNightShift(),job.getAboutCompany(),
+                job.getSalarySystem(),job.getBenefit(),job.getPhoneNumber(),
+                employerDto);
     }
 }

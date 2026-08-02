@@ -1,6 +1,9 @@
 
 import { useState,useEffect } from "react";
 import {useNavigate } from "react-router-dom";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
+
 
 function AccountInformation(){
 
@@ -105,9 +108,10 @@ function AccountInformation(){
           <input type="text" placeholder="lastName" value={user?.employeeDto?.lastName || ""} minLength={2} maxLength={40}
           onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,lastName : e.target.value}})}/>
 
-          <input type="text" placeholder="phone number" value={user?.employeeDto?.phoneNumber || ""} 
-           minLength={9} maxLength={15} pattern="\+?[0-9]{9,15}"
-          onChange={(e) =>setUser({...user,employeeDto : {...user.employeeDto,phoneNumber : e.target.value}})}/>
+           <PhoneInput defaultCountry="PL" value={user?.employeeDto?.phoneNumber || ""}
+           onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,phoneNumber : e ?? ""}})}/>
+
+
 
           <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files[0])} />
 
@@ -128,10 +132,10 @@ function AccountInformation(){
 
            <input type="text" placeholder="last Name" value={user?.employerDto?.lastName || ""}  minLength={2} maxLength={40}
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,lastName : e.target.value}})}/>
-
-           <input type="text" placeholder="phoneNumber" value={user?.employerDto?.phoneNumber || ""} 
-            minLength={9} maxLength={15} pattern="\+?[0-9]{9,15}"
-           onChange={(e) => setUser({...user,employerDto : {...user.employerDto,phoneNumber : e.target.value}})}/>
+        
+       <PhoneInput defaultCountry="PL" value={user?.employerDto?.phoneNumber || ""}
+          onChange={(e) =>setUser({...user,employerDto: {...user.employerDto,phoneNumber: e ?? ""}
+        })}/>
 
            <input type="text" placeholder="company Name" value={user?.employerDto?.companyName || ""}  minLength={1} maxLength={100}
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,companyName : e.target.value}})}/>

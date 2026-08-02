@@ -2,6 +2,8 @@
 import { useState } from "react";
 import {Link, useNavigate } from "react-router-dom";
 import {Turnstile,useTurnstile} from "react-turnstile"
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 function EmployerRegistration(){
 
@@ -15,7 +17,7 @@ function EmployerRegistration(){
         if(!turnstileToken){
             setMessage("Complete the Turnstile verification.");
              return;
-        }
+        }console.log(JSON.stringify(data, null, 2));
         const response = await fetch("http://localhost:8080/api/auth/employer-registration",{
 
             method : "POST",
@@ -57,8 +59,7 @@ function EmployerRegistration(){
             <input type="text" placeholder="lastName" value={data.lastName} minLength={2} maxLength={40} required
             onChange={(e) => setData({...data,lastName : e.target.value})}/>
 
-            <input type="text" placeholder="phoneNumber" value={data.phoneNumber}  minLength={9} maxLength={15} pattern="\+?[0-9]{9,15}"
-            onChange={(e) => setData({...data,phoneNumber : e.target.value})} required/>
+            <PhoneInput defaultCountry="PL" international value= {data.phoneNumber} onChange={(phone) => setData({...data,phoneNumber : phone})}/>
 
             <input type="text" placeholder="nip" value={data.nip} minLength={10} maxLength={10}
             onChange={(e) => setData({...data,nip : e.target.value})} required/>

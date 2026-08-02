@@ -1,12 +1,10 @@
 package com.workfinder.dto;
 
 import com.workfinder.enums.*;
-import jakarta.persistence.Column;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.Set;
 
 @Getter
@@ -14,9 +12,9 @@ import java.util.Set;
 public class JobDto {
 
     private Long id;
-    private String title;
+    private String position;
     private String description;
-    private Double salary;
+    private BigDecimal salary;
     private String location;
     private Set<ContractType> contractType;
     private String workSchedule;
@@ -30,18 +28,27 @@ public class JobDto {
     private SalaryPeriod salaryPeriod;
     private SalaryType salaryType;
     private String picture;
+    private String companyName;
+    private String shiftSystem;
+    private String workingHours;
+    private Boolean nightShift;
+    private String aboutCompany;
+    private String salarySystem;
+    private Set<Benefit> benefit;
+    private String phoneNumber;
     private EmployerDto employerDto;
 
     public JobDto() {
     }
 
-    public JobDto(Long id, String title, String description, Double salary, String location, Set<ContractType>
-            contractType, String workSchedule, EmploymentType employmentType, JobStart jobStart,
-                  Set<WorkMode> workMode, String duties, String requirements, String weOffer,
-                  JobCategory jobCategory, SalaryPeriod salaryPeriod, SalaryType salaryType, String picture,
+    public JobDto(Long id, String position, String description, BigDecimal salary, String location, Set<ContractType>
+            contractType, String workSchedule, EmploymentType employmentType, JobStart jobStart, Set<WorkMode> workMode,
+                  String duties, String requirements, String weOffer, JobCategory jobCategory, SalaryPeriod salaryPeriod
+            , SalaryType salaryType, String picture, String companyName, String shiftSystem, String workingHours,
+                  Boolean nightShift, String aboutCompany, String salarySystem, Set<Benefit> benefit, String phoneNumber,
                   EmployerDto employerDto) {
         this.id = id;
-        this.title = title;
+        this.position = position;
         this.description = description;
         this.salary = salary;
         this.location = location;
@@ -57,6 +64,14 @@ public class JobDto {
         this.salaryPeriod = salaryPeriod;
         this.salaryType = salaryType;
         this.picture = picture;
+        this.companyName = companyName;
+        this.shiftSystem = shiftSystem;
+        this.workingHours = workingHours;
+        this.nightShift = nightShift;
+        this.aboutCompany = aboutCompany;
+        this.salarySystem = salarySystem;
+        this.benefit = benefit;
+        this.phoneNumber = phoneNumber;
         this.employerDto = employerDto;
     }
 }

@@ -34,7 +34,7 @@ public class JobsServiceImpl implements JobsService {
     public JobDto createAJobOffer(CreateJobOfferRequest request, String email,MultipartFile file) throws IOException {
 
         Job job = new Job();
-        job.setTitle(request.getTitle());
+        job.setPosition(request.getPosition());
         job.setDescription(request.getDescription());
         job.setSalary(request.getSalary());
         job.setLocation(request.getLocation());
@@ -42,6 +42,14 @@ public class JobsServiceImpl implements JobsService {
         job.setDuties(request.getDuties());
         job.setRequirements(request.getRequirements());
         job.setWeOffer(request.getWeOffer());
+        job.setShiftSystem(request.getShiftSystem());
+        job.setWorkingHours(request.getWorkingHours());
+        job.setNightShift(request.getNightShift());
+        job.setAboutCompany(request.getAboutCompany());
+        job.setSalarySystem(request.getSalarySystem());
+        job.setBenefit(request.getBenefit());
+        job.setPhoneNumber(request.getPhoneNumber());
+
 
         User user = authService.findByEmail(email);
         Employer employer = user.getEmployer();
@@ -74,6 +82,7 @@ public class JobsServiceImpl implements JobsService {
         job.setSalaryType(request.getSalaryType());
         job.setSalaryPeriod(request.getSalaryPeriod());
         job.setEmployer(employer);
+        job.setCompanyName(request.getCompanyName());
 
         jobRepository.save(job);
         return JobMapper.jobDto(job);
@@ -83,6 +92,12 @@ public class JobsServiceImpl implements JobsService {
     @Override
     public List<JobDto> jobDtoList(){
         return jobRepository.findAll().stream().map(JobMapper :: jobDto).toList();
+    }
+
+    @Override
+    public JobDto findJobById(Long id){
+        Job job =  jobRepository.findById(id).get();
+        return JobMapper.jobDto(job);
     }
 }
 

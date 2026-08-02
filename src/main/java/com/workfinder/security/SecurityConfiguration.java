@@ -59,7 +59,8 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(request -> request.requestMatchers
                         ("/api/auth/login","/api/auth/employee-registration",
                                 "/api/auth/employer-registration","/api/jobs","/api/auth/verify","/api/auth/resend",
-                                "/api/auth/reset-password","/api/auth/forgot-password","/api/auth/email-update")
+                                "/api/auth/reset-password","/api/auth/forgot-password","/api/auth/email-update"
+                        ,"/api/jobs/**")
                         .permitAll().
                         requestMatchers("/api/auth/account-information/employee").hasRole("EMPLOYEE")
                          .requestMatchers("/api/auth/account-information/employer").hasRole("EMPLOYER")

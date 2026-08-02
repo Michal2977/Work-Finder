@@ -26,7 +26,7 @@ public class Employee {
 
     @Column(name = "phone_number",length = 15)
     @Pattern(regexp = "^\\+?[0-9]{9,15}$")
-    private Integer phoneNumber;
+    private String phoneNumber;
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -35,7 +35,7 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, Integer phoneNumber, User user) {
+    public Employee(String firstName, String lastName, String phoneNumber, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;

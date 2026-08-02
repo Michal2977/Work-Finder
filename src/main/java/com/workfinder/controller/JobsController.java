@@ -7,6 +7,7 @@ import com.workfinder.request.CreateJobOfferRequest;
 import com.workfinder.response.ApiResponse;
 import com.workfinder.service.impl.AuthServiceImpl;
 import com.workfinder.service.impl.JobsServiceImpl;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -42,7 +43,7 @@ public class JobsController {
     }
 
     @PostMapping("/job")
-    public ResponseEntity<?> createJobOffer(@RequestPart("request") CreateJobOfferRequest request,
+    public ResponseEntity<?> createJobOffer(@Valid @RequestPart("request") CreateJobOfferRequest request,
                                             Authentication authentication,
                                             @RequestPart(value = "file",required = false)MultipartFile file)  {
 
@@ -56,6 +57,11 @@ public class JobsController {
         } catch (Exception e) {
            return ResponseEntity.internalServerError().body(new ApiResponse("Something Went wrong try again later"));
         }
+    }
+
+    @GetMapping("/jobs/{id}")
+    public ResponseEntity<?> getOfferById(@PathVariable("id") Long id){
+        return ResponseEntity.ok(jobsService.findJobById(id));
     }
 
 }

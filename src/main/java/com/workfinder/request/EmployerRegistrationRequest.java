@@ -9,8 +9,8 @@ public class EmployerRegistrationRequest {
     private String lastName;
     private String email;
     private String password;
-    private Integer phoneNumber;
-    private Integer nip;
+    private String phoneNumber;
+    private String nip;
     private String turnstileToken;
 
     public EmployerRegistrationRequest() {

@@ -11,6 +11,6 @@ public class UpdateEmployerAccountRequest {
     private String lastName;
     private String companyName;
     private String nip;
-    private Integer phoneNumber;
+    private String phoneNumber;
     private String picture;
 }

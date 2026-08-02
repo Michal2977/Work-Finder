@@ -33,13 +33,14 @@ public class Employer {
     private String companyName;
 
     @Column(name = "nip" ,length = 10,nullable = false)
-    @Size(min = 10,max = 10)
     @Pattern(regexp = "^\\d{10}$")
-    private Integer nip;
+    private String nip;
+
+
 
     @Column(name = "phone_number",length = 15,nullable = false)
     @Pattern(regexp = "^\\+?[0-9]{9,15}$")
-    private Integer phoneNumber;
+    private String phoneNumber;
 
     @OneToMany(mappedBy = "employer",cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Job> jobs = new ArrayList<>();
@@ -51,14 +52,14 @@ public class Employer {
     public Employer() {
     }
 
-    public Employer(String firstName, String lastName, String companyName, Integer nip,
-                    Integer phoneNumber, User user) {
+    public Employer(String firstName, String lastName, String companyName, String nip,
+                    String phoneNumber, List<Job> jobs, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.companyName = companyName;
         this.nip = nip;
         this.phoneNumber = phoneNumber;
-
+        this.jobs = jobs;
         this.user = user;
     }
 }

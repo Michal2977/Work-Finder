@@ -10,18 +10,17 @@ public class EmployerDto {
     private String firstName;
     private String lastName;
     private String companyName;
-    private Integer nip;
-    private Integer phoneNumber;
+    private String nip;
+    private String phoneNumber;
 
     public EmployerDto() {
     }
 
-    public EmployerDto(String firstName, String lastName, String companyName, Integer nip, Integer phoneNumber) {
+    public EmployerDto(String firstName, String lastName, String companyName, String nip, String phoneNumber) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.companyName = companyName;
         this.nip = nip;
         this.phoneNumber = phoneNumber;
-
     }
 }

@@ -12,6 +12,7 @@ import ResetPasswordSend from "./components/ResetPasswordSend";
 import OAuth2Success from "./components/OAuth2Success";
 import AccountInformation from "./components/AccountInformation";
 import CreateJobOfferPage from "./components/CreateJobOffer";
+import JobDetails from "./components/JobDetails";
 
 function App(){
   return(
@@ -30,6 +31,7 @@ function App(){
       <Route path="/oauth2/success" element={<OAuth2Success/>}/>
       <Route path="/account-information" element={<AccountInformation/>}/>
       <Route path="/job" element={<CreateJobOfferPage/>}/>
+      <Route path="/jobs/:id" element={<JobDetails/>}/>
       
     </Routes>
     </BrowserRouter>

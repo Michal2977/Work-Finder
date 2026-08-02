@@ -10,6 +10,6 @@ public class EmployerMapper {
     public static EmployerDto employerDto(Employer employer){
 
         return new EmployerDto(employer.getFirstName(), employer.getLastName(),
-                employer.getCompanyName(), employer.getNip(), employer.getPhoneNumber());
+                employer.getCompanyName(), employer.getNip(),employer.getPhoneNumber());
     }
 }

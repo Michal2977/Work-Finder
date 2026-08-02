@@ -145,7 +145,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Transactional
     @Override
-    public  void  linkLocalEmployer(User user,EmployerRegistrationRequest request){
+    public void linkLocalEmployer(User user,EmployerRegistrationRequest request){
 
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         Role role = roleRepository.findByRole("EMPLOYER");
@@ -373,7 +373,7 @@ public class AuthServiceImpl implements AuthService {
         user.getEmployer().setFirstName(request.getFirstName());
         user.getEmployer().setLastName(request.getLastName());
         user.getEmployer().setCompanyName(request.getCompanyName());
-        user.getEmployer().setNip(request.getPhoneNumber());
+        user.getEmployer().setNip(request.getNip());
         user.getEmployer().setPhoneNumber(request.getPhoneNumber());
 
         userRepository.save(user);

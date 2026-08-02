@@ -47,11 +47,12 @@ function Jobs(){
             {jobs.map(job => (
                 <div className="card" width={"18rem"}  key={job.id}>
                    {job.picture && (
-                   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  width={"200px"} height={"200px;"}/>
+                   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  width={"200px"} height={"200px;"} alt="empty"/>
                     )}
                    
   <div className="card-body">
-    <h5 className="card-title"> {job.title}</h5>
+    <Link to={`/jobs/${job.id}`}>Details</Link>
+    <h5 className="card-title"> {job.position}</h5>
     <p className="card-text">{job.salary}</p>
      <p className="card-text">{job.salaryPeriod}</p>
       <p className="card-text">{job.salaryType}</p>
