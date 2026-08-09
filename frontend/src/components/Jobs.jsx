@@ -1,5 +1,5 @@
 import {useEffect ,useState} from "react";
-import { data, useLocation } from "react-router-dom";
+import { data, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function Jobs(){
@@ -8,6 +8,7 @@ function Jobs(){
     const [message,setMessage] = useState("");
     const [jobs,setJobs] = useState([]);
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetch("http://localhost:8080/api/jobs").then(response => response.json()).then(data => setJobs(data))
@@ -37,14 +38,18 @@ function Jobs(){
 
     const Employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
 
- 
+   const logout = () => {
+    localStorage.removeItem("token");
+    navigate("/login" , {state : {message : "You have been successfully logged out."}});
+   }
+     
 
-   
     return(
         <div>
-            {message && <h1>{message}</h1>}
-                   
-            {jobs.map(job => (
+         {message && <h1>{message}</h1>}
+             {jobs.map(job => {
+            const employerOwner = user?.employerDto?.id === job?.employerDto?.id;
+    return(     
                 <div className="card" width={"18rem"}  key={job.id}>
                    {job.picture && (
                    <img src={`data:${job.pictureContentType};base64,${job.picture}`}  width={"200px"} height={"200px;"} alt="empty"/>
@@ -52,6 +57,10 @@ function Jobs(){
                    
   <div className="card-body">
     <Link to={`/jobs/${job.id}`}>Details</Link>
+    {user && (Admin || employerOwner) && (
+ <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
+    )}
+   
     <h5 className="card-title"> {job.position}</h5>
     <p className="card-text">{job.salary}</p>
      <p className="card-text">{job.salaryPeriod}</p>
@@ -62,13 +71,15 @@ function Jobs(){
         <p className="card-text">{job.contractType}</p>
         <p className="card-text">{job.jobStart}</p>
         <p className="card-text">{job.workMode}</p>
-        
+         </div> 
   </div>
-</div>
-))}
+
+  );
+})}
            
              {user && (Employee || Employer || Admin) && (
                 <div>
+                    <button onClick={logout} className="btn btn-danger">Logout</button>
                     <Link to={"/account-information"}>Account</Link>
                 </div>
              )}
@@ -87,7 +98,7 @@ function Jobs(){
             {user && Employer && (
                 <div>
                     <h1>Employer</h1>
-                    <Link to={"/job"}>Create a Job Offer</Link>
+                    <Link to={"/create-job"}>Create a Job Offer</Link>
                     <h1>{user.employerDto.firstName}</h1>
                      <h1>{user.employerDto.lastName}</h1>
                 </div>

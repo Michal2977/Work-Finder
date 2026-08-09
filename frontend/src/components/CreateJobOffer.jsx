@@ -25,7 +25,7 @@ function CreateJobOfferPage(){
             return;
         }
 
-        fetch("http://localhost:8080/api/job",{
+        fetch("http://localhost:8080/api/create-job",{
             headers : {Authorization : `Bearer ${token}`}
         }).then(response => response.json()).then(user => {setUser(user)
             setData(prev => ({...prev,companyName : user.employerDto?.companyName || "",
@@ -67,7 +67,7 @@ function CreateJobOfferPage(){
             formData.append("file",file);
         }
 
-        const response = await fetch("http://localhost:8080/api/job",{
+        const response = await fetch("http://localhost:8080/api/create-job",{
             method : "POST",
             headers : {Authorization : `Bearer ${token}`},
             body : formData

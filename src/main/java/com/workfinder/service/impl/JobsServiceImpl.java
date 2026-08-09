@@ -8,7 +8,9 @@ import com.workfinder.exception.InvalidFileException;
 import com.workfinder.mapper.JobMapper;
 import com.workfinder.repository.JobRepository;
 import com.workfinder.request.CreateJobOfferRequest;
+import com.workfinder.request.UpdateJobOfferRequest;
 import com.workfinder.service.JobsService;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -89,6 +91,58 @@ public class JobsServiceImpl implements JobsService {
 
     }
 
+    @PreAuthorize("hasAnyRole('EMPLOYER','ADMIN')")
+    @Override
+    public JobDto updateJobOffer(Long id ,UpdateJobOfferRequest request,String email,MultipartFile file) throws IOException {
+        Job job = jobRepository.getReferenceById(id);
+        User user = authService.findByEmail(email);
+        Employer employer = user.getEmployer();
+
+        job.setPosition(request.getPosition());
+        job.setDescription(request.getDescription());
+        job.setSalary(request.getSalary());
+        job.setLocation(request.getLocation());
+        job.setWorkSchedule(request.getWorkSchedule());
+        job.setDuties(request.getDuties());
+        job.setRequirements(request.getRequirements());
+        job.setWeOffer(request.getWeOffer());
+        job.setShiftSystem(request.getShiftSystem());
+        job.setWorkingHours(request.getWorkingHours());
+        job.setNightShift(request.getNightShift());
+        job.setAboutCompany(request.getAboutCompany());
+        job.setSalarySystem(request.getSalarySystem());
+        job.setBenefit(request.getBenefit());
+        job.setPhoneNumber(request.getPhoneNumber());
+        job.setWorkMode(request.getWorkMode());
+        job.setJobStart(request.getJobStart());
+        job.setContractType(request.getContractType());
+        job.setEmploymentType(request.getEmploymentType());
+        job.setJobCategory(request.getJobCategory());
+        job.setSalaryType(request.getSalaryType());
+        job.setSalaryPeriod(request.getSalaryPeriod());
+        job.setCompanyName(request.getCompanyName());
+        job.setEmployer(employer);
+
+        if (file != null &&  !file.isEmpty()){
+           String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+           if (fileName.contains("..")){
+               throw new InvalidFileException("Invalid file Name");
+           }
+           String contentType = file.getContentType();
+           if (contentType == null || !(contentType.equals("image/png") || contentType.equals("image/jpeg")
+                   || contentType.equals("image/webp"))){
+               throw new InvalidFileException("Only image files are allowed");
+           }
+           if (file.getSize() > 10 * 1024 *1024){
+               throw new InvalidFileException("Maximum file size is 10 MB.");
+           }
+           job.setPicture(file.getBytes());
+        }
+        jobRepository.save(job);
+        return JobMapper.jobDto(job);
+    }
+
+
     @Override
     public List<JobDto> jobDtoList(){
         return jobRepository.findAll().stream().map(JobMapper :: jobDto).toList();
@@ -98,6 +152,26 @@ public class JobsServiceImpl implements JobsService {
     public JobDto findJobById(Long id){
         Job job =  jobRepository.findById(id).get();
         return JobMapper.jobDto(job);
+    }
+
+
+    @Override
+    public void checkedJobOfferOwner(Job job,User user){
+        if (user.hasRole("ADMIN")){
+           return;
+        }
+       if (job.getEmployer() == null || user.getEmployer() == null
+       || !job.getEmployer().getId().equals(user.getEmployer().getId())){
+           throw new AccessDeniedException("Access denied");
+       }
+    }
+
+    @PreAuthorize("hasAnyRole('EMPLOYER','ADMIN')")
+    @Override
+    public JobDto findJobOfferById(Long id,User user){
+        Job job = jobRepository.findById(id).get();
+        checkedJobOfferOwner(job,user);
+        return  JobMapper.jobDto(job);
     }
 }
 

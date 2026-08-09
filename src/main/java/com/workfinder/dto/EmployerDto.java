@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class EmployerDto {
 
+    private Long id;
     private String firstName;
     private String lastName;
     private String companyName;
@@ -16,11 +17,13 @@ public class EmployerDto {
     public EmployerDto() {
     }
 
-    public EmployerDto(String firstName, String lastName, String companyName, String nip, String phoneNumber) {
+    public EmployerDto(Long id, String firstName, String lastName, String companyName, String nip, String phoneNumber) {
+        this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.companyName = companyName;
         this.nip = nip;
         this.phoneNumber = phoneNumber;
+
     }
 }

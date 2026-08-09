@@ -94,6 +94,9 @@ public class User {
     public void createRole(Role role){
         this.role.add(role);
     }
+    public  boolean hasRole(String roles){
+        return role.stream().anyMatch(r -> r.getRole().equalsIgnoreCase(roles));
+    }
 
     public void addProvider(UserProvider provider){
         this.providers.add(provider);

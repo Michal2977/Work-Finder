@@ -1,13 +1,22 @@
 
-import { useState } from "react";
-import {Link, useNavigate } from "react-router-dom";
+import { useState,useEffect } from "react";
+import {Link, useLocation, useNavigate } from "react-router-dom";
 
 function Login(){
 
     const [message,setMessage] = useState("");
+
     const [email,setEmail] = useState("");
     const [password,setPassword] = useState("");
+    const location = useLocation();
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+      if(location.state?.message){
+        setMessage(location.state.message);
+      }
+    },[location.state]);
 
     async function handleLogin(){
         const resposne = await fetch("http://localhost:8080/api/auth/login",{
