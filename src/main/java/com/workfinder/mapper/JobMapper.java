@@ -13,9 +13,6 @@ public class JobMapper {
         if (job.getPicture() != null){
             base64Picture = Base64.getEncoder().encodeToString(job.getPicture());
         }
-        String companyName = job.getEmployer() != null
-                ? job.getEmployer().getCompanyName()
-                : job.getCompanyName();
 
         EmployerDto employerDto = job.getEmployer() != null
                 ? EmployerMapper.employerDto(job.getEmployer())
@@ -25,9 +22,9 @@ public class JobMapper {
         return new JobDto(job.getId(),job.getPosition(),job.getDescription(),job.getSalary(),job.getLocation()
         ,job.getContractType(),job.getWorkSchedule(),job.getEmploymentType(),job.getJobStart(),
                 job.getWorkMode(),job.getDuties(),job.getRequirements(),job.getWeOffer(),job.getJobCategory()
-                ,job.getSalaryPeriod(),job.getSalaryType(),base64Picture,companyName
+                ,job.getSalaryPeriod(),job.getSalaryType(),base64Picture,job.getCompanyName()
                 ,job.getShiftSystem(),job.getWorkingHours(),job.getNightShift(),job.getAboutCompany(),
-                job.getSalarySystem(),job.getBenefit(),job.getPhoneNumber(),
+                job.getSalarySystem(),job.getBenefit(),job.getPhoneNumber(),job.getExpiresAt(),
                 employerDto);
     }
 }

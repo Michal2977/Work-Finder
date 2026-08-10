@@ -10,6 +10,35 @@ function Jobs(){
     const location = useLocation();
     const navigate = useNavigate();
 
+
+    const getTimeLeft = (expiresAt) => {
+     const now = new Date();
+     const expiration = new Date(expiresAt);
+
+     const diff = expiration - now;
+     
+     if(diff <= 0 ){
+           return "The listing has expired";
+     }
+
+     const minutes = Math.floor(diff / (1000 * 60));
+     const days = Math.floor(minutes /(60 *24));
+
+     if(days >= 1){
+        return `Left: ${days}days`;
+     }
+
+     const hours = Math.floor(minutes / 60);
+
+     if(hours >= 1){
+          return `Left: ${hours}hours`;
+     }
+
+     return `Left: ${minutes}minutes`;
+
+    }
+ 
+
     useEffect(() => {
         fetch("http://localhost:8080/api/jobs").then(response => response.json()).then(data => setJobs(data))
     },[]);
@@ -61,6 +90,10 @@ function Jobs(){
  <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
     )}
    
+     <p>Expiration : {" "}</p>  
+     {new Date(job.expiresAt).toLocaleDateString("pl-PL")
+     }
+     <p>{getTimeLeft(job.expiresAt)}</p>
     <h5 className="card-title"> {job.position}</h5>
     <p className="card-text">{job.salary}</p>
      <p className="card-text">{job.salaryPeriod}</p>

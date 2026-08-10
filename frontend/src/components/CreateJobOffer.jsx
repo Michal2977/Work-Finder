@@ -14,7 +14,7 @@ function CreateJobOfferPage(){
         ,jobStart : "" ,workMode : [],duties : "",requirements: "",
         weOffer : "",jobCategory: "",salaryPeriod : "", salaryType : ""
     ,companyName : "",shiftSystem : "",workingHours :"",nightShift: null,aboutCompany : "",
-    salarySystem : "",benefit : [],phoneNumber : ""});
+    salarySystem : "",benefit : [],phoneNumber : "",expiresAt : 7});
     
     
 
@@ -95,6 +95,19 @@ function CreateJobOfferPage(){
 
          <input type="text" placeholder="company Name" value={data.companyName} required minLength={2} maxLength={100}
          onChange={(e) => setData({...data,companyName : e.target.value })}/>
+         <br/>
+
+        <label htmlFor="expirationDays">Expiration:</label>
+      <select className="form-select" id="expirationDays" name="expirationDays" value={data.expiresAt}
+      onChange={(e) =>setData({ ...data, expiresAt: Number(e.target.value)})}>
+    <option value="">Select expiration time</option>
+    <option value={7}>7 days</option>
+    <option value={14}>14 days</option>
+    <option value={30}>30 days</option>
+    <option value={60}>60 days</option>
+    </select>
+
+         
          <br/>
 
          <select value={data.jobCategory} onChange={(e) => setData({...data, jobCategory : e.target.value})} required>

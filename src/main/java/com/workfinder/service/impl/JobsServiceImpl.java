@@ -17,6 +17,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -37,6 +38,8 @@ public class JobsServiceImpl implements JobsService {
 
         Job job = new Job();
         job.setPosition(request.getPosition());
+        job.setCreateAt(LocalDateTime.now());
+        job.setExpiresAt(LocalDateTime.now().plusDays(request.getExpiresAt()));
         job.setDescription(request.getDescription());
         job.setSalary(request.getSalary());
         job.setLocation(request.getLocation());
@@ -122,6 +125,11 @@ public class JobsServiceImpl implements JobsService {
         job.setSalaryPeriod(request.getSalaryPeriod());
         job.setCompanyName(request.getCompanyName());
         job.setEmployer(employer);
+
+        if (request.getExpiresAt() != null ){
+            job.setExpiresAt(LocalDateTime.now().plusDays(request.getExpiresAt()));
+        }
+
 
         if (file != null &&  !file.isEmpty()){
            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));

@@ -8,6 +8,7 @@ import lombok.NonNull;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,6 +25,12 @@ public class Job {
     @Column(name = "title",nullable = false,length = 50)
     @Size(min = 3,max = 50)
     private String position;
+
+    @Column(name = "create_at")
+    private LocalDateTime createAt;
+
+    @Column(name = "expires_at")
+    private LocalDateTime expiresAt;
 
     @Column(name = "shift_system",length = 50)
     @Size(min = 3,max = 50)
@@ -137,13 +144,15 @@ public class Job {
     public Job() {
     }
 
-    public Job(String position, String shiftSystem, String description, BigDecimal salary, String location,
-               Set<ContractType> contractType, String workSchedule, JobCategory jobCategory, String workingHours,
-               EmploymentType employmentType, JobStart jobStart, Set<WorkMode> workMode, SalaryPeriod salaryPeriod,
-               SalaryType salaryType, String duties, String requirements, String weOffer, Boolean nightShift,
-               String companyName, String salarySystem, String aboutCompany, Set<Benefit> benefit, String phoneNumber,
-               byte[] picture, Employer employer) {
+    public Job(String position, LocalDateTime createAt, LocalDateTime expiresAt, String shiftSystem, String description,
+               BigDecimal salary, String location, Set<ContractType> contractType, String workSchedule,
+               JobCategory jobCategory, String workingHours, EmploymentType employmentType, JobStart jobStart,
+               Set<WorkMode> workMode, SalaryPeriod salaryPeriod, SalaryType salaryType, String duties, String requirements,
+               String weOffer, Boolean nightShift, String companyName, String salarySystem, String aboutCompany,
+               Set<Benefit> benefit, String phoneNumber, byte[] picture, Employer employer) {
         this.position = position;
+        this.createAt = createAt;
+        this.expiresAt = expiresAt;
         this.shiftSystem = shiftSystem;
         this.description = description;
         this.salary = salary;

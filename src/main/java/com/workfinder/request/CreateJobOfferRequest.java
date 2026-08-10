@@ -5,6 +5,7 @@ import com.workfinder.enums.*;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -22,6 +23,7 @@ public class CreateJobOfferRequest {
     private String aboutCompany;
     private String salarySystem;
     private String phoneNumber;
+    private Long expiresAt;
 
     private String duties;
     private String requirements;

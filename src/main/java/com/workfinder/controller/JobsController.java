@@ -92,6 +92,7 @@ public class JobsController {
         }catch (InvalidFileException e){
             return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
         }catch (Exception e){
+            e.printStackTrace();
             return ResponseEntity.internalServerError().body(new ApiResponse("Something went Wrong Try again Later"));
         }
 

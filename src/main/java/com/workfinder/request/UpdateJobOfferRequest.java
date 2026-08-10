@@ -22,6 +22,7 @@ public class UpdateJobOfferRequest {
     private String aboutCompany;
     private String salarySystem;
     private String phoneNumber;
+    private Long expiresAt;
 
     private String duties;
     private String requirements;

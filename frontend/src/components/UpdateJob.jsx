@@ -1,12 +1,13 @@
 
 import { useState,useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { data, useNavigate, useParams } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css"
 function UpdateJob(){
 
     const [user,setUser]  = useState(null);
     const navigate = useNavigate();
+    const [expirationDays, setExpirationDays] = useState("");
     const [file,setFile] = useState(null);
     const [message,setMessage] = useState("");
     const [job,setJob] = useState({position : "",description: "" ,salary : "",location: ""
@@ -14,9 +15,32 @@ function UpdateJob(){
         ,jobStart : "" ,workMode : [],duties : "",requirements: "",
         weOffer : "",jobCategory: "",salaryPeriod : "", salaryType : ""
     ,companyName : "",shiftSystem : "",workingHours :"",nightShift: null,aboutCompany : "",
-    salarySystem : "",benefit : [],phoneNumber : ""});
+    salarySystem : "",benefit : [],phoneNumber : "", expiresAt : ""});
     const {id} = useParams();
+   
+    const getTimeLeft = (expiresAt) => {
+        const now = new Date();
+        const expiration = new Date(expiresAt);
 
+        const diff = expiration - now;
+
+        if(diff <= 0){
+            return "The listing has expired";
+        }
+        const minutesLeft = Math.floor(diff / (1000 * 60));
+        const days = Math.floor(minutesLeft / (60 * 24));
+
+        if(days >= 1){
+            return `Left: ${days}days`;
+        }
+        
+        const hours = Math.floor(minutesLeft / 60);
+        if(hours >=1){
+                return `Left: ${hours}hours`;
+        }
+
+        return  `Left: ${minutesLeft} minutes`;
+    }
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -34,6 +58,7 @@ function UpdateJob(){
 
         const token = localStorage.getItem("token");
         if(!token){return;}
+        
 
               fetch(`http://localhost:8080/api/update-job/${id}`,{
                 headers : {Authorization : `Bearer ${token}`}
@@ -46,8 +71,8 @@ function UpdateJob(){
         const token = localStorage.getItem("token");
         if(!token){return;}
 
-        const request = {...job,
-            description: job.description || null,
+        const request = {...job,        
+    description: job.description || null,
     workSchedule: job.workSchedule || null,
     duties: job.duties || null,
     requirements: job.requirements || null,
@@ -58,6 +83,11 @@ function UpdateJob(){
     salarySystem: job.salarySystem || null,
     phoneNumber: job.phoneNumber || null
         };
+        if (expirationDays) {
+         request.expiresAt = expirationDays;
+       } else {
+        delete request.expiresAt;
+        }
         
         const formData = new FormData();
         formData.append("request",new Blob([
@@ -67,6 +97,7 @@ function UpdateJob(){
         if(file) {
             formData.append("file",file);
         }
+        
         const response  = await fetch(`http://localhost:8080/api/update-job/${id}`,{
          method : "PUT",
          headers : {Authorization : `Bearer ${token}`},
@@ -74,7 +105,7 @@ function UpdateJob(){
         });
 
         const text  =  await response.json();
-    
+
         if(response.ok){
             setJob(text.jobDto);
             setMessage(text.message);
@@ -82,8 +113,6 @@ function UpdateJob(){
             setMessage(text.message);
         }
     }
-
-
 
     return(
         <form onSubmit={updateJobOffer}>
@@ -94,8 +123,28 @@ function UpdateJob(){
        <input type="text" placeholder="position" value={job.position || ""} required
        onChange={(e) => setJob({ ...job,position : e.target.value})} minLength={3} maxLength={50}/>
        <br/>
-       <input type="text" placeholder="comapny Name " value={job.companyName || ""} minLength={2} maxLength={100}
+       <input type="text" placeholder="comapny Name " value={job.companyName || ""} required minLength={2} maxLength={100}
        onChange={(e) => setJob({...job,companyName : e.target.value})}/>
+       <br/> 
+
+       Expiration:{" "}
+       {new Date(job.expiresAt).toLocaleDateString("pl-PL")
+       }
+       <p>{getTimeLeft(job.expiresAt)}</p>
+        
+      <select className="form-select" id="expirationDays" name="expirationDays" value={expirationDays}
+     onChange= {(e) => setExpirationDays(Number(e.target.value))}>
+    <option value="">Select expiration time</option>
+    <option value={7}>7 days</option>
+    <option value={14}>14 days</option>
+    <option value={30}>30 days</option>
+    <option value={60}>60 days</option>
+    </select>
+
+
+
+ 
+
        <br/>
        <select value={job.jobCategory} onChange={(e) => setJob({...job, jobCategory : e.target.value})} required>
           <option value="">Choose job Category</option>

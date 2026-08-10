@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Getter
@@ -36,17 +37,18 @@ public class JobDto {
     private String salarySystem;
     private Set<Benefit> benefit;
     private String phoneNumber;
+    private LocalDateTime expiresAt;
     private EmployerDto employerDto;
 
     public JobDto() {
     }
 
-    public JobDto(Long id, String position, String description, BigDecimal salary, String location, Set<ContractType>
-            contractType, String workSchedule, EmploymentType employmentType, JobStart jobStart, Set<WorkMode> workMode,
-                  String duties, String requirements, String weOffer, JobCategory jobCategory, SalaryPeriod salaryPeriod
-            , SalaryType salaryType, String picture, String companyName, String shiftSystem, String workingHours,
-                  Boolean nightShift, String aboutCompany, String salarySystem, Set<Benefit> benefit, String phoneNumber,
-                  EmployerDto employerDto) {
+    public JobDto(Long id, String position, String description, BigDecimal salary, String location,
+                  Set<ContractType> contractType, String workSchedule, EmploymentType employmentType,
+                  JobStart jobStart, Set<WorkMode> workMode, String duties, String requirements, String weOffer,
+                  JobCategory jobCategory, SalaryPeriod salaryPeriod, SalaryType salaryType, String picture
+            , String companyName, String shiftSystem, String workingHours, Boolean nightShift, String aboutCompany,
+                  String salarySystem, Set<Benefit> benefit, String phoneNumber, LocalDateTime expirestAt, EmployerDto employerDto) {
         this.id = id;
         this.position = position;
         this.description = description;
@@ -72,6 +74,7 @@ public class JobDto {
         this.salarySystem = salarySystem;
         this.benefit = benefit;
         this.phoneNumber = phoneNumber;
+        this.expiresAt = expirestAt;
         this.employerDto = employerDto;
     }
 }
