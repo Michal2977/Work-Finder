@@ -25,6 +25,6 @@ public class JobMapper {
                 ,job.getSalaryPeriod(),job.getSalaryType(),base64Picture,job.getCompanyName()
                 ,job.getShiftSystem(),job.getWorkingHours(),job.getNightShift(),job.getAboutCompany(),
                 job.getSalarySystem(),job.getBenefit(),job.getPhoneNumber(),job.getExpiresAt(),
-                employerDto);
+                job.isDeleted(),job.getDeletedAt() ,employerDto);
     }
 }

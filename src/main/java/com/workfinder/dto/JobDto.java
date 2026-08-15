@@ -38,17 +38,22 @@ public class JobDto {
     private Set<Benefit> benefit;
     private String phoneNumber;
     private LocalDateTime expiresAt;
+    private boolean deleted;
+    private LocalDateTime deletedAt;
     private EmployerDto employerDto;
 
     public JobDto() {
     }
+
+
 
     public JobDto(Long id, String position, String description, BigDecimal salary, String location,
                   Set<ContractType> contractType, String workSchedule, EmploymentType employmentType,
                   JobStart jobStart, Set<WorkMode> workMode, String duties, String requirements, String weOffer,
                   JobCategory jobCategory, SalaryPeriod salaryPeriod, SalaryType salaryType, String picture
             , String companyName, String shiftSystem, String workingHours, Boolean nightShift, String aboutCompany,
-                  String salarySystem, Set<Benefit> benefit, String phoneNumber, LocalDateTime expirestAt, EmployerDto employerDto) {
+                  String salarySystem, Set<Benefit> benefit, String phoneNumber, LocalDateTime expirestAt,
+                  boolean deleted,LocalDateTime deletedAt,EmployerDto employerDto) {
         this.id = id;
         this.position = position;
         this.description = description;
@@ -75,6 +80,9 @@ public class JobDto {
         this.benefit = benefit;
         this.phoneNumber = phoneNumber;
         this.expiresAt = expirestAt;
+        this.deleted = deleted;
+        this.deletedAt = deletedAt;
         this.employerDto = employerDto;
+
     }
 }

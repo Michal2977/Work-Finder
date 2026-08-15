@@ -132,6 +132,14 @@ public class Job {
     @Pattern(regexp = "^\\+?[0-9]{9,20}$")
     private String phoneNumber;
 
+
+
+    @Column(name = "deleted")
+    private boolean deleted;
+
+    @Column(name = "deleted_at")
+    private LocalDateTime deletedAt;
+
     @Lob
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[]picture;
@@ -149,7 +157,8 @@ public class Job {
                JobCategory jobCategory, String workingHours, EmploymentType employmentType, JobStart jobStart,
                Set<WorkMode> workMode, SalaryPeriod salaryPeriod, SalaryType salaryType, String duties, String requirements,
                String weOffer, Boolean nightShift, String companyName, String salarySystem, String aboutCompany,
-               Set<Benefit> benefit, String phoneNumber, byte[] picture, Employer employer) {
+               Set<Benefit> benefit, String phoneNumber, byte[] picture
+               ,boolean deleted,LocalDateTime deletedAt,Employer employer) {
         this.position = position;
         this.createAt = createAt;
         this.expiresAt = expiresAt;
@@ -176,6 +185,10 @@ public class Job {
         this.benefit = benefit;
         this.phoneNumber = phoneNumber;
         this.picture = picture;
+        this.deleted = deleted;
+        this.deletedAt = deletedAt;
         this.employer = employer;
     }
+
+
 }

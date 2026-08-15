@@ -6,7 +6,6 @@ import com.workfinder.entity.User;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.request.CreateJobOfferRequest;
 import com.workfinder.request.UpdateJobOfferRequest;
-import com.workfinder.response.ActionResponse;
 import com.workfinder.response.ApiResponse;
 import com.workfinder.response.UpdateJobResponse;
 import com.workfinder.service.impl.AuthServiceImpl;
@@ -96,6 +95,28 @@ public class JobsController {
             return ResponseEntity.internalServerError().body(new ApiResponse("Something went Wrong Try again Later"));
         }
 
+    }
+
+    @DeleteMapping("/soft-delete/{id}")
+    public ResponseEntity<?> softDeleteJob(@PathVariable("id") Long id){
+        jobsService.softJobDelete(id);
+        return ResponseEntity.ok().body(new ApiResponse("Job Offer Deleted"));
+    }
+
+    @GetMapping("/expired-jobs")
+    public ResponseEntity<?> findAllExpiredJobs(Authentication authentication){
+        return ResponseEntity.ok(jobsService.findAllExpiredJobs(authentication.getName()));
+    }
+
+    @GetMapping("/deleted-jobs")
+    public ResponseEntity<?> findAllDeletedOffers(){
+        return ResponseEntity.ok(jobsService.findAllDeletedOffers());
+    }
+
+    @PutMapping("/recover-job/{id}")
+    public ResponseEntity<?> recoverJobOfferById(@PathVariable("id")Long id){
+        jobsService.recoverDeletedOffer(id);
+        return ResponseEntity.ok(new ApiResponse("Job Offer Recovered"));
     }
 
 }

@@ -1,3 +1,4 @@
+
 import {useEffect ,useState} from "react";
 import { data, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
@@ -39,7 +40,7 @@ function Jobs(){
     }
  
 
-    useEffect(() => {
+      useEffect(() => {
         fetch("http://localhost:8080/api/jobs").then(response => response.json()).then(data => setJobs(data))
     },[]);
  
@@ -71,6 +72,16 @@ function Jobs(){
     localStorage.removeItem("token");
     navigate("/login" , {state : {message : "You have been successfully logged out."}});
    }
+
+   const softDelete = async(id) => {
+    const token = localStorage.getItem("token");
+    const response  =  await fetch(`http://localhost:8080/api/soft-delete/${id}`,{
+        method : "DELETE",
+        headers : {Authorization : `Bearer ${token}`}
+    });
+    if(response.ok){
+     window.location.reload();
+    }};
      
 
     return(
@@ -87,12 +98,14 @@ function Jobs(){
   <div className="card-body">
     <Link to={`/jobs/${job.id}`}>Details</Link>
     {user && (Admin || employerOwner) && (
- <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
+    <div>
+     <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
+     <button  type="button" onClick={() => softDelete(job.id)}className="btn btn-danger">Deelete Job</button>
+    </div>     
     )}
    
      <p>Expiration : {" "}</p>  
-     {new Date(job.expiresAt).toLocaleDateString("pl-PL")
-     }
+     {new Date(job.expiresAt).toLocaleDateString("pl-PL")}
      <p>{getTimeLeft(job.expiresAt)}</p>
     <h5 className="card-title"> {job.position}</h5>
     <p className="card-text">{job.salary}</p>
@@ -126,14 +139,18 @@ function Jobs(){
             )}
 
               {Admin && (
-                  <Link to={"/job"}>Create a Job Offer</Link>
+                <div>
+                  <Link to={"/create-job"}>Create a Job Offer</Link>
+                  <Link to={"/deleted-jobs"}>Deleted Offer</Link>
+                  </div>
               )}
-            {user && Employer && (
+            {user && (Employer || Admin) && (
                 <div>
                     <h1>Employer</h1>
+                    <Link to={"/expired-jobs"}>Expired Jobs</Link>
                     <Link to={"/create-job"}>Create a Job Offer</Link>
-                    <h1>{user.employerDto.firstName}</h1>
-                     <h1>{user.employerDto.lastName}</h1>
+                    <h1>{user?.employerDto?.firstName || ""}</h1>
+                     <h1>{user?.employerDto?.lastName || ""}</h1>
                 </div>
             )}
         </div>

@@ -10,8 +10,10 @@ import com.workfinder.repository.JobRepository;
 import com.workfinder.request.CreateJobOfferRequest;
 import com.workfinder.request.UpdateJobOfferRequest;
 import com.workfinder.service.JobsService;
+import jakarta.transaction.Transactional;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,6 +43,7 @@ public class JobsServiceImpl implements JobsService {
         job.setCreateAt(LocalDateTime.now());
         job.setExpiresAt(LocalDateTime.now().plusDays(request.getExpiresAt()));
         job.setDescription(request.getDescription());
+        job.setDeleted(false);
         job.setSalary(request.getSalary());
         job.setLocation(request.getLocation());
         job.setWorkSchedule(request.getWorkSchedule());
@@ -105,6 +108,7 @@ public class JobsServiceImpl implements JobsService {
         job.setDescription(request.getDescription());
         job.setSalary(request.getSalary());
         job.setLocation(request.getLocation());
+        job.setDeleted(false);
         job.setWorkSchedule(request.getWorkSchedule());
         job.setDuties(request.getDuties());
         job.setRequirements(request.getRequirements());
@@ -153,7 +157,33 @@ public class JobsServiceImpl implements JobsService {
 
     @Override
     public List<JobDto> jobDtoList(){
-        return jobRepository.findAll().stream().map(JobMapper :: jobDto).toList();
+        return jobRepository.findAll().stream().filter(job -> job.getExpiresAt().isAfter(LocalDateTime.now())
+         && !job.isDeleted()).map(JobMapper :: jobDto).toList();
+    }
+
+    @PreAuthorize("hasAnyRole('EMPLOYER','ADMIN')")
+    @Override
+    public List<JobDto> findAllExpiredJobs(String email){
+        User user = authService.findByEmail(email);
+        if (user.hasRole("ADMIN")){
+            return jobRepository.findAll().stream().filter(job -> !job.getExpiresAt().isAfter(LocalDateTime.now())).
+                    map(JobMapper :: jobDto)
+                    .toList();
+        }else if (user.hasRole("EMPLOYER")){
+         return jobRepository.findAll().stream().filter(job -> !job.getExpiresAt().isAfter(LocalDateTime.now()))
+                 .filter(job -> job.getEmployer().getId().equals(user.getEmployer().getId()))
+                 .map(JobMapper :: jobDto).toList();
+
+        }
+        return List.of();
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    public List<JobDto> findAllDeletedOffers(){
+        return jobRepository.findAll().stream().filter(Job::isDeleted)
+                .map(JobMapper :: jobDto).toList();
+
     }
 
     @Override
@@ -180,6 +210,24 @@ public class JobsServiceImpl implements JobsService {
         Job job = jobRepository.findById(id).get();
         checkedJobOfferOwner(job,user);
         return  JobMapper.jobDto(job);
+    }
+
+    @Transactional
+    @PreAuthorize("hasAnyRole('EMPLOYER','ADMIN')")
+    @Override
+    public void softJobDelete(Long id){
+       Job job =  jobRepository.findById(id).get();
+       job.setDeletedAt(LocalDateTime.now());
+       job.setDeleted(true);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    public void recoverDeletedOffer(Long id){
+        Job job = jobRepository.findById(id).get();
+        job.setDeletedAt(null);
+        job.setDeleted(false);
     }
 }
 

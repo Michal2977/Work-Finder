@@ -13,8 +13,10 @@ function JobDetails(){
 
     return(
      <div>                  
-
-        <img src={`data:${job.pictureContentType};base64,${job.picture}`} width={"200"} height={"200px"}/>
+       {job.picture && (
+       <img src={`data:${job.pictureContentType};base64,${job.picture}`} width={"200"} height={"200px"}/>
+       )}
+       
 
     <p>{job.position}</p>
      <p>{job.salary}</p>

@@ -14,6 +14,8 @@ import AccountInformation from "./components/AccountInformation";
 import CreateJobOfferPage from "./components/CreateJobOffer";
 import JobDetails from "./components/JobDetails";
 import UpdateJob from "./components/UpdateJob";
+import ExpiredJobs from "./components/ExpiredJobs";
+import DeletedJobs from "./components/DeletedJobs";
 
 function App(){
   return(
@@ -33,7 +35,9 @@ function App(){
       <Route path="/account-information" element={<AccountInformation/>}/>
       <Route path="create-job" element={<CreateJobOfferPage/>}/>
       <Route path="/jobs/:id" element={<JobDetails/>}/>
-       <Route path="/update-job/:id" element={<UpdateJob/>}/>
+      <Route path="/update-job/:id" element={<UpdateJob/>}/>
+      <Route path="/expired-jobs" element={<ExpiredJobs/>}/>
+      <Route path="/deleted-jobs" element={<DeletedJobs/>}/>
       
     </Routes>
     </BrowserRouter>

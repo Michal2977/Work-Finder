@@ -23,6 +23,7 @@ function AccountInformation(){
             }).then(response => response.json()).then(data => setUser(data));
     },[]);
 
+    const admin = user?.roleDto?.some(role => role.role === "ADMIN");
     const employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
     const employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
 
@@ -57,6 +58,11 @@ function AccountInformation(){
       }else{
         setMessage(text.message);
       }
+    }
+
+    const changeAdminData = async() => {
+      const token = localStorage.getItem("token");
+     
     }
     const changeEmployerData = async() => {
       const token = localStorage.getItem("token");

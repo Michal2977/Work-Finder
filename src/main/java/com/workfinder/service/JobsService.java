@@ -17,4 +17,8 @@ public interface JobsService {
     void checkedJobOfferOwner(Job job, User user);
     JobDto findJobOfferById(Long id,User user);
     JobDto updateJobOffer(Long id , UpdateJobOfferRequest request, String email, MultipartFile file) throws IOException;
+    void softJobDelete(Long id);
+    List<JobDto> findAllExpiredJobs(String email);
+    List<JobDto> findAllDeletedOffers();
+    void recoverDeletedOffer(Long id);
 }
