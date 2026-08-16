@@ -16,6 +16,7 @@ import JobDetails from "./components/JobDetails";
 import UpdateJob from "./components/UpdateJob";
 import ExpiredJobs from "./components/ExpiredJobs";
 import DeletedJobs from "./components/DeletedJobs";
+import Contact from "./components/Contact";
 
 function App(){
   return(
@@ -38,6 +39,7 @@ function App(){
       <Route path="/update-job/:id" element={<UpdateJob/>}/>
       <Route path="/expired-jobs" element={<ExpiredJobs/>}/>
       <Route path="/deleted-jobs" element={<DeletedJobs/>}/>
+      <Route path="/contact" element={<Contact/>}/>
       
     </Routes>
     </BrowserRouter>

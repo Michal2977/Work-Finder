@@ -78,6 +78,7 @@ function CreateJobOfferPage(){
     
         if(response.ok){
             setMessage(text.message);
+            window.scrollTo({top : 0, behavior : "smooth"});
         }else{
             setMessage(text.message)
         }
@@ -509,7 +510,10 @@ function CreateJobOfferPage(){
  
          
         <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])}/>
-
+        <br/>
+        {file && (
+            <img src={URL.createObjectURL(file)} alt="preview" width={"200px"} height={"200px"} />
+        )}
          <br/>
 
        

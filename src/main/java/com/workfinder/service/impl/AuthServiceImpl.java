@@ -9,10 +9,7 @@ import com.workfinder.exception.PasswordChangeNotAllowedException;
 import com.workfinder.mapper.UserMapper;
 import com.workfinder.repository.RoleRepository;
 import com.workfinder.repository.UserRepository;
-import com.workfinder.request.EmployeeRegistrationRequest;
-import com.workfinder.request.EmployerRegistrationRequest;
-import com.workfinder.request.UpdateEmployeeAccountRequest;
-import com.workfinder.request.UpdateEmployerAccountRequest;
+import com.workfinder.request.*;
 import com.workfinder.response.TurnstileResponse;
 import com.workfinder.service.AuthService;
 import jakarta.mail.MessagingException;
@@ -326,6 +323,38 @@ public class AuthServiceImpl implements AuthService {
 
         userRepository.save(user);
         return UserMapper.userDto(user);
+    }
+
+    @Override
+    public UserDto updateAdminData(User user, UpdateAdminDataRequest request,String siteUrl) throws MessagingException {
+
+        boolean hasLocal = user.getProviders().stream().anyMatch(provider -> provider.getProvider()
+        == OAuth2UserProvider.LOCAL);
+
+        if (request.getPassword() != null && !request.getPassword().isBlank() && !hasLocal){
+            throw new PasswordChangeNotAllowedException("Password changes are not available for this sign-in method.");
+        }
+
+        if (request.getEmail() != null && !request.getEmail().isBlank()
+                && !user.getEmail().equals(request.getEmail())){
+            String verificationCode = RandomString.make(65);
+            user.setVerificationCode(verificationCode);
+            user.setExpiresAt(LocalDateTime.now().plusHours(24));
+            user.setTemporaryEmail(request.getEmail());
+
+            userRepository.save(user);
+
+            emailService.changeEmail(user,siteUrl);
+            throw new EmailUpdateException("We've sent a verification email to your email address");
+        }
+
+        if (request.getPassword() !=  null && !request.getPassword().isBlank() && hasLocal){
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+        userRepository.save(user);
+        return UserMapper.userDto(user);
+
+
     }
 
     @Override

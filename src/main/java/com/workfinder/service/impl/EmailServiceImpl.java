@@ -1,16 +1,21 @@
 package com.workfinder.service.impl;
 
+
+import com.workfinder.entity.Contact;
 import com.workfinder.entity.User;
 import com.workfinder.service.EmailService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+
+import java.io.IOException;
 
 @Service
 public class EmailServiceImpl implements EmailService {
@@ -127,7 +132,24 @@ public class EmailServiceImpl implements EmailService {
         helper.setText(htmlContext,true);
 
         javaMailSender.send(message);
+    }
 
+    @Override
+    @Async
+    public void sendContactEmail(User user, Contact contact, MultipartFile file) throws MessagingException, IOException {
 
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+
+        helper.setFrom(user.getEmail());
+        helper.setTo("mkoszalka0@gmail.com");
+        helper.setSubject(contact.getTitle());
+        helper.setText(contact.getDescription());
+
+        if (file != null && !file.isEmpty()){
+            helper.addAttachment(file.getOriginalFilename(),new ByteArrayResource(file.getBytes()));
+        }
+
+        javaMailSender.send(message);
     }
 }

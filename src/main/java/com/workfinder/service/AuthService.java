@@ -2,10 +2,7 @@ package com.workfinder.service;
 
 import com.workfinder.dto.UserDto;
 import com.workfinder.entity.User;
-import com.workfinder.request.EmployeeRegistrationRequest;
-import com.workfinder.request.EmployerRegistrationRequest;
-import com.workfinder.request.UpdateEmployeeAccountRequest;
-import com.workfinder.request.UpdateEmployerAccountRequest;
+import com.workfinder.request.*;
 import jakarta.mail.MessagingException;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -33,4 +30,5 @@ public interface AuthService {
     UserDto updateEmployerAccountData(User user , UpdateEmployerAccountRequest request,String siteUr,MultipartFile file)
             throws MessagingException,IOException;
     boolean emailUpdate(String code);
+    UserDto updateAdminData(User user, UpdateAdminDataRequest request, String siteUrl) throws MessagingException;
 }

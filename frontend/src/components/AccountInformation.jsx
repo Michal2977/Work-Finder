@@ -11,7 +11,8 @@ function AccountInformation(){
     const [user,setUser] = useState(null);
     const [message,setMessage] = useState("");
     const [file,setFile] = useState(null);
-   
+
+    
 
     useEffect(() => {
 
@@ -26,6 +27,21 @@ function AccountInformation(){
     const admin = user?.roleDto?.some(role => role.role === "ADMIN");
     const employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
     const employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
+
+    const changeAdminData = async() => {
+       
+      const token = localStorage.getItem("token");
+
+      const response  =  await fetch("http://localhost:8080/api/auth/account-information/admin",{
+        method : "PUT",
+        headers : {Authorization : `Bearer ${token}`,
+        "Content-Type" : "application/json"},
+        body : JSON.stringify({
+          password : user.password,
+          email : user.email
+        }) 
+      });
+    }
 
     const changeEmployeeData = async() => {
       const token = localStorage.getItem("token");
@@ -60,10 +76,7 @@ function AccountInformation(){
       }
     }
 
-    const changeAdminData = async() => {
-      const token = localStorage.getItem("token");
-     
-    }
+   
     const changeEmployerData = async() => {
       const token = localStorage.getItem("token");
 
@@ -100,6 +113,18 @@ function AccountInformation(){
     return(
         <div>
           {message && <h1>{message}</h1>}
+
+        {user && admin && (
+          <div>
+            <input type="email" placeholder="email" value={user?.email || ""} minLength={5} maxLength={254}
+            onChange={(e) => setUser({...user,email : e.target.value})}/>
+            <br/>
+            <input type="password" placeholder="password" value={user?.password || ""}
+            onChange={(e) => setUser({...user,password : e.target.value})}/>
+
+            <button onClick={changeAdminData} className="btn btn-success">Update </button>
+          </div>
+        )}  
         {user && employee && (
              <div>
             <input type="email" placeholder="email" value={user?.email || ""} minLength={5} maxLength={254}

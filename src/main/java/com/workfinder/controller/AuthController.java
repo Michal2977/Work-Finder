@@ -1,6 +1,7 @@
 package com.workfinder.controller;
 
 import com.workfinder.Util.Utility;
+import com.workfinder.dto.UserDto;
 import com.workfinder.entity.User;
 import com.workfinder.enums.OAuth2UserProvider;
 import com.workfinder.exception.EmailUpdateException;
@@ -12,6 +13,7 @@ import com.workfinder.response.ApiResponse;
 import com.workfinder.response.JWTResponse;
 import com.workfinder.security.JWTService;
 import com.workfinder.service.impl.AuthServiceImpl;
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
@@ -195,6 +197,30 @@ public class AuthController {
     @GetMapping("/account-information")
     public ResponseEntity<?>accountInformation(Authentication authentication){
         return ResponseEntity.ok(authService.findByEmailUserDto(authentication.getName()));
+    }
+
+    @PutMapping("/account-information/admin")
+    public ResponseEntity<?> updateAdminData(HttpServletRequest request,Authentication authentication
+    ,@RequestPart("request")UpdateAdminDataRequest requests){
+
+        User user = authService.findByEmail(authentication.getName());
+
+        if (!user.getEmail().equals(requests.getEmail()) && authService.emailExist(requests.getEmail())){
+            return ResponseEntity.badRequest().body(new ApiResponse("Email can't be changed"));
+        }
+        try {
+          String siteUrl = Utility.servletRequest(request);
+          authService.updateAdminData(user,requests,siteUrl);
+          return ResponseEntity.ok().body(new ApiResponse("Your account information has been updated successfully."));
+        } catch (EmailUpdateException e){
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+        }
+        catch (PasswordChangeNotAllowedException e){
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+        }
+        catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new ApiResponse("Something went Wrong Try Again Later"));
+        }
     }
 
     @PutMapping("/account-information/employee")

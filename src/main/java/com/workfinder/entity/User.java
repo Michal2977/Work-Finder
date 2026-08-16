@@ -69,12 +69,16 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<UserProvider> providers = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user")
+    private List<Contact> contacts = new ArrayList<>();
+
     public User() {
     }
 
     public User(String email, String password, LocalDateTime createAt, LocalDateTime expiresAt, String verificationCode,
                 String verificationToken, String displayName, boolean isEnabled, String temporaryEmail,
-                byte[] picture, Set<Role> role, Employee employee, Employer employer, List<UserProvider> providers) {
+                byte[] picture, Set<Role> role, Employee employee, Employer employer, List<UserProvider> providers
+    ,List<Contact> contacts) {
         this.email = email;
         this.password = password;
         this.createAt = createAt;
@@ -89,6 +93,7 @@ public class User {
         this.employee = employee;
         this.employer = employer;
         this.providers = providers;
+        this.contacts = contacts;
     }
 
     public void createRole(Role role){

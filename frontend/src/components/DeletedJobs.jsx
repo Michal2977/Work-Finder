@@ -6,6 +6,31 @@ function DeletedJobs(){
     const [user,setUser] = useState(null);
     const [jobs,setJobs] = useState([]);
 
+
+    const getTimeLeft = (expiresAt) => {
+      const now = new Date();
+      const expiration = new Date(expiresAt);
+
+      const diff = expiration - now;
+
+      if(diff <= 0 ){
+         return "The listing has expired";
+      }
+
+      const minutes = Math.floor(diff / (1000 * 60));
+      const days = Math.floor(minutes / (60 * 24));
+
+      if(days >= 1) {
+          return `Left: ${days}days`;
+      }
+       
+      const hours = Math.floor(minutes / 60);
+      if(hours >= 1){
+          return `Left: ${hours}hours`;
+      }
+       return `Left: ${minutes}minutes`;
+    }
+
     useEffect(() => {
         const token = localStorage.getItem("token");
         if(!token){
@@ -40,6 +65,9 @@ function DeletedJobs(){
          {job.picture && (
             <img src={`data:${job.pictureCotentType};base64,${job.picture}`} width={"200px"} height={"200px"} alt="no image"/>
          )}
+           <p>Expiration : {" "}</p>
+           {new Date(job.expiresAt).toLocaleDateString("pl-PL")}
+           <p>{getTimeLeft(job.expiresAt)}</p>
            <h5 className="card-title"> {job.position}</h5>
              <h5 className="card-title">{job.deletedAt && new Date(job.deletedAt).toLocaleString("pl-PL")}</h5>
             <p className="card-text">{job.salary}</p>

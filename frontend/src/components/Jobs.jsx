@@ -126,6 +126,7 @@ function Jobs(){
              {user && (Employee || Employer || Admin) && (
                 <div>
                     <button onClick={logout} className="btn btn-danger">Logout</button>
+                    <Link to={"/contact"}>Contact with Us</Link>
                     <Link to={"/account-information"}>Account</Link>
                 </div>
              )}
@@ -140,7 +141,6 @@ function Jobs(){
 
               {Admin && (
                 <div>
-                  <Link to={"/create-job"}>Create a Job Offer</Link>
                   <Link to={"/deleted-jobs"}>Deleted Offer</Link>
                   </div>
               )}
