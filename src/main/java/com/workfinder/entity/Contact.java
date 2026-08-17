@@ -1,6 +1,7 @@
 package com.workfinder.entity;
 
 
+import com.workfinder.enums.ContactStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -32,6 +33,10 @@ public class Contact {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] picture;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "contact_status")
+    private ContactStatus contactStatus;
+
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
     private User user;
@@ -40,11 +45,12 @@ public class Contact {
     public Contact() {
     }
 
-    public Contact(String title, String description, LocalDateTime sentAt, byte[] picture, User user) {
+    public Contact(String title, String description, LocalDateTime sentAt, byte[] picture, ContactStatus contactStatus, User user) {
         this.title = title;
         this.description = description;
         this.sentAt = sentAt;
         this.picture = picture;
+        this.contactStatus = contactStatus;
         this.user = user;
     }
 }

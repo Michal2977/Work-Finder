@@ -1,5 +1,5 @@
 import { useState,useEffect } from "react";
-import { data } from "react-router-dom";
+import { data, Link } from "react-router-dom";
 
 function DeletedJobs(){
 
@@ -79,6 +79,7 @@ function DeletedJobs(){
                <p className="card-text">{job.contractType}</p>
                  <p className="card-text">{job.jobStart}</p>
                <p className="card-text">{job.workMode}</p>
+                  <Link to={`/jobs/${job.id}`}>Details</Link>
                  <button type="submit" className="btn btn-success" onClick={() => revocerOffer(job.id)}>Recover Job Offer</button>
          </div>
         ))}

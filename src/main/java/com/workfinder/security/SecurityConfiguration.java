@@ -62,7 +62,7 @@ public class SecurityConfiguration {
                                 "/api/auth/reset-password","/api/auth/forgot-password","/api/auth/email-update"
                         ,"/api/jobs/**")
                         .permitAll().
-                        requestMatchers("/api/contact").hasAnyRole("EMPLOYER","EMPLOYEE","ADMIN").
+                        requestMatchers("/api/contact","/my-reports").hasAnyRole("EMPLOYER","EMPLOYEE","ADMIN").
                         requestMatchers("/api/auth/account-information/employee").hasRole("EMPLOYEE")
                          .requestMatchers("/api/auth/account-information/employer").hasRole("EMPLOYER")
                         .requestMatchers("/auth/deleted-jobs","/auth/recover-job/**"

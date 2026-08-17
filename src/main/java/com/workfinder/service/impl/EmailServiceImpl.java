@@ -136,7 +136,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     @Async
-    public void sendContactEmail(User user, Contact contact, MultipartFile file) throws MessagingException, IOException {
+    public void sendContactEmail(User user, Contact contact, String fileName,byte[] fileBytes) throws MessagingException {
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message,true);
@@ -146,8 +146,8 @@ public class EmailServiceImpl implements EmailService {
         helper.setSubject(contact.getTitle());
         helper.setText(contact.getDescription());
 
-        if (file != null && !file.isEmpty()){
-            helper.addAttachment(file.getOriginalFilename(),new ByteArrayResource(file.getBytes()));
+        if (fileName != null && !fileName.isEmpty() && fileBytes != null){
+            helper.addAttachment(fileName,new ByteArrayResource(fileBytes));
         }
 
         javaMailSender.send(message);

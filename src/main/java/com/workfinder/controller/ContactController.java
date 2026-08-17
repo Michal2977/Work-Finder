@@ -48,6 +48,14 @@ public class ContactController {
         }
     }
 
+    @GetMapping("/my-reports")
+    public ResponseEntity<?> findMyReports(Authentication authentication){
+        return ResponseEntity.ok(contactService.findMyReports(authentication.getName()));
+    }
+
+
+
+
 
 
 }

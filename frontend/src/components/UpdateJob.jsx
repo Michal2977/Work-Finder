@@ -107,8 +107,8 @@ function UpdateJob(){
         const text  =  await response.json();
 
         if(response.ok){
-            setJob(text.jobDto);
             setMessage(text.message);
+            window.scrollTo({top :0, behavior : "smooth"});
         }else{
             setMessage(text.message);
         }

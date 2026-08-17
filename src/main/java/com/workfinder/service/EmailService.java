@@ -14,5 +14,5 @@ public interface EmailService {
     void resendVerificationEmail(User user,String siteUrl)throws  MessagingException;
     void forgotPasswordEmail(User user,String siteUrl) throws MessagingException;
     void changeEmail(User user,String siteUrl) throws MessagingException;
-    void sendContactEmail(User user, Contact contact, MultipartFile file) throws MessagingException, IOException;
+    void sendContactEmail(User user, Contact contact, String fileName,byte[] fileBytes) throws MessagingException;
 }

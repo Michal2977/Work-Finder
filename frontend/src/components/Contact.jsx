@@ -41,6 +41,7 @@ function Contact(){
         if(response.ok){
             setMessage(text.message);
             setContact({ title: "", description: "" });
+            setFile(null);
             fileInputRef.current.value = "";
         }else{
             setMessage(text.message);

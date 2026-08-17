@@ -126,6 +126,7 @@ function Jobs(){
              {user && (Employee || Employer || Admin) && (
                 <div>
                     <button onClick={logout} className="btn btn-danger">Logout</button>
+                    <Link to={"/my-reports"}>My Reports</Link>
                     <Link to={"/contact"}>Contact with Us</Link>
                     <Link to={"/account-information"}>Account</Link>
                 </div>

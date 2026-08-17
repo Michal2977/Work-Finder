@@ -1,5 +1,5 @@
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import { useNavigate } from "react-router-dom";
@@ -8,6 +8,7 @@ function CreateJobOfferPage(){
 
     const [user,setUser] = useState("");
     const [message,setMessage] = useState("");
+    const fileInputRef = useRef(null);
     const [file,setFile] = useState(null);
     const [data,setData] = useState({position : "",description: "" ,salary : "",location: ""
         ,contractType : [],workSchedule:"",employmentType: ""
@@ -75,10 +76,37 @@ function CreateJobOfferPage(){
         });
        
        const text = await response.json();
-    
         if(response.ok){
             setMessage(text.message);
             window.scrollTo({top : 0, behavior : "smooth"});
+            setData({
+                position: "",
+                description: "",
+                salary: "",
+                location: "",
+                contractType: [],
+                workSchedule: "",
+                employmentType: "",
+                jobStart: "",
+                workMode: [],
+                duties: "",
+                requirements: "",
+                weOffer: "",
+                jobCategory: "",
+                salaryPeriod: "",
+                salaryType: "",
+                companyName: "",
+                shiftSystem: "",
+                workingHours: "",
+                nightShift: null,
+                aboutCompany: "",
+                salarySystem: "",
+                benefit: [],
+                phoneNumber: "",
+                expiresAt: 7
+            })
+            fileInputRef.current.value ="";
+            setFile(null);
         }else{
             setMessage(text.message)
         }
@@ -509,7 +537,7 @@ function CreateJobOfferPage(){
          <br/>
  
          
-        <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])}/>
+        <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
         <br/>
         {file && (
             <img src={URL.createObjectURL(file)} alt="preview" width={"200px"} height={"200px"} />
