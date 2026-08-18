@@ -1,4 +1,8 @@
 import { useState ,useEffect, useRef} from "react";
+import  {Turnstile, useTurnstile } from "react-turnstile";
+
+
+
 
 
 function Contact(){
@@ -6,7 +10,9 @@ function Contact(){
     const [file,setFile] = useState(null);
     const fileInputRef = useRef(null);
     const [message,setMessage] = useState("");
-    const [contact,setContact] = useState({title : "",description : ""});
+    const [turnstileToken,setTurnstileToken] = useState("");
+    const turnstile = useTurnstile();
+    const [contact,setContact] = useState({title : "",description : "",contactCategory : ""});
 
 
     useEffect(() => {
@@ -19,12 +25,18 @@ function Contact(){
     },[])
 
     const sendContactMessage = async(e) => {
+
+        if(!turnstileToken){
+            setMessage("Complete the Turnstile verification.");
+            return;
+        }
         e.preventDefault();
+
        const token  = localStorage.getItem("token");
         const formData = new FormData();
 
         formData.append("request",new Blob([
-            JSON.stringify({...contact})
+            JSON.stringify({...contact,turnstileToken})
         ],{type : "application/json"}));
        
         if(file){
@@ -45,6 +57,8 @@ function Contact(){
             fileInputRef.current.value = "";
         }else{
             setMessage(text.message);
+            setTurnstileToken("");
+            turnstile.reset();
         }
     } 
 
@@ -52,6 +66,16 @@ function Contact(){
         <div>
             {message && <h1>{message}</h1>}
             <form onSubmit={sendContactMessage}>
+            <select className="form-select" value={contact.contactCategory}  required
+            onChange={(e) => setContact({...contact,contactCategory : e.target.value})}>
+            <option selected>Open this select menu</option>
+            <option value="TECHNICAL_ISSUE">TECHNICAL_ISSUE</option>
+            <option value="ACCOUNT_ISSUE">ACCOUNT_ISSUE</option>
+            <option value="JOB_OFFER_ISSUE">JOB_OFFER_ISSUE</option>
+            <option value="REPORT_VIOLATION">REPORT_VIOLATION</option>
+            <option value="OTHER">OTHER</option>
+           </select>
+  
             <input type="text" placeholder="subject" value={contact.title} required minLength={3} maxLength={50}
             onChange={(e) => setContact({...contact,title : e.target.value})}/>
             <br/>
@@ -65,6 +89,9 @@ function Contact(){
             )}
             <br/>
             <button className="btn btn-success" type="submit">Send</button>
+            <br/>
+            
+            <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
             </form>
         </div>
     )

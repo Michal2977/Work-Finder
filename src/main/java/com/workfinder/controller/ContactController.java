@@ -1,9 +1,12 @@
 package com.workfinder.controller;
 
 import com.workfinder.Util.Utility;
+import com.workfinder.dto.ContactMessageDto;
 import com.workfinder.entity.User;
 import com.workfinder.exception.InvalidFileException;
+import com.workfinder.request.ContactMessageRequest;
 import com.workfinder.request.CreateContactRequest;
+import com.workfinder.request.TurnstileRequest;
 import com.workfinder.response.ApiResponse;
 import com.workfinder.service.impl.AuthServiceImpl;
 import com.workfinder.service.impl.ContactServiceImpl;
@@ -33,8 +36,12 @@ public class ContactController {
 
     @PostMapping("/contact")
     public ResponseEntity<?> sendContactMessage(Authentication authentication, @RequestPart(value = "file",required = false)
-    MultipartFile file,@Valid @RequestPart("request")CreateContactRequest request){
+    MultipartFile file, @Valid @RequestPart("request")CreateContactRequest request
+    , @RequestBody TurnstileRequest turnstileRequest){
 
+        if (!authService.verifyTurnstile(turnstileRequest.getTurnstileToken())){
+            return ResponseEntity.badRequest().body(new ApiResponse("Turnstile Verification Failed"));
+        }
         User user = authService.findByEmail(authentication.getName());
         try {
             contactService.sendContactMessage(request,file,user);
@@ -51,6 +58,19 @@ public class ContactController {
     @GetMapping("/my-reports")
     public ResponseEntity<?> findMyReports(Authentication authentication){
         return ResponseEntity.ok(contactService.findMyReports(authentication.getName()));
+    }
+
+    @GetMapping("/reports/{id}")
+    public ResponseEntity<?> reportsDetails(@PathVariable("id")Long id){
+        return ResponseEntity.ok(contactService.findReportsDetailsById(id));
+    }
+
+    @PostMapping("/admin-respond")
+    public ResponseEntity<?> adminRespond(@RequestPart("request") ContactMessageRequest contactMessageRequest,
+                                          @RequestPart(value = "file",required = false) MultipartFile file){
+        try {
+            contactService.
+        }
     }
 
 

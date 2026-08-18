@@ -1,12 +1,17 @@
 package com.workfinder.service.impl;
 
 import com.workfinder.dto.ContactDto;
+import com.workfinder.dto.ContactMessageDto;
 import com.workfinder.entity.Contact;
+import com.workfinder.entity.ContactMessage;
 import com.workfinder.entity.User;
 import com.workfinder.enums.ContactStatus;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.mapper.ContactMapper;
+import com.workfinder.mapper.ContactMessageMapper;
+import com.workfinder.repository.ContactMessageRepository;
 import com.workfinder.repository.ContactRepository;
+import com.workfinder.request.ContactMessageRequest;
 import com.workfinder.request.CreateContactRequest;
 import com.workfinder.service.ContactService;
 import jakarta.mail.MessagingException;
@@ -27,11 +32,13 @@ public class ContactServiceImpl implements ContactService {
     private final ContactRepository contactRepository;
     private final  EmailServiceImpl emailService;
     private final AuthServiceImpl authService;
+    private final ContactMessageRepository contactMessageRepository;
 
-    public ContactServiceImpl(ContactRepository contactRepository, EmailServiceImpl emailService, AuthServiceImpl authService) {
+    public ContactServiceImpl(ContactRepository contactRepository, EmailServiceImpl emailService, AuthServiceImpl authService, ContactMessageRepository contactMessageRepository) {
         this.contactRepository = contactRepository;
         this.emailService = emailService;
         this.authService = authService;
+        this.contactMessageRepository = contactMessageRepository;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYER','EMPLOYEE')")
@@ -42,6 +49,7 @@ public class ContactServiceImpl implements ContactService {
         contact.setDescription(request.getDescription());
         contact.setUser(user);
         contact.setContactStatus(ContactStatus.SENT);
+        contact.setContactCategory(contact.getContactCategory());
         contact.setSentAt(LocalDateTime.now());
         user.getContacts().add(contact);
 
@@ -87,5 +95,51 @@ public class ContactServiceImpl implements ContactService {
         }
         return List.of();
     }
+
+    @PreAuthorize("hasAnyRole('ADMIN','EMPLOYER','EMPLOYEE')")
+    @Override
+    public ContactDto findReportsDetailsById(Long id){
+        Contact contact = contactRepository.findById(id).get();
+        return ContactMapper.contactDto(contact);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    public ContactMessageDto sendRespondMessageAsAdmin(ContactMessageRequest request,MultipartFile file
+    ,User user,Long id) throws IOException, MessagingException {
+
+        Contact contact = contactRepository.getReferenceById(id);
+
+        ContactMessage contactMessage = new ContactMessage();
+        contactMessage.setMessage(request.getMessage());
+        contactMessage.setRespondAt(LocalDateTime.now());
+        contactMessage.setUser(user);
+        contactMessage.setContact(contact);
+
+        contact.getMessages().add(contactMessage);
+
+        if (file != null && !file.isEmpty()){
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+
+            if (fileName.contains("..")){
+                throw new InvalidFileException("Invalid file name");
+            }
+            String contentType = file.getContentType();
+
+            if (contentType == null || !(contentType.equals("image/jpeg") || contentType.equals("image/png")
+            || contentType.equals("image/webp"))){
+                throw new InvalidFileException("Only image files are allowed");
+            }
+            if (file.getSize() > 10 * 1024 * 1024){
+                throw new InvalidFileException("Maximum file size is 10 MB.");
+            }
+            contactMessage.setPicture(file.getBytes());
+        }
+
+        contactMessageRepository.save(contactMessage);
+        emailService.adminRespondNotification(contact);
+        return ContactMessageMapper.contactMessageDto(contactMessage);
+
+    }
 }
+
 

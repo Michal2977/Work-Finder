@@ -1,4 +1,5 @@
 import { useState,useEffect } from "react";
+import { Link } from "react-router-dom";
 
 
 
@@ -22,22 +23,26 @@ function MyReports(){
         }).then(response => response.json()).then(data => setContacts(data))
     },[]);
 
+    
+
     return(
         <div>
             {contacts.map(contact => (
                 <div key={contact.id}>
-                    {contact.picture && (
-                        <img src={`data:${contact.pictureContactType};base64,${contact.picture}`} width={"200px"} height={"200px"}
-                         alt="no image" />
-                    )}
                     <h1>{contact.id}</h1>
                     <h1>{contact.title}</h1>
-                    <h1>{contact.description}</h1>
+                    <h1>{contact.contactCategory}</h1>
+                    <h1>{contact.contactStatus}</h1>
+                    <h1>{new Date(contact.sentAt).toLocaleString("pl-PL")}</h1>
+                    <Link to={`/reports/${contact.id}`}>Details</Link>
+                
+                  
+                
                 </div>
             ))}
         </div>
     )
 
-}
+}   
 
 export default MyReports;

@@ -15,4 +15,5 @@ public interface EmailService {
     void forgotPasswordEmail(User user,String siteUrl) throws MessagingException;
     void changeEmail(User user,String siteUrl) throws MessagingException;
     void sendContactEmail(User user, Contact contact, String fileName,byte[] fileBytes) throws MessagingException;
+    void adminRespondNotification(Contact contact) throws MessagingException;
 }

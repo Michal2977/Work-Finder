@@ -14,7 +14,6 @@ function EmployeeRegistration(){
     const turnstile = useTurnstile();
 
     const registration = async() => {
-console.log(turnstile.current);
         if(!turnstileToken){
             setMessage("Complete the Turnstile verification.");
             return;

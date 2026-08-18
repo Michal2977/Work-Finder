@@ -12,4 +12,5 @@ import java.util.List;
 public interface ContactService {
     ContactDto sendContactMessage(CreateContactRequest request, MultipartFile file, User user) throws IOException, MessagingException;
     List<ContactDto> findMyReports(String email);
+    ContactDto findReportsDetailsById(Long id);
 }

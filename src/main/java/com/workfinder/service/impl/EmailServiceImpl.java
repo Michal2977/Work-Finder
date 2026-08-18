@@ -144,12 +144,32 @@ public class EmailServiceImpl implements EmailService {
         helper.setFrom(user.getEmail());
         helper.setTo("mkoszalka0@gmail.com");
         helper.setSubject(contact.getTitle());
-        helper.setText(contact.getDescription());
+        helper.setText("Category: " + contact.getContactCategory() +
+                "\n\n" + contact.getDescription());
 
         if (fileName != null && !fileName.isEmpty() && fileBytes != null){
             helper.addAttachment(fileName,new ByteArrayResource(fileBytes));
         }
 
         javaMailSender.send(message);
+    }
+
+
+    @Override
+    @Async
+    public void adminRespondNotification(Contact contact) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+
+        Context context = new Context();
+
+        String htmlContext = templateEngine.process("email/admin_respond_notification.html",context);
+
+        helper.setSubject(contact.getTitle());
+        helper.setFrom("mkoszalka0@gmail.com");
+        helper.setTo(contact.getUser().getEmail());
+        helper.setText(htmlContext,true);
+        javaMailSender.send(message);
+
     }
 }
