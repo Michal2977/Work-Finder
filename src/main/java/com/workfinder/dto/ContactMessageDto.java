@@ -14,17 +14,17 @@ public class ContactMessageDto {
     private LocalDateTime respondAt;
     private String picture;
     private UserDto userDto;
-    private ContactDto contactDto;
+
 
     public ContactMessageDto() {
     }
 
-    public ContactMessageDto(Long id, String message, LocalDateTime respondAt, String picture, UserDto userDto, ContactDto contactDto) {
+    public ContactMessageDto(Long id, String message, LocalDateTime respondAt, String picture, UserDto userDto) {
         this.id = id;
         this.message = message;
         this.respondAt = respondAt;
         this.picture = picture;
         this.userDto = userDto;
-        this.contactDto = contactDto;
+
     }
 }

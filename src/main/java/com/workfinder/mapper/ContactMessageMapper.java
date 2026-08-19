@@ -14,6 +14,6 @@ public class ContactMessageMapper {
         }
         return new ContactMessageDto(contactMessage.getId(),contactMessage.getMessage(),contactMessage.getRespondAt()
         ,base64Picture
-        ,UserMapper.userDto(contactMessage.getUser()),ContactMapper.contactDto(contactMessage.getContact()));
+        ,UserMapper.userDto(contactMessage.getUser()));
     }
 }
