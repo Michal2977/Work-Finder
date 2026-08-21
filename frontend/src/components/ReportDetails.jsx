@@ -61,6 +61,38 @@ function ReportDetails(){
         }
     }
 
+    const userResponse = async(e) => {
+        e.preventDefault();
+
+        const token = localStorage.getItem("token");
+        const formData  = new FormData();
+
+        formData.append("request",new Blob([
+            JSON.stringify(contactMessage)
+        ],{type : "application/json"}));
+
+        if(file){
+            formData.append("file",file);
+        }
+
+        const response = await fetch(`http://localhost:8080/api/user-respond/${id}`,{
+          method : "POST",
+          headers : {Authorization : `Bearer ${token}`},
+          body : formData
+        });
+
+     const text = await response.json();
+    if(response.ok){
+       setReport(prev => ({...prev,contactMessageDto : [...prev.contactMessageDto,text]}));
+       sendContactMessage({message : ""});
+        setFile(null);
+        fileInputRef.current.value ="";
+    }else{
+     setMessage(text.message);
+    }
+
+    }
+
 
 
 
@@ -70,6 +102,7 @@ function ReportDetails(){
 
     return(
         <div>
+           
            <h1>{report.id}</h1>
             <h1>{report.title}</h1>
             <h1>{report.contactCategory}</h1>
@@ -112,7 +145,10 @@ function ReportDetails(){
                      message.userDto.email
                }</h4>
              <h3>{message.message}</h3>
-            <img src={`data:${message.pictureContentType};base64,${message.picture}`} width={"200px"} height={"200px"} alt="no imgae added"/>
+             {message.picture &&(
+           <img src={`data:${message.pictureContentType};base64,${message.picture}`} width={"200px"} height={"200px"} alt=" xd"/>
+             )}
+    
             <p>{message.respondAt}</p>
             </div>
     ))}
@@ -123,7 +159,18 @@ function ReportDetails(){
 
              {user && employerOrEmploee && (
                 <div>
-                    
+                    <form onSubmit={userResponse}>
+                    <input type="text" placeholder="respond" value={contactMessage.message} required minLength={1} maxLength={5000}
+                    onChange={(e) => sendContactMessage({...contactMessage,message : e.target.value})}/>
+                    <br/>
+                    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
+                    <br/>
+                    {message.picture && (
+                        <img  src={`data:${file.pictureContentType};base64,${message.picture}`} width={"200px"} height={"200px"} />
+                    )}
+                    <p>{message.respondAt}</p>
+                    <button className="btn btn-success" type="submit"> Send</button>
+                  </form>
                 </div>
              )}
         </div>

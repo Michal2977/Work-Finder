@@ -4,6 +4,7 @@ import com.workfinder.Util.Utility;
 import com.workfinder.dto.ContactMessageDto;
 import com.workfinder.entity.User;
 import com.workfinder.exception.InvalidFileException;
+import com.workfinder.exception.UserMessageNotAllowedException;
 import com.workfinder.request.ContactMessageRequest;
 import com.workfinder.request.CreateContactRequest;
 import com.workfinder.request.TurnstileRequest;
@@ -39,7 +40,7 @@ public class ContactController {
     @PostMapping("/contact")
     public ResponseEntity<?> sendContactMessage(Authentication authentication, @RequestPart(value = "file",required = false)
     MultipartFile file, @Valid @RequestPart("request")CreateContactRequest request
-    , @RequestBody TurnstileRequest turnstileRequest){
+    , @RequestPart("turnstileRequest") TurnstileRequest turnstileRequest){
 
         if (!authService.verifyTurnstile(turnstileRequest.getTurnstileToken())){
             return ResponseEntity.badRequest().body(new ApiResponse("Turnstile Verification Failed"));
@@ -86,9 +87,23 @@ public class ContactController {
         }
     }
 
+    @PostMapping("/user-respond/{id}")
+    public ResponseEntity<?> userRespondToAdmin(@RequestPart("request") ContactMessageRequest request,
+                                                @RequestPart(value = "file",required = false)MultipartFile file
+    ,@PathVariable("id")Long id,@AuthenticationPrincipal PrincipalUser principalUser){
 
-
-
-
+        try {
+            ContactMessageDto contactMessageDto = contactService.sendRespondMessageAsUser(request,file,principalUser.getUser()
+            ,id);
+            return ResponseEntity.ok(contactMessageDto);
+        }catch (InvalidFileException e){
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+        }catch (UserMessageNotAllowedException e){
+            return ResponseEntity.badRequest().body(new ApiResponse(e.getMessage()));
+        }
+        catch (IOException e) {
+            return ResponseEntity.internalServerError().body(new ApiResponse("Something went Wrong Try Again Later"));
+        }
+    }
 
 }

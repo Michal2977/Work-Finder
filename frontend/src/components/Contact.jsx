@@ -36,7 +36,11 @@ function Contact(){
         const formData = new FormData();
 
         formData.append("request",new Blob([
-            JSON.stringify({...contact,turnstileToken})
+            JSON.stringify({...contact})
+        ],{type : "application/json"}));
+
+        formData.append("turnstileRequest",new Blob([
+            JSON.stringify({turnstileToken})
         ],{type : "application/json"}));
        
         if(file){
@@ -50,9 +54,10 @@ function Contact(){
         });
 
         const text = await response.json();
+         
         if(response.ok){
             setMessage(text.message);
-            setContact({ title: "", description: "" });
+            setContact({ title: "", description: "" ,contactCategory : ""});
             setFile(null);
             fileInputRef.current.value = "";
         }else{
@@ -68,7 +73,7 @@ function Contact(){
             <form onSubmit={sendContactMessage}>
             <select className="form-select" value={contact.contactCategory}  required
             onChange={(e) => setContact({...contact,contactCategory : e.target.value})}>
-            <option selected>Open this select menu</option>
+            <option  value="" disabled >Open this select menu</option>
             <option value="TECHNICAL_ISSUE">TECHNICAL_ISSUE</option>
             <option value="ACCOUNT_ISSUE">ACCOUNT_ISSUE</option>
             <option value="JOB_OFFER_ISSUE">JOB_OFFER_ISSUE</option>

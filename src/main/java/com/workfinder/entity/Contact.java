@@ -44,6 +44,15 @@ public class Contact {
     @Enumerated(EnumType.STRING)
     private ContactCategory contactCategory;
 
+    @Column(name = "user_message_count",nullable = false)
+    private int userMessageCount = 0 ;
+
+    @Column(name = "admin_message_count",nullable = false)
+    private int adminMessageCount = 0;
+
+    @Column(name = "number_of_reports",nullable = false)
+    private int numberOfReports = 0;
+
     @OneToMany(mappedBy = "contact")
     private List<ContactMessage> messages = new ArrayList<>();
 
@@ -55,8 +64,8 @@ public class Contact {
     public Contact() {
     }
 
-    public Contact(String title, String description, LocalDateTime sentAt,
-                   byte[] picture, ContactStatus contactStatus, ContactCategory contactCategory,
+    public Contact(String title, String description, LocalDateTime sentAt, byte[] picture, ContactStatus contactStatus,
+                   ContactCategory contactCategory, int userMessageCount, int adminMessageCount, int numberOfReports,
                    List<ContactMessage> messages, User user) {
         this.title = title;
         this.description = description;
@@ -64,6 +73,9 @@ public class Contact {
         this.picture = picture;
         this.contactStatus = contactStatus;
         this.contactCategory = contactCategory;
+        this.userMessageCount = userMessageCount;
+        this.adminMessageCount = adminMessageCount;
+        this.numberOfReports = numberOfReports;
         this.messages = messages;
         this.user = user;
     }

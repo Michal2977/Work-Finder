@@ -7,6 +7,7 @@ import com.workfinder.entity.ContactMessage;
 import com.workfinder.entity.User;
 import com.workfinder.enums.ContactStatus;
 import com.workfinder.exception.InvalidFileException;
+import com.workfinder.exception.UserMessageNotAllowedException;
 import com.workfinder.mapper.ContactMapper;
 import com.workfinder.mapper.ContactMessageMapper;
 import com.workfinder.repository.ContactMessageRepository;
@@ -15,6 +16,7 @@ import com.workfinder.request.ContactMessageRequest;
 import com.workfinder.request.CreateContactRequest;
 import com.workfinder.service.ContactService;
 import jakarta.mail.MessagingException;
+import jdk.jfr.ContentType;
 import lombok.Setter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -49,7 +51,8 @@ public class ContactServiceImpl implements ContactService {
         contact.setDescription(request.getDescription());
         contact.setUser(user);
         contact.setContactStatus(ContactStatus.SENT);
-        contact.setContactCategory(contact.getContactCategory());
+        contact.setContactCategory(request.getContactCategory());
+        contact.setNumberOfReports(contact.getNumberOfReports() + 1);
         contact.setSentAt(LocalDateTime.now());
         user.getContacts().add(contact);
 
@@ -116,6 +119,7 @@ public class ContactServiceImpl implements ContactService {
         contactMessage.setContact(contact);
 
         contact.getMessages().add(contactMessage);
+        contact.setAdminMessageCount(contact.getAdminMessageCount() + 1);
 
         if (file != null && !file.isEmpty()){
             String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
@@ -138,7 +142,47 @@ public class ContactServiceImpl implements ContactService {
         contactMessageRepository.save(contactMessage);
         emailService.adminRespondNotification(contact);
         return ContactMessageMapper.contactMessageDto(contactMessage);
+    }
 
+    @PreAuthorize("hasAnyRole('EMPLOYER','EMPLOYEE')")
+    @Override
+    public ContactMessageDto sendRespondMessageAsUser(ContactMessageRequest request,MultipartFile file,
+                                                      User user,Long id) throws IOException {
+        Contact contact = contactRepository.getReferenceById(id);
+
+        if ( contact.getUserMessageCount() > 0 && contact.getAdminMessageCount() <= contact.getUserMessageCount()){
+            throw new UserMessageNotAllowedException("You cannot send another message until an administrator responds");
+        }
+
+        ContactMessage contactMessage = new ContactMessage();
+        contactMessage.setMessage(request.getMessage());
+        contactMessage.setRespondAt(LocalDateTime.now());
+        contactMessage.setUser(user);
+        contactMessage.setContact(contact);
+        contact.setUserMessageCount(contact.getUserMessageCount() + 1);
+        contact.getMessages().add(contactMessage);
+
+
+        if (file != null && !file.isEmpty()){
+            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            if (fileName.contains("..")){
+                throw new InvalidFileException("Invalid file name");
+            }
+            String contentType = file.getContentType();
+            if (contentType == null || !(contentType.equals("image/jpeg") || contentType.equals("image/png")
+            || contentType.equals("image/webp"))){
+                throw new InvalidFileException("Only image files are allowed");
+            }
+            if (file.getSize() > 10 * 1024 * 1024){
+                throw new InvalidFileException("Maximum file size is 10 MB.");
+            }
+
+            contactMessage.setPicture(file.getBytes());
+        }
+
+
+        contactMessageRepository.save(contactMessage);
+        return ContactMessageMapper.contactMessageDto(contactMessage);
     }
 }
 

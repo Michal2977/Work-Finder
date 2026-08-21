@@ -16,6 +16,7 @@ public class ContactMapper {
         return new ContactDto(contact.getId(),contact.getTitle(),contact.getDescription(),
                base64Picture,contact.getContactStatus(),contact.getContactCategory(),
                 contact.getSentAt() ,contact.getMessages().stream().map(ContactMessageMapper :: contactMessageDto)
-                .toList(),UserMapper.userDto(contact.getUser()));
+                .toList(),contact.getUserMessageCount(),contact.getNumberOfReports(),
+                contact.getAdminMessageCount(),UserMapper.userDto(contact.getUser()));
     }
 }
