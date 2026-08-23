@@ -1,5 +1,5 @@
 
-import { useState,useEffect } from "react";
+import { useState,useEffect, useRef } from "react";
 import {useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
@@ -8,6 +8,7 @@ import "react-phone-number-input/style.css";
 function AccountInformation(){
 
     const navigate = useNavigate();
+    const fileInputRef = useRef(null);
     const [user,setUser] = useState(null);
     const [message,setMessage] = useState("");
     const [file,setFile] = useState(null);
@@ -71,6 +72,9 @@ function AccountInformation(){
       const text = await employeeUpdate.json();
       if(employeeUpdate.ok){
         setMessage(text.message);
+        setFile(null);
+        fileInputRef.current.value ="";
+        window.location.reload();
       }else{
         setMessage(text.message);
       }
@@ -95,6 +99,7 @@ function AccountInformation(){
      if(file){
         formData.append("file",file);
       }
+      
       const updateEmployer = await fetch("http://localhost:8080/api/auth/account-information/employer",{
         method : "PUT",
         headers : {Authorization : `Bearer ${token}` },
@@ -104,6 +109,9 @@ function AccountInformation(){
       const text = await updateEmployer.json();
       if(updateEmployer.ok){
         setMessage(text.message);
+        setFile(null);
+        fileInputRef.current.value ="";
+        window.location.reload();
       }else{
         setMessage(text.message);
       }
@@ -126,6 +134,7 @@ function AccountInformation(){
           </div>
         )}  
         {user && employee && (
+          
              <div>
             <input type="email" placeholder="email" value={user?.email || ""} minLength={5} maxLength={254}
             onChange={(e) => setUser({...user,email : e.target.value})}/>
@@ -141,10 +150,17 @@ function AccountInformation(){
 
            <PhoneInput defaultCountry="PL" value={user?.employeeDto?.phoneNumber || ""}
            onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,phoneNumber : e ?? ""}})}/>
+          
+            {user?.picture && (
+              <img src={`data:${user.pictureContentType};base64,${user.picture}`}  width={"200px"} height={"200px"} alt="no profile"/>
+            )}
 
 
-
-          <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files[0])} />
+          <br/>
+          <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
+          {file && (
+            <img src={URL.createObjectURL(file)} width={"200px"} height={"200px"}/>
+          )}
 
           <button onClick={changeEmployeeData}>Update </button>
             </div>
@@ -174,7 +190,14 @@ function AccountInformation(){
            <input type="text" placeholder="nip" value={user?.employerDto?.nip || ""}  minLength={10} maxLength={10}
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,nip : e.target.value}})}/>
 
-           <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])}/>
+            {user?.picture && (
+              <img src={`data:${user.pictureContentType};base64,${user.picture}`}  width={"200px"} height={"200px"} alt="no profile"/>
+            )}
+           <br/>
+           <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
+           {file && (
+            <img src={URL.createObjectURL(file)} width={"200px"} height={"200px"}/>
+           )}
 
            <button onClick={changeEmployerData}>Update Data</button>
           </div>

@@ -16,4 +16,7 @@ public interface EmailService {
     void changeEmail(User user,String siteUrl) throws MessagingException;
     void sendContactEmail(User user, Contact contact, String fileName,byte[] fileBytes) throws MessagingException;
     void adminRespondNotification(Contact contact) throws MessagingException;
+    void adminChangedReportStatusNotification(Contact contact) throws MessagingException;
+    void unbanUserNotification(Contact contact) throws MessagingException;
+    void banUserNotification(Contact contact) throws MessagingException;
 }

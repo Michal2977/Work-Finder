@@ -172,4 +172,56 @@ public class EmailServiceImpl implements EmailService {
         javaMailSender.send(message);
 
     }
+
+    @Override
+    @Async
+    public void adminChangedReportStatusNotification(Contact contact) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+
+        Context context = new Context();
+
+        String htmlContext = templateEngine.process("email/admin_changed_report_status.html",context);
+
+        helper.setFrom("mkoszalka0@gmail.com");
+        helper.setTo(contact.getUser().getEmail());
+        helper.setSubject(contact.getTitle());
+        helper.setText(htmlContext,true);
+        javaMailSender.send(message);
+    }
+
+
+    @Override
+    @Async
+    public void banUserNotification(Contact contact) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+
+        Context context = new Context();
+
+        String htmlContext = templateEngine.process("email/ban_user_notification.html",context);
+
+        helper.setFrom("mkoszalka0@gmail.com");
+        helper.setTo(contact.getUser().getEmail());
+        helper.setText(htmlContext,true);
+        helper.setSubject("Account Banned");
+        javaMailSender.send(message);
+    }
+
+    @Override
+    @Async
+    public void unbanUserNotification(Contact contact) throws MessagingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message,true);
+
+        Context context = new Context();
+
+        String htmlContext = templateEngine.process("email/unban_user_notification.html",context);
+
+        helper.setFrom("mkoszalka0@gmail.com");
+        helper.setTo(contact.getUser().getEmail());
+        helper.setText(htmlContext,true);
+        helper.setSubject("Account Unbanned");
+        javaMailSender.send(message);
+    }
 }

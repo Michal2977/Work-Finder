@@ -5,6 +5,7 @@ import com.workfinder.dto.ContactMessageDto;
 import com.workfinder.entity.User;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.exception.UserMessageNotAllowedException;
+import com.workfinder.request.ChangeContactStatusRequest;
 import com.workfinder.request.ContactMessageRequest;
 import com.workfinder.request.CreateContactRequest;
 import com.workfinder.request.TurnstileRequest;
@@ -108,19 +109,42 @@ public class ContactController {
 
     @PutMapping("/ban-user/{id}")
     public ResponseEntity<?> banUserById(@PathVariable("id")Long id){
-        contactService.banUser(id);
-        return ResponseEntity.ok().body(new ApiResponse("User Is Banned"));
+        try {
+            contactService.banUser(id);
+            return ResponseEntity.ok().body(new ApiResponse("User Is Banned"));
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(new ApiResponse("Something went Wrong Try Again Later"));
+        }
+
     }
 
     @PutMapping("/unban-user/{id}")
     public ResponseEntity<?> unbanUserById(@PathVariable("id")Long id){
-        contactService.unBanUser(id);
-        return ResponseEntity.ok().body(new ApiResponse("User Is Unbanned"));
+        try {
+            contactService.unBanUser(id);
+            return ResponseEntity.ok().body(new ApiResponse("User Is Unbanned"));
+        }catch (Exception e){
+            return ResponseEntity.internalServerError().body(new ApiResponse("Something went Wrong Try Again Later"));
+        }
+
     }
 
     @GetMapping("/amounts-of-reports")
     public ResponseEntity<?> amountsOfReports(){
         return ResponseEntity.ok(contactService.amountsOfReports());
+    }
+
+
+    @PutMapping("/change-status/{id}")
+    public ResponseEntity<?> changeContactStatus(@PathVariable("id")Long id,
+                                                 @RequestBody ChangeContactStatusRequest request){
+        try {
+            contactService.changeContactStatus(id,request);
+            return ResponseEntity.ok().body(new ApiResponse("Status Changed"));
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new ApiResponse("Something went Wrong Try Again Later"));
+        }
+
     }
 
 }

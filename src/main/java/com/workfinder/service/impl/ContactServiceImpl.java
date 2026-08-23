@@ -15,11 +15,10 @@ import com.workfinder.repository.ContactRepository;
 import com.workfinder.repository.UserRepository;
 import com.workfinder.request.ContactMessageRequest;
 import com.workfinder.request.CreateContactRequest;
+import com.workfinder.request.ChangeContactStatusRequest;
 import com.workfinder.service.ContactService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
-import jdk.jfr.ContentType;
-import lombok.Setter;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -157,6 +156,10 @@ public class ContactServiceImpl implements ContactService {
             throw new UserMessageNotAllowedException("Your account has been banned and you cannot send messages.");
         }
 
+        if (contact.getContactStatus()  == ContactStatus.CLOSED){
+          throw new UserMessageNotAllowedException("You cannot reply to this report because it has been closed");
+        }
+
         if ( contact.getUserMessageCount() > 0 && contact.getAdminMessageCount() <= contact.getUserMessageCount()){
             throw new UserMessageNotAllowedException("You cannot send another message until an administrator responds");
         }
@@ -192,27 +195,46 @@ public class ContactServiceImpl implements ContactService {
         return ContactMessageMapper.contactMessageDto(contactMessage);
     }
 
-    @Transactional
+
     @Override
     @PreAuthorize("hasRole('ADMIN')")
-    public void banUser(Long id){
-        User user = userRepository.findById(id).get();
+    public void banUser(Long id) throws MessagingException {
+        Contact contact = contactRepository.findById(id).get();
+        User user = contact.getUser();
         user.setBanned(true);
+        userRepository.save(user);
+        emailService.banUserNotification(contact);
     }
 
+
+
     @PreAuthorize("hasRole('ADMIN')")
-    @Transactional
     @Override
-    public void unBanUser(Long id) {
-        User user = userRepository.findById(id).get();
+    public void unBanUser(Long id) throws MessagingException {
+        Contact contact = contactRepository.findById(id).get();
+        User user = contact.getUser();
         user.setBanned(false);
+        userRepository.save(user);
+        emailService.unbanUserNotification(contact);
     }
 
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
     public long amountsOfReports(){
-        return contactRepository.count();
+        return contactRepository.countByContactStatusNot(ContactStatus.CLOSED);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    public void changeContactStatus(Long id, ChangeContactStatusRequest request) throws MessagingException {
+        Contact contact = contactRepository.getReferenceById(id);
+        contact.setContactStatus(request.getContactStatus());
+
+        contactRepository.save(contact);
+
+        emailService.adminChangedReportStatusNotification(contact);
+
     }
 }
 

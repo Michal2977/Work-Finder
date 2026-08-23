@@ -9,8 +9,7 @@ function ReportDetails(){
     const fileInputRef = useRef(null);
     const [message,setMessage] = useState("");
     const [contactMessage,sendContactMessage] = useState({message : ""});
-    const [report,setReport] = useState("");
-     const [amountsOfReports,setamountOfReports] = useState(0);
+    const [report,setReport] = useState(null);
     const {id} = useParams();
 
    const admin = user?.roleDto?.some(role => role.role === "ADMIN");
@@ -30,16 +29,7 @@ function ReportDetails(){
     }).then(response => response.json()).then(data => setReport(data));
 },[]);
   
-useEffect(() => {
-         const token = localStorage.getItem("token");
-        if(!token){return;}
-          if(!admin){return;}
-          fetch("http://localhost:8080/api/amounts-of-reports",{
-          headers : {Authorization : `Bearer ${token}`}
-        }).then(response => response.json()).then(data => setamountOfReports(data));
 
-        
-},[admin])
 
     const adminResponse = async(e) => {
         e.preventDefault();
@@ -112,7 +102,7 @@ useEffect(() => {
 
      const banUser = async() => {
         const token = localStorage.getItem("token");
-        const response = await fetch(`http://localhost:8080/api/ban-user/${report.userDto.id}`,{
+        const response = await fetch(`http://localhost:8080/api/ban-user/${report.id}`,{
             method : "PUT",
             headers : {Authorization : `Bearer ${token}`}
         });
@@ -120,15 +110,35 @@ useEffect(() => {
         const text = await response.json();
         if(response.ok){
             setMessage(text.message);
+             window.location.reload();
         }
      }
 
      const unbanUser = async() => {
         const token = localStorage.getItem("token");
 
-        const response = await fetch(`http://localhost:8080/api/unban-user/${report.userDto.id}`,{
+        const response = await fetch(`http://localhost:8080/api/unban-user/${report.id}`,{
             method : "PUT",
             headers : {Authorization : `Bearer ${token}`}
+        });
+
+        const text = await response.json();
+        if(response.ok){
+            setMessage(text.message);
+            window.location.reload();
+        }
+     }
+
+     const changeReportStatus = async(e) => {
+        e.preventDefault();
+        const token = localStorage.getItem("token");
+        if(!token){return;}
+        if(!admin){return;}
+        const response = await fetch(`http://localhost:8080/api/change-status/${report.id}`,{
+         method : "PUT",
+         headers : {Authorization : `Bearer ${token}`,
+        "Content-type" : "application/json"},
+         body : JSON.stringify({contactStatus : report.contactStatus})
         });
 
         const text = await response.json();
@@ -144,20 +154,31 @@ useEffect(() => {
         <div>
          {message && <h1>{message}</h1>}
       
-           <h1>{report.id}</h1>
-            <h1>{report.title}</h1>
-            <h1>{report.contactCategory}</h1>
-            <h1>{report.description}</h1>
-            {report.picture && (
+            <h1>{report?.id}</h1>
+            
+            <h1>{report?.userDto?.banned ? "User is Banned " : "User has no ban"}</h1>
+             <h1>{report?.contactStatus}</h1>
+            <h1>{report?.title}</h1>
+            <h1>{report?.contactCategory}</h1>
+            <h1>{report?.description}</h1>
+            {report?.picture && (
                 <img src={`data:${report.pictureContentType};base64,${report.picture}`} width={"200"} height={"200px"}/>
             )}
-            <h1>{new Date(report.sentAt).toLocaleString("pl-PL")}</h1>
-             <h1>{report.contactStatus}</h1>
+            <h1>{new Date(report?.sentAt).toLocaleString("pl-PL")}</h1>
+             <h1>{report?.contactStatus}</h1>
           
              {user && admin && (
                 <div>
                 <div>
-                    <h1>Number of reports: {amountsOfReports}</h1>
+            <select className="form-select" value={report?.contactStatus || ""}  
+            onChange={(e) => setReport({...report,contactStatus : e.target.value})}>
+            <option  value="" disabled >Open this select menu</option>
+            <option value="SENT">SENT</option>
+            <option value="IN_PROGRESS">IN_PROGRESS</option>
+            <option value="CLOSED">CLOSED</option>
+           </select>
+            <button type="button" className="btn btn-success" onClick={changeReportStatus}>Change Status</button>
+          
                     <button className="btn btn-danger" type="button" onClick={banUser}>Ban User</button>
                     <button className="btn btn-success" type="button" onClick={unbanUser}>unban User</button>
                 </div>
@@ -179,7 +200,7 @@ useEffect(() => {
 
              <div>
         
-             {report.contactMessageDto?.map(message => (
+             {report?.contactMessageDto?.map(message => (
              <div key={message.id}>
                 <h4>{message.userDto?.roleDto?.some(role => role.role === "ADMIN")
                     ?"ADMIN Response": message.userDto?.employeeDto?.firstName ? `${message.userDto.employeeDto.firstName}
