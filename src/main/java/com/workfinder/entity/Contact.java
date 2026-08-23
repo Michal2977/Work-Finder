@@ -50,8 +50,7 @@ public class Contact {
     @Column(name = "admin_message_count",nullable = false)
     private int adminMessageCount = 0;
 
-    @Column(name = "number_of_reports",nullable = false)
-    private int numberOfReports = 0;
+
 
     @OneToMany(mappedBy = "contact")
     private List<ContactMessage> messages = new ArrayList<>();
@@ -65,7 +64,7 @@ public class Contact {
     }
 
     public Contact(String title, String description, LocalDateTime sentAt, byte[] picture, ContactStatus contactStatus,
-                   ContactCategory contactCategory, int userMessageCount, int adminMessageCount, int numberOfReports,
+                   ContactCategory contactCategory, int userMessageCount, int adminMessageCount,
                    List<ContactMessage> messages, User user) {
         this.title = title;
         this.description = description;
@@ -75,7 +74,6 @@ public class Contact {
         this.contactCategory = contactCategory;
         this.userMessageCount = userMessageCount;
         this.adminMessageCount = adminMessageCount;
-        this.numberOfReports = numberOfReports;
         this.messages = messages;
         this.user = user;
     }

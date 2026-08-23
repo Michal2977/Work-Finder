@@ -10,6 +10,7 @@ import java.util.Set;
 @Setter
 public class UserDto {
 
+    private Long id;
     private String email;
     private String password;
     private String displayName;
@@ -17,19 +18,21 @@ public class UserDto {
     private EmployeeDto employeeDto;
     private Set<RoleDto> roleDto;
     private String picture;
+    private boolean banned;
 
 
     public UserDto() {
     }
 
-    public UserDto(String email, String password, String displayName, EmployerDto employerDto,
-                   EmployeeDto employeeDto, Set<RoleDto> roleDto, String picture) {
+    public UserDto(Long id,String email, String displayName, EmployerDto employerDto,
+                   EmployeeDto employeeDto, Set<RoleDto> roleDto, String picture,boolean banned) {
+        this.id = id;
         this.email = email;
-        this.password = password;
         this.displayName = displayName;
         this.employerDto = employerDto;
         this.employeeDto = employeeDto;
         this.roleDto = roleDto;
         this.picture = picture;
+        this.banned = banned;
     }
 }

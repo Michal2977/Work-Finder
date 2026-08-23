@@ -66,10 +66,11 @@ function Contact(){
             turnstile.reset();
         }
     } 
-
+   
     return(
         <div>
             {message && <h1>{message}</h1>}
+        
             <form onSubmit={sendContactMessage}>
             <select className="form-select" value={contact.contactCategory}  required
             onChange={(e) => setContact({...contact,contactCategory : e.target.value})}>

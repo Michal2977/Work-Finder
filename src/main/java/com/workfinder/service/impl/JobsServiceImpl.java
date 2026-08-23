@@ -218,6 +218,7 @@ public class JobsServiceImpl implements JobsService {
     public void softJobDelete(Long id){
        Job job =  jobRepository.findById(id).get();
        job.setDeletedAt(LocalDateTime.now());
+       job.setDeletedJobs(job.getDeletedJobs() + 1);
        job.setDeleted(true);
     }
 
@@ -226,6 +227,7 @@ public class JobsServiceImpl implements JobsService {
     @Override
     public void recoverDeletedOffer(Long id){
         Job job = jobRepository.findById(id).get();
+        job.setDeletedJobs(job.getDeletedJobs() -1);
         job.setDeletedAt(null);
         job.setDeleted(false);
     }

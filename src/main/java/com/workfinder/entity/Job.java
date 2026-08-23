@@ -132,10 +132,11 @@ public class Job {
     @Pattern(regexp = "^\\+?[0-9]{9,20}$")
     private String phoneNumber;
 
-
-
     @Column(name = "deleted")
     private boolean deleted;
+
+    @Column(name = "deleted_jobs",nullable = false)
+    private int deletedJobs = 0;
 
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
@@ -158,7 +159,7 @@ public class Job {
                Set<WorkMode> workMode, SalaryPeriod salaryPeriod, SalaryType salaryType, String duties, String requirements,
                String weOffer, Boolean nightShift, String companyName, String salarySystem, String aboutCompany,
                Set<Benefit> benefit, String phoneNumber, byte[] picture
-               ,boolean deleted,LocalDateTime deletedAt,Employer employer) {
+               ,boolean deleted,LocalDateTime deletedAt,Employer employer,int deletedJobs) {
         this.position = position;
         this.createAt = createAt;
         this.expiresAt = expiresAt;
@@ -188,6 +189,7 @@ public class Job {
         this.deleted = deleted;
         this.deletedAt = deletedAt;
         this.employer = employer;
+        this.deletedJobs  = deletedJobs;
     }
 
 

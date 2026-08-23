@@ -10,8 +10,11 @@ function ReportDetails(){
     const [message,setMessage] = useState("");
     const [contactMessage,sendContactMessage] = useState({message : ""});
     const [report,setReport] = useState("");
+     const [amountsOfReports,setamountOfReports] = useState(0);
     const {id} = useParams();
 
+   const admin = user?.roleDto?.some(role => role.role === "ADMIN");
+    const employerOrEmploee = user?.roleDto?.some(role => role.role === "EMPLOYER" || role.role === "EMPLOYEE"); 
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -26,6 +29,17 @@ function ReportDetails(){
         headers : {Authorization : `Bearer ${token}`}
     }).then(response => response.json()).then(data => setReport(data));
 },[]);
+  
+useEffect(() => {
+         const token = localStorage.getItem("token");
+        if(!token){return;}
+          if(!admin){return;}
+          fetch("http://localhost:8080/api/amounts-of-reports",{
+          headers : {Authorization : `Bearer ${token}`}
+        }).then(response => response.json()).then(data => setamountOfReports(data));
+
+        
+},[admin])
 
     const adminResponse = async(e) => {
         e.preventDefault();
@@ -55,6 +69,7 @@ function ReportDetails(){
         sendContactMessage({message : ""});
         setFile(null);
         fileInputRef.current.value ="";
+        window.location.reload();
         }else {
             setMessage(text.message);
 
@@ -87,6 +102,7 @@ function ReportDetails(){
        sendContactMessage({message : ""});
         setFile(null);
         fileInputRef.current.value ="";
+        
     }else{
      setMessage(text.message);
     }
@@ -94,15 +110,40 @@ function ReportDetails(){
     }
 
 
+     const banUser = async() => {
+        const token = localStorage.getItem("token");
+        const response = await fetch(`http://localhost:8080/api/ban-user/${report.userDto.id}`,{
+            method : "PUT",
+            headers : {Authorization : `Bearer ${token}`}
+        });
 
+        const text = await response.json();
+        if(response.ok){
+            setMessage(text.message);
+        }
+     }
 
-    const admin = user?.roleDto?.some(role => role.role === "ADMIN");
-    const employerOrEmploee = user?.roleDto?.some(role => role.role === "EMPLOYER" || role.role === "EMPLOYEE"); 
+     const unbanUser = async() => {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(`http://localhost:8080/api/unban-user/${report.userDto.id}`,{
+            method : "PUT",
+            headers : {Authorization : `Bearer ${token}`}
+        });
+
+        const text = await response.json();
+        if(response.ok){
+            setMessage(text.message);
+        }
+     }
+
+ 
 
 
     return(
         <div>
-           
+         {message && <h1>{message}</h1>}
+      
            <h1>{report.id}</h1>
             <h1>{report.title}</h1>
             <h1>{report.contactCategory}</h1>
@@ -112,11 +153,14 @@ function ReportDetails(){
             )}
             <h1>{new Date(report.sentAt).toLocaleString("pl-PL")}</h1>
              <h1>{report.contactStatus}</h1>
-
-  
+          
              {user && admin && (
                 <div>
-                    {message && <h1>{message}</h1>}
+                <div>
+                    <h1>Number of reports: {amountsOfReports}</h1>
+                    <button className="btn btn-danger" type="button" onClick={banUser}>Ban User</button>
+                    <button className="btn btn-success" type="button" onClick={unbanUser}>unban User</button>
+                </div>
                     <form onSubmit={adminResponse}>
                   <input type="text" placeholder="message" value={contactMessage.message} required maxLength={5000} minLength={1}
                   onChange={(e) => sendContactMessage({...contactMessage,message : e.target.value})}/>

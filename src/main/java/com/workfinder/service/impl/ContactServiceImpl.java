@@ -12,10 +12,12 @@ import com.workfinder.mapper.ContactMapper;
 import com.workfinder.mapper.ContactMessageMapper;
 import com.workfinder.repository.ContactMessageRepository;
 import com.workfinder.repository.ContactRepository;
+import com.workfinder.repository.UserRepository;
 import com.workfinder.request.ContactMessageRequest;
 import com.workfinder.request.CreateContactRequest;
 import com.workfinder.service.ContactService;
 import jakarta.mail.MessagingException;
+import jakarta.transaction.Transactional;
 import jdk.jfr.ContentType;
 import lombok.Setter;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,12 +37,14 @@ public class ContactServiceImpl implements ContactService {
     private final  EmailServiceImpl emailService;
     private final AuthServiceImpl authService;
     private final ContactMessageRepository contactMessageRepository;
+    private final UserRepository userRepository;
 
-    public ContactServiceImpl(ContactRepository contactRepository, EmailServiceImpl emailService, AuthServiceImpl authService, ContactMessageRepository contactMessageRepository) {
+    public ContactServiceImpl(ContactRepository contactRepository, EmailServiceImpl emailService, AuthServiceImpl authService, ContactMessageRepository contactMessageRepository, UserRepository userRepository) {
         this.contactRepository = contactRepository;
         this.emailService = emailService;
         this.authService = authService;
         this.contactMessageRepository = contactMessageRepository;
+        this.userRepository = userRepository;
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYER','EMPLOYEE')")
@@ -52,7 +56,6 @@ public class ContactServiceImpl implements ContactService {
         contact.setUser(user);
         contact.setContactStatus(ContactStatus.SENT);
         contact.setContactCategory(request.getContactCategory());
-        contact.setNumberOfReports(contact.getNumberOfReports() + 1);
         contact.setSentAt(LocalDateTime.now());
         user.getContacts().add(contact);
 
@@ -150,6 +153,10 @@ public class ContactServiceImpl implements ContactService {
                                                       User user,Long id) throws IOException {
         Contact contact = contactRepository.getReferenceById(id);
 
+        if (user.isBanned()){
+            throw new UserMessageNotAllowedException("Your account has been banned and you cannot send messages.");
+        }
+
         if ( contact.getUserMessageCount() > 0 && contact.getAdminMessageCount() <= contact.getUserMessageCount()){
             throw new UserMessageNotAllowedException("You cannot send another message until an administrator responds");
         }
@@ -183,6 +190,29 @@ public class ContactServiceImpl implements ContactService {
 
         contactMessageRepository.save(contactMessage);
         return ContactMessageMapper.contactMessageDto(contactMessage);
+    }
+
+    @Transactional
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public void banUser(Long id){
+        User user = userRepository.findById(id).get();
+        user.setBanned(true);
+    }
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Transactional
+    @Override
+    public void unBanUser(Long id) {
+        User user = userRepository.findById(id).get();
+        user.setBanned(false);
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @Override
+    public long amountsOfReports(){
+        return contactRepository.count();
     }
 }
 

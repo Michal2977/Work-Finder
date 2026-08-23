@@ -1,15 +1,19 @@
 
 import {useEffect ,useState} from "react";
-import { data, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 function Jobs(){
 
     const [user,setUser] = useState(null);
     const [message,setMessage] = useState("");
+    const [contact,setContact] = useState([]);
+    const [amountsOfReports,setamountOfReports] = useState(0);
+    const [deletedJobs,setDeletedJobs] = useState([]);
     const [jobs,setJobs] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
+
 
 
     const getTimeLeft = (expiresAt) => {
@@ -38,12 +42,12 @@ function Jobs(){
      return `Left: ${minutes}minutes`;
 
     }
- 
+     const Admin = user?.roleDto?.some(role => role.role === "ADMIN");
 
       useEffect(() => {
-        fetch("http://localhost:8080/api/jobs").then(response => response.json()).then(data => setJobs(data))
+        fetch("http://localhost:8080/api/jobs").then(response => response.json()).then(data => setJobs(data));
     },[]);
- 
+    
     useEffect(() => {
      if(location.state?.message){
         setMessage(location.state.message);
@@ -57,14 +61,22 @@ function Jobs(){
       }
       fetch("http://localhost:8080/api/jobs",{
        headers : {"Authorization" : `Bearer ${token}`}
-      }).then(response => response.json()).then(data => setUser(data));
+      }).then(response => response.json()).then(data => setUser(data))
     },[]);
+    useEffect(() => {
+    const token = localStorage.getItem("token");
+      if(!token){return;}
+         if(!Admin){return;}
+          fetch("http://localhost:8080/api/deleted-jobs",{
+        headers : {Authorization : `Bearer ${token}`}
+      }).then(response => response.json()).then(data => setDeletedJobs(data));
+    },[Admin])
 
     const Employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
     const employeeName = `${user?.employeeDto?.firstName ?? ""} ${user?.employeeDto?.lastName ?? ""}`.trim();
     const displayName = employeeName !== "" ? employeeName : user?.displayName;
 
-    const Admin = user?.roleDto?.some(role => role.role === "ADMIN");
+
 
     const Employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
 
@@ -83,6 +95,21 @@ function Jobs(){
      window.location.reload();
     }};
      
+ 
+      useEffect(() => {
+        const token = localStorage.getItem("token");
+        fetch("http://localhost:8080/api/my-reports",{
+          headers : {Authorization : `Bearer ${token}`}
+        }).then(response => response.json()).then(data => setContact(data));
+
+      },[]);
+   useEffect(() => {
+   const token = localStorage.getItem("token");
+   if(!Admin){return;}
+    fetch("http://localhost:8080/api/amounts-of-reports",{
+          headers : {Authorization : `Bearer ${token}`}
+        }).then(response => response.json()).then(data => setamountOfReports(data));
+   },[Admin]);
 
     return(
         <div>
@@ -100,7 +127,7 @@ function Jobs(){
     {user && (Admin || employerOwner) && (
     <div>
      <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
-     <button  type="button" onClick={() => softDelete(job.id)}className="btn btn-danger">Deelete Job</button>
+     <button  type="button" onClick={() => softDelete(job.id)}className="btn btn-danger">Delete Job</button>
     </div>     
     )}
    
@@ -117,6 +144,8 @@ function Jobs(){
         <p className="card-text">{job.contractType}</p>
         <p className="card-text">{job.jobStart}</p>
         <p className="card-text">{job.workMode}</p>
+     
+          
          </div> 
   </div>
 
@@ -141,9 +170,31 @@ function Jobs(){
             )}
 
               {Admin && (
+             <>      
+             <div>
+              <h1>Number of reports: {amountsOfReports}</h1>
+              {deletedJobs.length === 0 ? (
+                <h1>Deleted jobs : 0</h1>
+              ) : (  
+                deletedJobs?.map(deletedJob => (
+                <div key={deletedJob?.id}>
+                  <h1>deleted jobs{deletedJob?.deletedJobs}</h1>
+
+                </div>
+              )))}
+            
+             </div>
                 <div>
+                    {contact?.map(contacts => (
+        <div key={contacts.id}>
+         <h1>number of reports{contacts?.numberOfReports}</h1>
+        </div>
+        
+             ))}
+             
                   <Link to={"/deleted-jobs"}>Deleted Offer</Link>
                   </div>
+                  </>
               )}
             {user && (Employer || Admin) && (
                 <div>

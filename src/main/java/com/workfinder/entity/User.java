@@ -44,6 +44,9 @@ public class User {
     @Column(name = "display_name")
     private String displayName;
 
+    @Column(name = "banned",nullable = false)
+    private boolean banned = false;
+
     @Column(name = "is_enabled")
     private boolean isEnabled;
 
@@ -78,7 +81,7 @@ public class User {
     public User(String email, String password, LocalDateTime createAt, LocalDateTime expiresAt, String verificationCode,
                 String verificationToken, String displayName, boolean isEnabled, String temporaryEmail,
                 byte[] picture, Set<Role> role, Employee employee, Employer employer, List<UserProvider> providers
-    ,List<Contact> contacts) {
+    ,List<Contact> contacts,boolean banned) {
         this.email = email;
         this.password = password;
         this.createAt = createAt;
@@ -94,6 +97,7 @@ public class User {
         this.employer = employer;
         this.providers = providers;
         this.contacts = contacts;
+        this.banned = banned;
     }
 
     public void createRole(Role role){

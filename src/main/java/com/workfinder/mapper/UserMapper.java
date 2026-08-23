@@ -17,11 +17,12 @@ public class UserMapper {
             base64Picture = Base64.getEncoder().encodeToString(user.getPicture());
         }
         UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
         userDto.setEmail(user.getEmail());
-        userDto.setPassword(null);
         userDto.setDisplayName(user.getDisplayName());
         userDto.setPicture(base64Picture);
         userDto.setRoleDto(roleDto);
+        userDto.setBanned(user.isBanned());
 
 
 

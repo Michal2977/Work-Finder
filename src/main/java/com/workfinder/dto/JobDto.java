@@ -41,6 +41,7 @@ public class JobDto {
     private boolean deleted;
     private LocalDateTime deletedAt;
     private EmployerDto employerDto;
+    private int deletedJobs;
 
     public JobDto() {
     }
@@ -53,7 +54,7 @@ public class JobDto {
                   JobCategory jobCategory, SalaryPeriod salaryPeriod, SalaryType salaryType, String picture
             , String companyName, String shiftSystem, String workingHours, Boolean nightShift, String aboutCompany,
                   String salarySystem, Set<Benefit> benefit, String phoneNumber, LocalDateTime expirestAt,
-                  boolean deleted,LocalDateTime deletedAt,EmployerDto employerDto) {
+                  boolean deleted,LocalDateTime deletedAt,EmployerDto employerDto,int deletedJobs) {
         this.id = id;
         this.position = position;
         this.description = description;
@@ -83,6 +84,7 @@ public class JobDto {
         this.deleted = deleted;
         this.deletedAt = deletedAt;
         this.employerDto = employerDto;
+        this.deletedJobs = deletedJobs;
 
     }
 }

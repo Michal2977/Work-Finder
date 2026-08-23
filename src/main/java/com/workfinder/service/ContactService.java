@@ -17,4 +17,7 @@ public interface ContactService {
     ContactDto findReportsDetailsById(Long id);
     ContactMessageDto sendRespondMessageAsUser(ContactMessageRequest request, MultipartFile file,
                                                User user, Long id) throws IOException;
+    void banUser(Long id);
+    void unBanUser(Long id);
+    long amountsOfReports();
 }

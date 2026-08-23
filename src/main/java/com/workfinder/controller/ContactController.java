@@ -106,4 +106,21 @@ public class ContactController {
         }
     }
 
+    @PutMapping("/ban-user/{id}")
+    public ResponseEntity<?> banUserById(@PathVariable("id")Long id){
+        contactService.banUser(id);
+        return ResponseEntity.ok().body(new ApiResponse("User Is Banned"));
+    }
+
+    @PutMapping("/unban-user/{id}")
+    public ResponseEntity<?> unbanUserById(@PathVariable("id")Long id){
+        contactService.unBanUser(id);
+        return ResponseEntity.ok().body(new ApiResponse("User Is Unbanned"));
+    }
+
+    @GetMapping("/amounts-of-reports")
+    public ResponseEntity<?> amountsOfReports(){
+        return ResponseEntity.ok(contactService.amountsOfReports());
+    }
+
 }
