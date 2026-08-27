@@ -11,6 +11,7 @@ import com.workfinder.response.UpdateJobResponse;
 import com.workfinder.service.impl.AuthServiceImpl;
 import com.workfinder.service.impl.JobsServiceImpl;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -34,11 +35,16 @@ public class JobsController {
     }
 
     @GetMapping("/jobs")
-    public ResponseEntity<?> jobsPage(Authentication authentication){
+    public ResponseEntity<?> jobsPage(Authentication authentication,
+                                      @RequestParam(defaultValue = "0") int page,
+    @RequestParam(defaultValue = "10") int size,
+    @RequestParam(value = "keyword",required = false)String keyword,
+    @RequestParam(value = "location",required = false)String location
+    ,@RequestParam(value = "sort",required = false)String sort){
         if (authentication != null){
             return ResponseEntity.ok(authService.findByEmailUserDto(authentication.getName()));
         }
-        return ResponseEntity.ok(jobsService.jobDtoList());
+        return ResponseEntity.ok(jobsService.jobDtoList(page,size,keyword,location,sort));
     }
 
 

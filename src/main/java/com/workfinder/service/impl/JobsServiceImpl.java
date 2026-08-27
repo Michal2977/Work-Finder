@@ -11,9 +11,12 @@ import com.workfinder.request.CreateJobOfferRequest;
 import com.workfinder.request.UpdateJobOfferRequest;
 import com.workfinder.service.JobsService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
@@ -156,10 +159,18 @@ public class JobsServiceImpl implements JobsService {
 
 
     @Override
-    public List<JobDto> jobDtoList(){
-        return jobRepository.findAll().stream().filter(job -> job.getExpiresAt().isAfter(LocalDateTime.now())
-         && !job.isDeleted()).map(JobMapper :: jobDto).toList();
-    }
+    public Page<JobDto> jobDtoList(int page,int size,String keyword,String location,String sort){
+
+        Sort sorting = switch (sort){
+            case "positionAsc" -> Sort.by("position").ascending();
+            case "companyAsc" -> Sort.by("companyName").ascending();
+            default -> Sort.by("createAt").descending();
+            };
+
+        Pageable pageable = PageRequest.of(page,size,sorting);
+        return jobRepository.findByExpiresAtAfterAndDeletedFalse(LocalDateTime.now(),
+                location,keyword,pageable).map(JobMapper :: jobDto);
+        }
 
     @PreAuthorize("hasAnyRole('EMPLOYER','ADMIN')")
     @Override

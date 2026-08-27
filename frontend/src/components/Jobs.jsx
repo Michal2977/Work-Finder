@@ -1,11 +1,24 @@
 
 import {useEffect ,useState} from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { data, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
+import Navbar from "../fragments/Navbar";
 
 function Jobs(){
 
     const [user,setUser] = useState(null);
+
+    const [page,setPage] = useState(0);
+    const [size ,setSize] = useState(3);
+    const [totalPages,setTotalPages] = useState(0);
+
+    const [keyword,setKeyword] = useState("");
+    const [locations,setLocations] = useState("");
+    const [sort,setSort] = useState("createAt");
+
+    const [locationInput,setLocationInput] = useState("");
+    const [keywordInput,setKeywordInput] = useState("");
+
     const [message,setMessage] = useState("");
     const [contact,setContact] = useState([]);
     const [amountsOfReports,setamountOfReports] = useState(0);
@@ -13,8 +26,6 @@ function Jobs(){
     const [jobs,setJobs] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
-
-
 
     const getTimeLeft = (expiresAt) => {
      const now = new Date();
@@ -42,12 +53,25 @@ function Jobs(){
      return `Left: ${minutes}minutes`;
 
     }
-     const Admin = user?.roleDto?.some(role => role.role === "ADMIN");
+
+    const Admin = user?.roleDto?.some(role => role.role === "ADMIN");
+    const Employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
+    const employeeName = `${user?.employeeDto?.firstName ?? ""} ${user?.employeeDto?.lastName ?? ""}`.trim();
+    const displayName = employeeName !== "" ? employeeName : user?.displayName;
+    const Employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
 
       useEffect(() => {
-        fetch("http://localhost:8080/api/jobs").then(response => response.json()).then(data => setJobs(data));
-    },[]);
-    
+        fetch(`http://localhost:8080/api/jobs?page=${page}&size=${size}` 
+      + `&location=${encodeURIComponent(locations)}`
+       + `&keyword=${encodeURIComponent(keyword)}`
+      + `&sort=${sort}`).then(response => response.json())
+        .then(data => {
+          setJobs(data.content);
+          setTotalPages(data.totalPages);
+        });
+    },[page,size,locations,keyword,sort]);
+
+
     useEffect(() => {
      if(location.state?.message){
         setMessage(location.state.message);
@@ -72,13 +96,7 @@ function Jobs(){
       }).then(response => response.json()).then(data => setDeletedJobs(data));
     },[Admin])
 
-    const Employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
-    const employeeName = `${user?.employeeDto?.firstName ?? ""} ${user?.employeeDto?.lastName ?? ""}`.trim();
-    const displayName = employeeName !== "" ? employeeName : user?.displayName;
-
-
-
-    const Employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
+  
 
    const logout = () => {
     localStorage.removeItem("token");
@@ -98,6 +116,7 @@ function Jobs(){
  
       useEffect(() => {
         const token = localStorage.getItem("token");
+        if(!token) {return;}
         fetch("http://localhost:8080/api/my-reports",{
           headers : {Authorization : `Bearer ${token}`}
         }).then(response => response.json()).then(data => setContact(data));
@@ -111,8 +130,27 @@ function Jobs(){
         }).then(response => response.json()).then(data => setamountOfReports(data));
    },[Admin]);
 
+
+
     return(
+
         <div>
+
+       
+
+         <Navbar user={user} Employee={Employee} Employer={Employer} Admin={Admin} logout={logout} displayName={displayName}
+         amountsOfReports={amountsOfReports} deletedJobs={deletedJobs}/>
+
+            <form className="d-flex" role="search" onSubmit={(e) => {
+            e.preventDefault(); setKeyword(keywordInput); setLocations(locationInput); setPage(0);
+          }}>
+          <input className="form-control me-2" type="search" placeholder="Job title, company, or keyword"  value={keywordInput}
+          onChange={(e) => setKeywordInput(e.target.value)}/>
+          <input className="form-control me-2" type="search" placeholder="location" value={locationInput}
+          onChange={(e) => setLocationInput(e.target.value)}/>
+          <button className="btn btn-success" type="submit">Search</button>
+          </form>
+
          {message && <h1>{message}</h1>}
              {jobs.map(job => {
             const employerOwner = user?.employerDto?.id === job?.employerDto?.id;
@@ -144,70 +182,25 @@ function Jobs(){
         <p className="card-text">{job.contractType}</p>
         <p className="card-text">{job.jobStart}</p>
         <p className="card-text">{job.workMode}</p>
-     
-          
+  
          </div> 
   </div>
-
   );
 })}
-           
-             {user && (Employee || Employer || Admin) && (
-                <div>
-                    <button onClick={logout} className="btn btn-danger">Logout</button>
-                    <Link to={"/my-reports"}>My Reports</Link>
-                    <Link to={"/contact"}>Contact with Us</Link>
-                    <Link to={"/account-information"}>Account</Link>
-                </div>
-             )}
-            {user && Employee && (
-                <div>
-                  <h1>employee</h1>
-                  <h1>{displayName}</h1>
-                <h1>{user.email}</h1>
-                </div>
-                
-            )}
+<div>
+  <button disabled={page === 0}
+   onClick={() => setPage(page -1)}>Previous
+   </button>
 
-              {Admin && (
-             <>      
-             <div>
-              <h1>Number of reports: {amountsOfReports}</h1>
-              {deletedJobs.length === 0 ? (
-                <h1>Deleted jobs : 0</h1>
-              ) : (  
-                deletedJobs?.map(deletedJob => (
-                <div key={deletedJob?.id}>
-                  <h1>deleted jobs{deletedJob?.deletedJobs}</h1>
+   <span>{page +1} / {totalPages}</span>
 
-                </div>
-              )))}
-            
-             </div>
-                <div>
-                    {contact?.map(contacts => (
-        <div key={contacts.id}>
-         <h1>number of reports{contacts?.numberOfReports}</h1>
-        </div>
-        
-             ))}
-             
-                  <Link to={"/deleted-jobs"}>Deleted Offer</Link>
-                  </div>
-                  </>
-              )}
-            {user && (Employer || Admin) && (
-                <div>
-                    <h1>Employer</h1>
-                    <Link to={"/expired-jobs"}>Expired Jobs</Link>
-                    <Link to={"/create-job"}>Create a Job Offer</Link>
-                    <h1>{user?.employerDto?.firstName || ""}</h1>
-                     <h1>{user?.employerDto?.lastName || ""}</h1>
-                </div>
-            )}
+   <button disabled={page >= totalPages - 1}
+  
+   onClick={() => setPage(page +1)}>Next
+   </button>
+
+</div>
         </div>
     );
 }
 export default Jobs;
-
-

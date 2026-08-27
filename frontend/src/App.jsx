@@ -19,6 +19,7 @@ import DeletedJobs from "./components/DeletedJobs";
 import Contact from "./components/Contact";
 import MyReports from "./components/MyReports";
 import ReportDetails from "./components/ReportDetails";
+import Navbar from "./fragments/Navbar";
 
 function App(){
   return(
@@ -28,6 +29,8 @@ function App(){
       <Route path="/employer-registration" element={<EmployerRegistration/>}/>
       <Route path="/login" element={<Login/>}/>
       <Route path="/jobs" element={<Jobs/>}/>
+
+
       <Route path="/verify-email" element={<VerifyEmail/>}/>
       <Route path="/verify-failed" element={<VerifyFailed/>}/>
       <Route path="/resend-email" element={<ResendEmail/>}/>
