@@ -3,6 +3,7 @@ import {useEffect ,useState} from "react";
 import { data, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Navbar from "../fragments/Navbar";
+import Filters from "../fragments/Filters";
 
 function Jobs(){
 
@@ -18,6 +19,17 @@ function Jobs(){
 
     const [locationInput,setLocationInput] = useState("");
     const [keywordInput,setKeywordInput] = useState("");
+    const [workMode,setWorkMode] = useState([]);
+    const [contractType,setContractType] = useState([]);
+    const [employmentType,setEmploymentType] = useState([]);
+    const [jobCategory,setJobCategory] = useState([]);
+    const [salaryPeriod,setSalaryPeriod] = useState([]);
+
+    const [jobCategoryCounts,setJobCategoryCounts] = useState([]);
+    const [jobWorkModeCount,setJobWorkModeCount] = useState([]);
+    const [countJobContactType,setCountJobContactType] = useState([]);
+    const [countJobEmploymentType,setCountJobEmploymentType] = useState([]);
+    const [countJobSalaryPeriod,setJobSalaryPeriod] = useState([]);
 
     const [message,setMessage] = useState("");
     const [contact,setContact] = useState([]);
@@ -64,12 +76,23 @@ function Jobs(){
         fetch(`http://localhost:8080/api/jobs?page=${page}&size=${size}` 
       + `&location=${encodeURIComponent(locations)}`
        + `&keyword=${encodeURIComponent(keyword)}`
+       + workMode.map(mode => `&workMode=${encodeURIComponent(mode)}`).join("")
+       + contractType.map(contract => `&contractType=${encodeURIComponent(contract)}`).join("")
+       + employmentType.map(employment => `&employmentType=${encodeURIComponent(employment)}`).join("")
+       + jobCategory.map(category => `&jobCategory=${encodeURIComponent(category)}`).join("")
+       + salaryPeriod.map(period => `&salaryPeriod=${encodeURIComponent(period)}`).join("")
       + `&sort=${sort}`).then(response => response.json())
         .then(data => {
-          setJobs(data.content);
-          setTotalPages(data.totalPages);
+          setJobs(data.jobs.content);
+          setTotalPages(data.jobs.totalPages)
+          setJobCategoryCounts(data.jobCategoryCounts)
+          setJobWorkModeCount(data.jobWorkModeCount)
+          setCountJobContactType(data.countJobContactType)
+          setCountJobEmploymentType(data.countJobEmploymentType)
+          setJobSalaryPeriod(data.countJobSalaryPeriod);
         });
-    },[page,size,locations,keyword,sort]);
+    },[page,size,locations,keyword,workMode,contractType,employmentType,jobCategory,salaryPeriod,sort]);
+
 
 
     useEffect(() => {
@@ -135,12 +158,16 @@ function Jobs(){
     return(
 
         <div>
-
-       
+    
 
          <Navbar user={user} Employee={Employee} Employer={Employer} Admin={Admin} logout={logout} displayName={displayName}
          amountsOfReports={amountsOfReports} deletedJobs={deletedJobs}/>
-
+         
+         <Filters workMode={workMode} setWorkMode={setWorkMode} contractType={contractType} setContractType={setContractType} employmentType={employmentType} setEmploymentType={setEmploymentType} jobCategory={jobCategory} setJobCategory={setJobCategory}
+         salaryPeriod={salaryPeriod} setSalaryPeriod={setSalaryPeriod} setPage={setPage} jobCategoryCounts={jobCategoryCounts}
+         jobWorkModeCount={jobWorkModeCount} countJobContactType={countJobContactType} countJobEmploymentType={countJobEmploymentType}
+         countJobSalaryPeriod={countJobSalaryPeriod} />
+ 
             <form className="d-flex" role="search" onSubmit={(e) => {
             e.preventDefault(); setKeyword(keywordInput); setLocations(locationInput); setPage(0);
           }}>
@@ -187,14 +214,19 @@ function Jobs(){
   </div>
   );
 })}
-<div>
-  <button disabled={page === 0}
+<div className="d-flex align-items-center gap-2">
+  <button className="btn btn-outline-primary" disabled={page === 0}
    onClick={() => setPage(page -1)}>Previous
    </button>
 
-   <span>{page +1} / {totalPages}</span>
+    {Array.from({length : totalPages},(_, index) => (
+      <button key={index} className={`btn ${page === index ? "btn-primary" : "btn-outline-secoundary"}`} onClick={() =>setPage(index)}>
+        {index + 1}
+      </button>
+    ))}
+   
 
-   <button disabled={page >= totalPages - 1}
+   <button className="btn btn-outline-primary" disabled={page >= totalPages - 1}
   
    onClick={() => setPage(page +1)}>Next
    </button>
@@ -204,3 +236,4 @@ function Jobs(){
     );
 }
 export default Jobs;
+

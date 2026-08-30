@@ -3,6 +3,7 @@ package com.workfinder.controller;
 
 import com.workfinder.dto.JobDto;
 import com.workfinder.entity.User;
+import com.workfinder.enums.*;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.request.CreateJobOfferRequest;
 import com.workfinder.request.UpdateJobOfferRequest;
@@ -37,14 +38,20 @@ public class JobsController {
     @GetMapping("/jobs")
     public ResponseEntity<?> jobsPage(Authentication authentication,
                                       @RequestParam(defaultValue = "0") int page,
-    @RequestParam(defaultValue = "10") int size,
-    @RequestParam(value = "keyword",required = false)String keyword,
-    @RequestParam(value = "location",required = false)String location
-    ,@RequestParam(value = "sort",required = false)String sort){
+                                      @RequestParam(defaultValue = "10") int size,
+                                      @RequestParam(value = "keyword",required = false)String keyword,
+                                      @RequestParam(value = "location",required = false)String location,
+                                      @RequestParam(value = "sort",required = false)String sort,
+                                      @RequestParam(value = "workMode",required = false)WorkMode workMode,
+                                      @RequestParam(value = "contractType",required = false)ContractType contractType,
+                                      @RequestParam(value = "employmentType",required = false) EmploymentType employmentType,
+                                      @RequestParam(value = "jobCategory",required = false)JobCategory jobCategory,
+                                      @RequestParam(value = "salaryPeriod",required = false)SalaryPeriod salaryPeriod){
         if (authentication != null){
             return ResponseEntity.ok(authService.findByEmailUserDto(authentication.getName()));
         }
-        return ResponseEntity.ok(jobsService.jobDtoList(page,size,keyword,location,sort));
+        return ResponseEntity.ok(jobsService.jobDtoList(page,size,keyword,location,sort,workMode,contractType
+        ,employmentType,jobCategory,salaryPeriod));
     }
 
 

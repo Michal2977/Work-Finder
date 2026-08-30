@@ -4,6 +4,7 @@ import com.workfinder.dto.JobDto;
 import com.workfinder.entity.Employer;
 import com.workfinder.entity.Job;
 import com.workfinder.entity.User;
+import com.workfinder.enums.*;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.mapper.JobMapper;
 import com.workfinder.repository.JobRepository;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.repository.query.Param;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
@@ -23,7 +25,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Service
@@ -159,7 +163,8 @@ public class JobsServiceImpl implements JobsService {
 
 
     @Override
-    public Page<JobDto> jobDtoList(int page,int size,String keyword,String location,String sort){
+    public Map<String,Object> jobDtoList(int page, int size, String keyword, String location, String sort, WorkMode workMode
+    , ContractType contractType, EmploymentType employmentType, JobCategory jobCategory, SalaryPeriod salaryPeriod){
 
         Sort sorting = switch (sort){
             case "positionAsc" -> Sort.by("position").ascending();
@@ -168,9 +173,37 @@ public class JobsServiceImpl implements JobsService {
             };
 
         Pageable pageable = PageRequest.of(page,size,sorting);
-        return jobRepository.findByExpiresAtAfterAndDeletedFalse(LocalDateTime.now(),
-                location,keyword,pageable).map(JobMapper :: jobDto);
+
+        Page<JobDto> jobs = jobRepository.findByExpiresAtAfterAndDeletedFalse(LocalDateTime.now(),
+                location,keyword,workMode,contractType,employmentType,jobCategory,salaryPeriod,pageable).map(JobMapper :: jobDto);
+
+        List<Object[]> jobCategoryCounts = jobRepository.countJobCategories(LocalDateTime.now(),keyword,
+                location,workMode,contractType,employmentType,salaryPeriod);
+
+        List<Object[]> jobWorkModeCount = jobRepository.countWorkMode(LocalDateTime.now(),keyword,location,jobCategory,contractType
+        ,employmentType,salaryPeriod);
+
+        List<Object[]> countJobContactType = jobRepository.countJobContactType(LocalDateTime.now(),keyword,location,
+                workMode,jobCategory,employmentType,salaryPeriod);
+
+        List<Object[]> countJobEmploymentType = jobRepository.countJobEmploymentType(LocalDateTime.now(),keyword,location
+        ,workMode,contractType,jobCategory,salaryPeriod);
+
+        List<Object[]> countJobSalaryPeriod = jobRepository.countJobSalaryPeriod(LocalDateTime.now(),
+                keyword,location,workMode,contractType,jobCategory,employmentType);
+
+        Map<String ,Object> response = new HashMap<>();
+        response.put("jobs",jobs);
+        response.put("jobCategoryCounts",jobCategoryCounts);
+        response.put("jobWorkModeCount",jobWorkModeCount);
+        response.put("countJobContactType",countJobContactType);
+        response.put("countJobEmploymentType",countJobEmploymentType);
+        response.put("countJobSalaryPeriod",countJobSalaryPeriod);
+        return response;
         }
+
+
+
 
     @PreAuthorize("hasAnyRole('EMPLOYER','ADMIN')")
     @Override
