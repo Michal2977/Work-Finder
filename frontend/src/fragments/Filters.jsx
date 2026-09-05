@@ -1,10 +1,70 @@
 
 function Filters({workMode,setWorkMode,contractType,setContractType,employmentType,setEmploymentType,jobCategory
     ,setJobCategory,salaryPeriod,setSalaryPeriod,setPage,jobCategoryCounts,jobWorkModeCount,countJobContactType,countJobEmploymentType
-,countJobSalaryPeriod}){
+,countJobSalaryPeriod,publicationDate,setPublicationDate,publicationDateCounts,salary,setSalary,salaryType,setSalaryType,
+selectedSalaryPeriod,setSelectedSalaryPeriod,countJobSalary,currency,setCurrency}){
     return(
          <div>
+
+    <div>
+         <label>Publication Time</label>
+    <label>
+        <input type="checkbox" value="24h" checked={publicationDate.includes("24h")}
+            onChange={(e) => {setPublicationDate(prev =>
+                e.target.checked ? [...prev, e.target.value] : prev.filter(time => time !== e.target.value));setPage(0);}}/>
+        24h: ({publicationDateCounts?.[0] ?? 0})
+    </label>
+   </div>
+     <div>
+         <label>Publication Time</label>
+    <label>
+        <input type="checkbox" value="3d" checked={publicationDate.includes("3d")}
+            onChange={(e) => {setPublicationDate(prev =>
+                e.target.checked ? [...prev, e.target.value] : prev.filter(time => time !== e.target.value));setPage(0);}}/>
+        3d: ({publicationDateCounts?.[1] ?? 0})
+    </label>
+   </div>
+       <div>
+         <label>Publication Time</label>
+    <label>
+        <input type="checkbox" value="7d" checked={publicationDate.includes("7d")}
+            onChange={(e) => {setPublicationDate(prev =>
+                e.target.checked ? [...prev, e.target.value] : prev.filter(time => time !== e.target.value));setPage(0);}}/>
+        7d: ({publicationDateCounts?.[2] ?? 0})
+    </label>
+   </div>
+       <div>
+         <label>Publication Time</label>
+    <label>
+        <input type="checkbox" value="14d" checked={publicationDate.includes("14d")}
+            onChange={(e) => {setPublicationDate(prev =>
+                e.target.checked ? [...prev, e.target.value] : prev.filter(time => time !== e.target.value));setPage(0);}}/>
+        14d: ({publicationDateCounts?.[3] ?? 0})
+    </label>
+   </div>
+       <div>
+         <label>Publication Time</label>
+    <label>
+        <input type="checkbox" value="30d" checked={publicationDate.includes("30d")}
+            onChange={(e) => {setPublicationDate(prev =>
+                e.target.checked ? [...prev, e.target.value] : prev.filter(time => time !== e.target.value));setPage(0);}}/>
+        30d: ({publicationDateCounts?.[4] ?? 0})
+        
+    </label>
+   </div>
+       <div>
+         <label>Publication Time</label>
+    <label>
+        <input type="checkbox" value="60d" checked={publicationDate.includes("60d")}
+            onChange={(e) => {setPublicationDate(prev =>
+                e.target.checked ? [...prev, e.target.value] : prev.filter(time => time !== e.target.value));setPage(0);}}/>
+        60d: ({publicationDateCounts?.[5] ?? 0})
+    </label>
+   </div>
          <div>
+
+
+
     <label>Work mode</label>
     <div>
         <label>
@@ -28,6 +88,66 @@ function Filters({workMode,setWorkMode,contractType,setContractType,employmentTy
                              REMOTE: ({jobWorkModeCount.find(count => count[0] === "REMOTE")?.[1] ?? 0})</label>
     </div>
 </div>
+
+
+    <div>
+        <input type="number" placeholder="salary" value={salary} onChange={(e) => setSalary(e.target.value)}/>
+        <p >{countJobSalary}</p>
+        <br/>
+        <label>Salary Type : </label>
+        <label>
+        <input type="radio" value="GROSS" checked={salaryType === "GROSS"} onChange={(e) => setSalaryType(e.target.value)}/>
+        GROSS
+        </label>
+        <br/>
+        <label>
+        <input type="radio" value="NET" checked={salaryType === "NET"} onChange={(e) => setSalaryType(e.target.value)}/>
+        NET
+        </label>
+        <br/>
+         <select value={currency} onChange={(e) => setCurrency(e.target.value)} >
+          <option value="">Choose currency</option>
+          <option value="PLN">PLN</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+          <option value="GBP">GBP</option>
+          
+
+          <option value="CHF">CHF</option>
+          <option value="SEK">SEK</option>
+          <option value="NOK">NOK</option>
+          <option value="DKK">DKK</option>
+
+          <option value="CZK">CZK</option>
+          <option value="CAD">CAD</option>
+          <option value="AUD">AUD</option>
+          <option value="JPY">JPY</option>
+         </select>
+
+       <label>Salary Period</label>
+        <label>
+        <input type="radio" value="HOUR" checked={selectedSalaryPeriod === "HOUR"} onChange={(e) => setSelectedSalaryPeriod(e.target.value)}/>
+        HOUR
+        </label>
+        <label>
+        <input type="radio" value="DAY" checked={selectedSalaryPeriod === "DAY"} onChange={(e) => setSelectedSalaryPeriod(e.target.value)}/>
+        DAY
+        </label>
+        <label>
+        <input type="radio" value="WEEK" checked={selectedSalaryPeriod === "WEEK"} onChange={(e) => setSelectedSalaryPeriod(e.target.value)}/>
+        WEEK
+        </label>
+        <label>
+        <input type="radio" value="MONTH" checked={selectedSalaryPeriod === "MONTH"} onChange={(e) => setSelectedSalaryPeriod(e.target.value)}/>
+        MONTH
+        </label>
+        <label>
+        <input type="radio" value="YEAR" checked={selectedSalaryPeriod === "YEAR"} onChange={(e) => setSelectedSalaryPeriod(e.target.value)}/>
+        YEAR
+        </label>
+
+    </div>
+
    
         <label>Contract Type</label> 
 <div> 
@@ -65,6 +185,38 @@ function Filters({workMode,setWorkMode,contractType,setContractType,employmentTy
         <input type="checkbox" value="APPRENTICESHIP" checked={contractType.includes("APPRENTICESHIP")} 
             onChange={(e) => {setContractType(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(type => type !== e.target.value));setPage(0);}}/> 
         APPRENTICESHIP: ({countJobContactType.find(count => count[0] === "APPRENTICESHIP")?.[1] ?? 0})</label> 
+</div>
+
+         <label>Salary Period</label> 
+<div> 
+    <label> 
+        <input type="checkbox" value="HOUR" checked={salaryPeriod.includes("HOUR")} 
+            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
+        HOUR: ({countJobSalaryPeriod.find(count => count[0] === "HOUR")?.[1] ?? 0})</label> 
+</div> 
+<div> 
+    <label> 
+        <input type="checkbox" value="DAY" checked={salaryPeriod.includes("DAY")} 
+            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
+        DAY: ({countJobSalaryPeriod.find(count => count[0] === "DAY")?.[1] ?? 0})</label> 
+</div> 
+<div> 
+    <label> 
+        <input type="checkbox" value="WEEK" checked={salaryPeriod.includes("WEEK")} 
+            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
+        WEEK: ({countJobSalaryPeriod.find(count => count[0] === "WEEK")?.[1] ?? 0})</label> 
+</div> 
+<div> 
+    <label> 
+        <input type="checkbox" value="MONTH" checked={salaryPeriod.includes("MONTH")} 
+            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
+        MONTH: ({countJobSalaryPeriod.find(count => count[0] === "MONTH")?.[1] ?? 0})</label> 
+</div> 
+<div> 
+    <label> 
+        <input type="checkbox" value="YEAR" checked={salaryPeriod.includes("YEAR")} 
+            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
+        YEAR: ({countJobSalaryPeriod.find(count => count[0] === "YEAR")?.[1] ?? 0})</label> 
 </div>
 
           <label>Employment Type</label> 
@@ -211,37 +363,7 @@ function Filters({workMode,setWorkMode,contractType,setContractType,employmentTy
         BEAUTY: ({jobCategoryCounts.find(count => count[0] === "BEAUTY")?.[1] ?? 0})</label> 
 </div>
 
-         <label>Salary Period</label> 
-<div> 
-    <label> 
-        <input type="checkbox" value="HOUR" checked={salaryPeriod.includes("HOUR")} 
-            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
-        HOUR: ({countJobSalaryPeriod.find(count => count[0] === "HOUR")?.[1] ?? 0})</label> 
-</div> 
-<div> 
-    <label> 
-        <input type="checkbox" value="DAY" checked={salaryPeriod.includes("DAY")} 
-            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
-        DAY: ({countJobSalaryPeriod.find(count => count[0] === "DAY")?.[1] ?? 0})</label> 
-</div> 
-<div> 
-    <label> 
-        <input type="checkbox" value="WEEK" checked={salaryPeriod.includes("WEEK")} 
-            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
-        WEEK: ({countJobSalaryPeriod.find(count => count[0] === "WEEK")?.[1] ?? 0})</label> 
-</div> 
-<div> 
-    <label> 
-        <input type="checkbox" value="MONTH" checked={salaryPeriod.includes("MONTH")} 
-            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
-        MONTH: ({countJobSalaryPeriod.find(count => count[0] === "MONTH")?.[1] ?? 0})</label> 
-</div> 
-<div> 
-    <label> 
-        <input type="checkbox" value="YEAR" checked={salaryPeriod.includes("YEAR")} 
-            onChange={(e) => {setSalaryPeriod(prev => e.target.checked ? [...prev, e.target.value] : prev.filter(period => period !== e.target.value));setPage(0);}}/> 
-        YEAR: ({countJobSalaryPeriod.find(count => count[0] === "YEAR")?.[1] ?? 0})</label> 
-</div>
+
          </div>
     );
 }

@@ -97,6 +97,10 @@ public class Job {
     @Size(min = 10,max = 5000)
     private String duties;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "currency",nullable = false)
+    private Currency currency;
+
     @Column(name = "requirements",length = 5000 ,columnDefinition = "TEXT")
     @Size(min = 10,max = 5000)
     private String requirements;
@@ -156,7 +160,8 @@ public class Job {
     public Job(String position, LocalDateTime createAt, LocalDateTime expiresAt, String shiftSystem, String description,
                BigDecimal salary, String location, Set<ContractType> contractType, String workSchedule,
                JobCategory jobCategory, String workingHours, EmploymentType employmentType, JobStart jobStart,
-               Set<WorkMode> workMode, SalaryPeriod salaryPeriod, SalaryType salaryType, String duties, String requirements,
+               Set<WorkMode> workMode, SalaryPeriod salaryPeriod, SalaryType salaryType, String duties,
+               Currency currency,String requirements,
                String weOffer, Boolean nightShift, String companyName, String salarySystem, String aboutCompany,
                Set<Benefit> benefit, String phoneNumber, byte[] picture
                ,boolean deleted,LocalDateTime deletedAt,Employer employer,int deletedJobs) {
@@ -177,6 +182,7 @@ public class Job {
         this.salaryPeriod = salaryPeriod;
         this.salaryType = salaryType;
         this.duties = duties;
+        this.currency = currency;
         this.requirements = requirements;
         this.weOffer = weOffer;
         this.nightShift = nightShift;

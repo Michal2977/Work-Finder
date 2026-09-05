@@ -1,6 +1,6 @@
 
 import {useEffect ,useState} from "react";
-import { data, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Navbar from "../fragments/Navbar";
 import Filters from "../fragments/Filters";
@@ -25,16 +25,26 @@ function Jobs(){
     const [jobCategory,setJobCategory] = useState([]);
     const [salaryPeriod,setSalaryPeriod] = useState([]);
 
+    const [salary,setSalary] = useState("");
+    const [selectedSalaryPeriod,setSelectedSalaryPeriod] = useState("");
+    const [salaryType,setSalaryType] = useState("");
+  
+
     const [jobCategoryCounts,setJobCategoryCounts] = useState([]);
     const [jobWorkModeCount,setJobWorkModeCount] = useState([]);
     const [countJobContactType,setCountJobContactType] = useState([]);
     const [countJobEmploymentType,setCountJobEmploymentType] = useState([]);
     const [countJobSalaryPeriod,setJobSalaryPeriod] = useState([]);
+    const [countJobSalary,setCountJobSalary] = useState("");
+    const [currency,setCurrency] = useState("");
+
+    const [publicationDate,setPublicationDate] = useState([]);
+    const [publicationDateCounts,setPublicationDateCounts] = useState([]);
 
     const [message,setMessage] = useState("");
     const [contact,setContact] = useState([]);
     const [amountsOfReports,setamountOfReports] = useState(0);
-    const [deletedJobs,setDeletedJobs] = useState([]);
+    const [amountOfDeletedJobs,setAmountsOfDeletedJobs] = useState(0);
     const [jobs,setJobs] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
@@ -81,18 +91,27 @@ function Jobs(){
        + employmentType.map(employment => `&employmentType=${encodeURIComponent(employment)}`).join("")
        + jobCategory.map(category => `&jobCategory=${encodeURIComponent(category)}`).join("")
        + salaryPeriod.map(period => `&salaryPeriod=${encodeURIComponent(period)}`).join("")
+      + publicationDate.map(time => `&publicationDate=${encodeURIComponent(time)}`).join("")
+      + `&selectedSalaryPeriod=${encodeURIComponent(selectedSalaryPeriod)}`
+      + `&salaryType=${encodeURIComponent(salaryType)}`
+      + `&salary=${encodeURIComponent(salary)}`
+      + `&currency=${encodeURIComponent(currency)}`
       + `&sort=${sort}`).then(response => response.json())
         .then(data => {
+        
           setJobs(data.jobs.content);
           setTotalPages(data.jobs.totalPages)
           setJobCategoryCounts(data.jobCategoryCounts)
           setJobWorkModeCount(data.jobWorkModeCount)
           setCountJobContactType(data.countJobContactType)
           setCountJobEmploymentType(data.countJobEmploymentType)
-          setJobSalaryPeriod(data.countJobSalaryPeriod);
+          setJobSalaryPeriod(data.countJobSalaryPeriod)
+          setPublicationDateCounts(data.publicationDate)
+          setCountJobSalary(data.countJobSalary);
+          
         });
-    },[page,size,locations,keyword,workMode,contractType,employmentType,jobCategory,salaryPeriod,sort]);
-
+    },[page,size,locations,keyword,workMode,contractType,employmentType,jobCategory,salaryPeriod,publicationDate,
+      selectedSalaryPeriod,salaryType,salary,currency,sort]);
 
 
     useEffect(() => {
@@ -110,15 +129,9 @@ function Jobs(){
        headers : {"Authorization" : `Bearer ${token}`}
       }).then(response => response.json()).then(data => setUser(data))
     },[]);
-    useEffect(() => {
-    const token = localStorage.getItem("token");
-      if(!token){return;}
-         if(!Admin){return;}
-          fetch("http://localhost:8080/api/deleted-jobs",{
-        headers : {Authorization : `Bearer ${token}`}
-      }).then(response => response.json()).then(data => setDeletedJobs(data));
-    },[Admin])
 
+
+    
   
 
    const logout = () => {
@@ -128,6 +141,7 @@ function Jobs(){
 
    const softDelete = async(id) => {
     const token = localStorage.getItem("token");
+    if(!token) {return;}
     const response  =  await fetch(`http://localhost:8080/api/soft-delete/${id}`,{
         method : "DELETE",
         headers : {Authorization : `Bearer ${token}`}
@@ -155,18 +169,34 @@ function Jobs(){
 
 
 
+
+   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if(!token){return;}
+    if(!Admin){return;}
+
+    fetch("http://localhost:8080/api/amount-of-deleted-jobs",{
+      headers : {Authorization : `Bearer ${token}`}
+    }).then(response => response.json()).then(data => setAmountsOfDeletedJobs(data));
+   },[Admin])
+
+
     return(
 
         <div>
     
 
          <Navbar user={user} Employee={Employee} Employer={Employer} Admin={Admin} logout={logout} displayName={displayName}
-         amountsOfReports={amountsOfReports} deletedJobs={deletedJobs}/>
+         amountsOfReports={amountsOfReports}    amountOfDeletedJobs={amountOfDeletedJobs}/>
          
          <Filters workMode={workMode} setWorkMode={setWorkMode} contractType={contractType} setContractType={setContractType} employmentType={employmentType} setEmploymentType={setEmploymentType} jobCategory={jobCategory} setJobCategory={setJobCategory}
          salaryPeriod={salaryPeriod} setSalaryPeriod={setSalaryPeriod} setPage={setPage} jobCategoryCounts={jobCategoryCounts}
          jobWorkModeCount={jobWorkModeCount} countJobContactType={countJobContactType} countJobEmploymentType={countJobEmploymentType}
-         countJobSalaryPeriod={countJobSalaryPeriod} />
+         countJobSalaryPeriod={countJobSalaryPeriod} publicationDate={publicationDate} setPublicationDate={setPublicationDate}
+          publicationDateCounts={publicationDateCounts} salary={salary} setSalary={setSalary} salaryType={salaryType} 
+          setSalaryType={setSalaryType} selectedSalaryPeriod={selectedSalaryPeriod} setSelectedSalaryPeriod={setSelectedSalaryPeriod}
+          countJobSalary={countJobSalary} currency={currency} setCurrency={setCurrency}
+         />
  
             <form className="d-flex" role="search" onSubmit={(e) => {
             e.preventDefault(); setKeyword(keywordInput); setLocations(locationInput); setPage(0);
@@ -194,7 +224,7 @@ function Jobs(){
      <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
      <button  type="button" onClick={() => softDelete(job.id)}className="btn btn-danger">Delete Job</button>
     </div>     
-    )}
+    )};
    
      <p>Expiration : {" "}</p>  
      {new Date(job.expiresAt).toLocaleDateString("pl-PL")}
@@ -225,11 +255,9 @@ function Jobs(){
       </button>
     ))}
    
-
    <button className="btn btn-outline-primary" disabled={page >= totalPages - 1}
-  
-   onClick={() => setPage(page +1)}>Next
-   </button>
+
+   onClick={() => setPage(page +1)}>Next</button>
 
 </div>
         </div>

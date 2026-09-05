@@ -1,7 +1,9 @@
 import { Link } from "react-router-dom";
 
 
-function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOfReports,deletedJobs}){
+function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOfReports,deletedJobs
+  ,amountOfDeletedJobs
+}){
     return(
 <nav className="navbar navbar-expand-lg bg-body-tertiary">
   <div className="container-fluid">
@@ -43,15 +45,7 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
              <>      
              <div>
               <h1>Number of reports: {amountsOfReports}</h1>
-              {deletedJobs.length === 0 ? (
-                <h1>Deleted jobs : 0</h1>
-              ) : (  
-                deletedJobs?.map(deletedJob => (
-                <div key={deletedJob?.id}>
-                  <h1>deleted jobs{deletedJob?.deletedJobs}</h1>
-
-                </div>
-              )))}
+              <h1>Number of Deleted Jobs {amountOfDeletedJobs}</h1>
             
              </div>
                 <div>

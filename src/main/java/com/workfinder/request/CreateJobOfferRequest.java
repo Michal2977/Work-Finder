@@ -29,6 +29,7 @@ public class CreateJobOfferRequest {
     private String requirements;
     private String weOffer;
 
+    private Currency currency;
     private Set<WorkMode> workMode ;
     private JobStart jobStart;
     private Set<ContractType> contractType;

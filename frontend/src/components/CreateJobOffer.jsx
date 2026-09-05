@@ -176,8 +176,28 @@ function CreateJobOfferPage(){
 
          <input type="number" placeholder="salary" value={data.salary} min={"0"} max={"99999999.99"} step={"0.01"}
          onChange={(e) => setData({...data,salary : e.target.value})}/>
-         <br/>
 
+         <br/>
+         <select value={data.currency} onChange={(e) => setData({...data, currency : e.target.value})} required>
+          <option value="">Choose currency</option>
+          <option value="PLN">PLN</option>
+          <option value="EUR">EUR</option>
+          <option value="USD">USD</option>
+          <option value="GBP">GBP</option>
+          
+
+          <option value="CHF">CHF</option>
+          <option value="SEK">SEK</option>
+          <option value="NOK">NOK</option>
+          <option value="DKK">DKK</option>
+
+          <option value="CZK">CZK</option>
+          <option value="CAD">CAD</option>
+          <option value="AUD">AUD</option>
+          <option value="JPY">JPY</option>
+         </select>
+         <br/>
+   
          <select value={data.salaryType} onChange={(e) => setData({...data, salaryType : e.target.value})} required>
           <option value="">Choose Salary Type</option>
           <option value="GROSS">GROSS</option>

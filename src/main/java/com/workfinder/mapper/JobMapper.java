@@ -3,7 +3,6 @@ package com.workfinder.mapper;
 import com.workfinder.dto.EmployerDto;
 import com.workfinder.dto.JobDto;
 import com.workfinder.entity.Job;
-
 import java.util.Base64;
 
 public class JobMapper {
@@ -25,6 +24,6 @@ public class JobMapper {
                 ,job.getSalaryPeriod(),job.getSalaryType(),base64Picture,job.getCompanyName()
                 ,job.getShiftSystem(),job.getWorkingHours(),job.getNightShift(),job.getAboutCompany(),
                 job.getSalarySystem(),job.getBenefit(),job.getPhoneNumber(),job.getExpiresAt(),
-                job.isDeleted(),job.getDeletedAt() ,employerDto,job.getDeletedJobs());
+                job.isDeleted(),job.getDeletedAt() ,employerDto,job.getDeletedJobs(),job.getCurrency());
     }
 }

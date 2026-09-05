@@ -5,6 +5,7 @@ import com.workfinder.entity.Employer;
 import com.workfinder.entity.Job;
 import com.workfinder.entity.User;
 import com.workfinder.enums.*;
+import com.workfinder.enums.Currency;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.mapper.JobMapper;
 import com.workfinder.repository.JobRepository;
@@ -24,11 +25,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class JobsServiceImpl implements JobsService {
@@ -64,6 +63,7 @@ public class JobsServiceImpl implements JobsService {
         job.setSalarySystem(request.getSalarySystem());
         job.setBenefit(request.getBenefit());
         job.setPhoneNumber(request.getPhoneNumber());
+        job.setCurrency(request.getCurrency());
 
 
         User user = authService.findByEmail(email);
@@ -164,7 +164,9 @@ public class JobsServiceImpl implements JobsService {
 
     @Override
     public Map<String,Object> jobDtoList(int page, int size, String keyword, String location, String sort, WorkMode workMode
-    , ContractType contractType, EmploymentType employmentType, JobCategory jobCategory, SalaryPeriod salaryPeriod){
+    , ContractType contractType, EmploymentType employmentType, JobCategory jobCategory,
+    List<String> publicationDate, SalaryPeriod salaryPeriod, SalaryType salaryType, BigDecimal salary,
+     SalaryPeriod selectedSalaryPeriod, Currency currency){
 
         Sort sorting = switch (sort){
             case "positionAsc" -> Sort.by("position").ascending();
@@ -172,10 +174,30 @@ public class JobsServiceImpl implements JobsService {
             default -> Sort.by("createAt").descending();
             };
 
+        LocalDateTime now = LocalDateTime.now();
+       LocalDateTime  publicationDateTime = null;
+
+
+        if (publicationDate != null){
+           publicationDateTime = publicationDate.stream().map(date -> switch (date) {
+               case "24h" -> now.minusHours(24);
+               case "3d" -> now.minusDays(3);
+               case "7d" -> now.minusDays(7);
+               case "14d" -> now.minusDays(14);
+               case "30d" -> now.minusDays(30);
+               case "60d" -> now.minusDays(60);
+               default -> null;
+           }) .filter(Objects::nonNull)
+                   .min(LocalDateTime::compareTo)
+                   .orElse(null);
+
+        }
+
         Pageable pageable = PageRequest.of(page,size,sorting);
 
         Page<JobDto> jobs = jobRepository.findByExpiresAtAfterAndDeletedFalse(LocalDateTime.now(),
-                location,keyword,workMode,contractType,employmentType,jobCategory,salaryPeriod,pageable).map(JobMapper :: jobDto);
+                location,keyword,workMode,contractType,employmentType,jobCategory,salaryPeriod,salaryType,salary,
+        selectedSalaryPeriod,currency,publicationDateTime,pageable).map(JobMapper :: jobDto);
 
         List<Object[]> jobCategoryCounts = jobRepository.countJobCategories(LocalDateTime.now(),keyword,
                 location,workMode,contractType,employmentType,salaryPeriod);
@@ -192,13 +214,25 @@ public class JobsServiceImpl implements JobsService {
         List<Object[]> countJobSalaryPeriod = jobRepository.countJobSalaryPeriod(LocalDateTime.now(),
                 keyword,location,workMode,contractType,jobCategory,employmentType);
 
+        Object[] counts = jobRepository.countJobPublicationTime(now,now.minusHours(24),now.minusDays(3),
+                now.minusDays(7),now.minusDays(14),now.minusDays(30),now.minusDays(60),keyword,location,workMode
+        ,contractType,jobCategory,employmentType);
+
+        long countJobSalary = jobRepository.countJobSalary(LocalDateTime.now(),keyword,location,workMode,contractType
+        ,jobCategory,employmentType,selectedSalaryPeriod,salaryType,currency,salary);
+
+
+
         Map<String ,Object> response = new HashMap<>();
+        response.put("countJobSalary",countJobSalary);
         response.put("jobs",jobs);
         response.put("jobCategoryCounts",jobCategoryCounts);
         response.put("jobWorkModeCount",jobWorkModeCount);
         response.put("countJobContactType",countJobContactType);
         response.put("countJobEmploymentType",countJobEmploymentType);
         response.put("countJobSalaryPeriod",countJobSalaryPeriod);
+        response.put("publicationDate",counts[0]);
+
         return response;
         }
 
@@ -207,26 +241,40 @@ public class JobsServiceImpl implements JobsService {
 
     @PreAuthorize("hasAnyRole('EMPLOYER','ADMIN')")
     @Override
-    public List<JobDto> findAllExpiredJobs(String email){
-        User user = authService.findByEmail(email);
-        if (user.hasRole("ADMIN")){
-            return jobRepository.findAll().stream().filter(job -> !job.getExpiresAt().isAfter(LocalDateTime.now())).
-                    map(JobMapper :: jobDto)
-                    .toList();
-        }else if (user.hasRole("EMPLOYER")){
-         return jobRepository.findAll().stream().filter(job -> !job.getExpiresAt().isAfter(LocalDateTime.now()))
-                 .filter(job -> job.getEmployer().getId().equals(user.getEmployer().getId()))
-                 .map(JobMapper :: jobDto).toList();
+    public Page<JobDto> findAllExpiredJobs(int page ,int size ,String sort,String keyword,String email){
 
+        User user = authService.findByEmail(email);
+
+        Sort sorting = switch (sort){
+        case "positionAsc" -> Sort.by("position").ascending();
+        case "companyNameASC" -> Sort.by("companyName").ascending();
+        case "expiresAtAsc" ->  Sort.by("expiresAt").ascending();
+        case "expiresAtDesc" -> Sort.by("expiresAt").descending();
+        default -> Sort.by("expiresAt").descending();
+        };
+        Pageable pageable = PageRequest.of(page,size,sorting);
+        if (user.hasRole("ADMIN")){
+            return jobRepository.findAllExpiresJobOffers(LocalDateTime.now(),pageable,keyword).map(JobMapper :: jobDto);
+        }else if (user.hasRole("EMPLOYER")){
+       return jobRepository.findAllExpiredEmployerJobs(LocalDateTime.now(),user.getEmployer().getId(),keyword,pageable)
+       .map(JobMapper :: jobDto);
         }
-        return List.of();
+        return Page.empty(pageable);
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @Override
-    public List<JobDto> findAllDeletedOffers(){
-        return jobRepository.findAll().stream().filter(Job::isDeleted)
-                .map(JobMapper :: jobDto).toList();
+    public Page<JobDto> findAllDeletedOffers(int page,int size ,String sort,String keyword){
+
+        Sort sorting = switch (sort){
+            case "positionAsc" -> Sort.by("position").ascending();
+            case "companyNameASC" -> Sort.by("companyName").ascending();
+            case "createAtAsc" ->  Sort.by("createAt").ascending();
+            case "createAtDesc" -> Sort.by("createAt").descending();
+            default -> Sort.by("createAt").descending();
+        };
+        Pageable pageable = PageRequest.of(page,size,sorting);
+        return jobRepository.findAllDeletedJobs(keyword,pageable).map(JobMapper :: jobDto);
 
     }
 
@@ -234,6 +282,12 @@ public class JobsServiceImpl implements JobsService {
     public JobDto findJobById(Long id){
         Job job =  jobRepository.findById(id).get();
         return JobMapper.jobDto(job);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public long amountsOfDeletedJobs(){
+     return jobRepository.countByDeletedJobs();
     }
 
 

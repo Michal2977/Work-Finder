@@ -20,7 +20,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -46,12 +49,17 @@ public class JobsController {
                                       @RequestParam(value = "contractType",required = false)ContractType contractType,
                                       @RequestParam(value = "employmentType",required = false) EmploymentType employmentType,
                                       @RequestParam(value = "jobCategory",required = false)JobCategory jobCategory,
-                                      @RequestParam(value = "salaryPeriod",required = false)SalaryPeriod salaryPeriod){
+                                      @RequestParam(value = "publicationDate",required = false) List<String> publicationDate,
+                                      @RequestParam(value = "salaryPeriod",required = false)SalaryPeriod salaryPeriod,
+                                      @RequestParam(value = "selectedSalaryPeriod",required = false)SalaryPeriod selectedSalaryPeriod,
+                                      @RequestParam(value = "salaryType",required = false)SalaryType salaryType,
+                                      @RequestParam(value = "salary",required = false)BigDecimal salary,
+                                      @RequestParam(value = "currency",required = false)Currency currency){
         if (authentication != null){
             return ResponseEntity.ok(authService.findByEmailUserDto(authentication.getName()));
         }
         return ResponseEntity.ok(jobsService.jobDtoList(page,size,keyword,location,sort,workMode,contractType
-        ,employmentType,jobCategory,salaryPeriod));
+        ,employmentType,jobCategory,publicationDate,salaryPeriod,salaryType,salary,selectedSalaryPeriod,currency));
     }
 
 
@@ -117,19 +125,29 @@ public class JobsController {
     }
 
     @GetMapping("/expired-jobs")
-    public ResponseEntity<?> findAllExpiredJobs(Authentication authentication){
-        return ResponseEntity.ok(jobsService.findAllExpiredJobs(authentication.getName()));
+    public ResponseEntity<?> findAllExpiredJobs(Authentication authentication,
+      @RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "10")int size,
+      @RequestParam(value = "keyword",required = false)String keyword,
+      @RequestParam(value = "sort",defaultValue = "expiresAtDesc")String sort){
+        return ResponseEntity.ok(jobsService.findAllExpiredJobs(page,size,sort,keyword,authentication.getName()));
     }
 
     @GetMapping("/deleted-jobs")
-    public ResponseEntity<?> findAllDeletedOffers(){
-        return ResponseEntity.ok(jobsService.findAllDeletedOffers());
+    public ResponseEntity<?> findAllDeletedOffers(@RequestParam(defaultValue = "0")int page,
+       @RequestParam(defaultValue = "10")int size,@RequestParam(value = "keyword",required = false)String keyword,
+                                                  @RequestParam(value = "sort",defaultValue = "createAtAsc")String sort){
+        return ResponseEntity.ok(jobsService.findAllDeletedOffers(page,size,sort,keyword));
     }
 
     @PutMapping("/recover-job/{id}")
     public ResponseEntity<?> recoverJobOfferById(@PathVariable("id")Long id){
         jobsService.recoverDeletedOffer(id);
         return ResponseEntity.ok(new ApiResponse("Job Offer Recovered"));
+    }
+
+    @GetMapping("/amount-of-deleted-jobs")
+    public ResponseEntity<?> amountsOfDeletedJobs(){
+        return ResponseEntity.ok(jobsService.amountsOfDeletedJobs());
     }
 
 }
