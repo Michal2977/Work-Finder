@@ -279,6 +279,16 @@ public class JobsServiceImpl implements JobsService {
     }
 
     @Override
+    public void  deleteOldSoftDeletedJobs(){
+        LocalDateTime date = LocalDateTime.now().minusMonths(3);
+
+        List<Job> jobs = jobRepository.findJobsToHardDelete(date);
+
+        jobs.forEach(job -> jobRepository.deleteById(job.getId()));
+    }
+
+
+    @Override
     public JobDto findJobById(Long id){
         Job job =  jobRepository.findById(id).get();
         return JobMapper.jobDto(job);
@@ -318,6 +328,12 @@ public class JobsServiceImpl implements JobsService {
        job.setDeletedAt(LocalDateTime.now());
        job.setDeletedJobs(job.getDeletedJobs() + 1);
        job.setDeleted(true);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public void hardDelete(Long id){
+         jobRepository.deleteById(id);
     }
 
     @Transactional

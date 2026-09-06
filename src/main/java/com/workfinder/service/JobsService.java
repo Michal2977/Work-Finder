@@ -29,5 +29,7 @@ public interface JobsService {
     Page<JobDto> findAllDeletedOffers(int page,int size ,String sort,String keyword);
     void recoverDeletedOffer(Long id);
     long amountsOfDeletedJobs();
+    void hardDelete(Long id);
+    void  deleteOldSoftDeletedJobs();
 
 }

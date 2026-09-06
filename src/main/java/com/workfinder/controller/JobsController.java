@@ -124,6 +124,12 @@ public class JobsController {
         return ResponseEntity.ok().body(new ApiResponse("Job Offer Deleted"));
     }
 
+    @DeleteMapping("/hard-delete/{id}")
+    public ResponseEntity<?> hardDeleteByAdmin(@PathVariable("id")Long id){
+        jobsService.hardDelete(id);
+        return ResponseEntity.ok().body(new ApiResponse("Job Offer Deleted"));
+    }
+
     @GetMapping("/expired-jobs")
     public ResponseEntity<?> findAllExpiredJobs(Authentication authentication,
       @RequestParam(defaultValue = "0")int page,@RequestParam(defaultValue = "10")int size,

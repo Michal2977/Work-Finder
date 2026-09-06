@@ -68,6 +68,21 @@ function DeletedJobs(){
             window.location.reload();
           }
     }
+
+    const hardDelete = async(id) => {
+      const token = localStorage.getItem("token");
+      if(!token){return;}
+
+      const response = await fetch(`http://localhost:8080/api/hard-delete/${id}`,{
+        method : "DELETE",
+        headers : {Authorization : `Bearer ${token}`}
+      });
+
+      if(response.ok){
+        window.location.reload();
+      }
+    };
+
    const toggleSort = () => {
         if(sort === "createAt"){
             setSort("createAtAsc");
@@ -108,6 +123,7 @@ function DeletedJobs(){
                <p className="card-text">{job.workMode}</p>
                   <Link to={`/jobs/${job.id}`}>Details</Link>
                  <button type="submit" className="btn btn-success" onClick={() => revocerOffer(job.id)}>Recover Job Offer</button>
+                 <button type="submit" className="btn btn-danger" onClick={() => hardDelete(job.id)}>Delete Job Offer</button>
          </div>
         ))}
 

@@ -198,6 +198,11 @@ public interface JobRepository extends JpaRepository<Job,Long> {
     long countByDeletedJobs();
 
 
+    @Query("SELECT j From Job j WHERE j.deleted = true AND j.deletedAt <= :date")
+    List<Job>findJobsToHardDelete(@Param("date")LocalDateTime date);
+
+
+
 
 }
 

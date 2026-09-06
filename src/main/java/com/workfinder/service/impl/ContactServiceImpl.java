@@ -2,6 +2,7 @@ package com.workfinder.service.impl;
 
 import com.workfinder.dto.ContactDto;
 import com.workfinder.dto.ContactMessageDto;
+import com.workfinder.dto.JobDto;
 import com.workfinder.entity.Contact;
 import com.workfinder.entity.ContactMessage;
 import com.workfinder.entity.User;
@@ -10,6 +11,7 @@ import com.workfinder.exception.InvalidFileException;
 import com.workfinder.exception.UserMessageNotAllowedException;
 import com.workfinder.mapper.ContactMapper;
 import com.workfinder.mapper.ContactMessageMapper;
+import com.workfinder.mapper.JobMapper;
 import com.workfinder.repository.ContactMessageRepository;
 import com.workfinder.repository.ContactRepository;
 import com.workfinder.repository.UserRepository;
@@ -19,6 +21,7 @@ import com.workfinder.request.ChangeContactStatusRequest;
 import com.workfinder.service.ContactService;
 import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.*;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -89,16 +92,30 @@ public class ContactServiceImpl implements ContactService {
 
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYER','EMPLOYEE')")
     @Override
-    public List<ContactDto> findMyReports(String email){
+    public Page<ContactDto> findMyReports(String email,int page,int size,String keyword,String sort){
         User user = authService.findByEmail(email);
 
+
         if (user.hasRole("EMPLOYER") || user.hasRole("EMPLOYEE")){
-          return contactRepository.findAll().stream().filter(contact -> contact.getUser().getId()
-                  .equals(user.getId())).map(ContactMapper :: contactDto).toList();
+            List<ContactDto> contactDto  = contactRepository.findAll().stream().filter(contact ->
+                    contact.getUser().getId().equals(user.getId())).map(ContactMapper :: contactDto).toList();
+          return new PageImpl<>(contactDto);
         }else if (user.hasRole("ADMIN")){
-            return contactRepository.findAll().stream().map(ContactMapper :: contactDto).toList();
+
+            Sort sorting = switch (sort){
+                case "titleAsc" -> Sort.by("title").ascending();
+                case "descriptionAsc" -> Sort.by("description").ascending();
+                case "contactStatusAsc" -> Sort.by("contactStatus").ascending();
+                default -> Sort.by("sentAt").descending();
+            };
+
+            Pageable pageable = PageRequest.of(page,size,sorting);
+
+            Page<Contact> contacts = contactRepository.findAll(keyword,pageable);
+
+            return contacts.map(ContactMapper :: contactDto);
         }
-        return List.of();
+        return Page.empty();
     }
 
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYER','EMPLOYEE')")

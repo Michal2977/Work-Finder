@@ -60,8 +60,11 @@ public class ContactController {
     }
 
     @GetMapping("/my-reports")
-    public ResponseEntity<?> findMyReports(Authentication authentication){
-        return ResponseEntity.ok(contactService.findMyReports(authentication.getName()));
+    public ResponseEntity<?> findMyReports(Authentication authentication,
+        @RequestParam(defaultValue = "0")int page,@RequestParam(value = "size",defaultValue = "10")int size,
+         @RequestParam(value = "keyword",required = false)String keyword,
+                                           @RequestParam(value = "sort",defaultValue = "sentAt")String sort){
+        return ResponseEntity.ok(contactService.findMyReports(authentication.getName(),page,size,keyword,sort));
     }
 
     @GetMapping("/reports/{id}")

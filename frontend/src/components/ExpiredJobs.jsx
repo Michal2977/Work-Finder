@@ -33,6 +33,19 @@ function ExpiredJobs(){
     },[page,size,keyword,sort]);
 
 
+     const softDelete = async(id) => {
+    const token = localStorage.getItem("token");
+    if(!token) {return;}
+    const response  =  await fetch(`http://localhost:8080/api/soft-delete/${id}`,{
+        method : "DELETE",
+        headers : {Authorization : `Bearer ${token}`}
+    });
+    if(response.ok){
+     window.location.reload();
+    }};
+
+    
+
     const toggleSort = () => {
         if(sort === "expiresAt"){
             setSort("expiresAtAsc");
@@ -80,6 +93,7 @@ function ExpiredJobs(){
                      <p className="card-text">{job.workMode}</p>
                      <Link to={`/jobs/${job.id}`}>offer Details</Link>
                      <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
+                     <button  type="button" onClick={() => softDelete(job.id)}className="btn btn-danger">Delete Job</button>
                 </div>
             </div>
         ))}
