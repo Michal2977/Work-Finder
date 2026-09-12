@@ -31,5 +31,7 @@ public interface JobsService {
     long amountsOfDeletedJobs();
     void hardDelete(Long id);
     void  deleteOldSoftDeletedJobs();
+    long countAllExpiresOffers();
+    long countExpiresJobsOffersForEmployer(String email);
 
 }

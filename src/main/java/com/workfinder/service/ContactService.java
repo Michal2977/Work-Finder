@@ -23,4 +23,5 @@ public interface ContactService {
     void unBanUser(Long id) throws MessagingException;
     long amountsOfReports();
     void changeContactStatus(Long id, ChangeContactStatusRequest request) throws MessagingException;
+
 }

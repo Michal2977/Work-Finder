@@ -242,6 +242,7 @@ public class ContactServiceImpl implements ContactService {
         return contactRepository.countByContactStatusNot(ContactStatus.CLOSED);
     }
 
+
     @PreAuthorize("hasRole('ADMIN')")
     @Override
     public void changeContactStatus(Long id, ChangeContactStatusRequest request) throws MessagingException {

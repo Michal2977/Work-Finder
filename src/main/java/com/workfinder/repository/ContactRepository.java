@@ -23,4 +23,7 @@ public interface ContactRepository extends JpaRepository<Contact ,Long> {
             "(CONCAT('%', :keyword , '%')) OR LOWER(c.description) LIKE LOWER(CONCAT('%', :keyword, '%'))" +
             "OR LOWER(CAST(c.contactStatus AS string)) LIKE LOWER(CONCAT('%', :keyword, '%')))")
     Page<Contact> findAll(@Param("keyword")String keyword,Pageable pageable);
+
+
+
 }

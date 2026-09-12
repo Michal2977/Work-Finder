@@ -62,14 +62,18 @@ public class SecurityConfiguration {
                                 "/api/auth/reset-password","/api/auth/forgot-password","/api/auth/email-update"
                         ,"/api/jobs/**")
                         .permitAll().
-                        requestMatchers("/api/contact","/my-reports","/api/reports/**").hasAnyRole("EMPLOYER","EMPLOYEE","ADMIN").
+                        requestMatchers("/api/contact","/my-reports","/api/reports/**"
+                        ,"/api/save-job/**","/api/saved-jobs","/api/delete-favorite/**","/api/amount-of-favorite-jobs"
+                        ).hasAnyRole("EMPLOYER","EMPLOYEE","ADMIN").
                         requestMatchers("/api/auth/account-information/employee").hasRole("EMPLOYEE")
-                         .requestMatchers("/api/auth/account-information/employer").hasRole("EMPLOYER")
+                         .requestMatchers("/api/auth/account-information/employer",
+                                 "/api/amounts-of-employer-expires-job").hasRole("EMPLOYER")
                         .requestMatchers("/api/user-respond/**").hasAnyRole("EMPLOYER","EMPLOYEE")
                         .requestMatchers("/auth/deleted-jobs","/auth/recover-job/**"
                         ,"/api/auth//account-information/admin","/api/admin-respond/**","/api/ban-user/**"
                         ,"/api/unban-user/**","/api/amounts-of-reports","/api/change-status/**"
-                        ,"/api/amount-of-deleted-jobs","/api/hard-delete/**").hasRole("ADMIN")
+                        ,"/api/amount-of-deleted-jobs","/api/hard-delete/**",
+                                "/api/amounts-of-all-expires-job").hasRole("ADMIN")
                         .requestMatchers("/api/create-job","/api/update-job"
                         ,"/api/soft-delete/**","/api/expired-jobs").hasAnyRole("EMPLOYER","ADMIN")
                         .anyRequest().authenticated())

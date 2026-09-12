@@ -24,6 +24,8 @@ public class UserMapper {
         userDto.setRoleDto(roleDto);
         userDto.setBanned(user.isBanned());
 
+        userDto.setFavoriteJobDto(user.getFavoriteJob().stream().map(FavoriteJobMapper :: favoriteJobDto).toList());
+
 
 
         if (user.getEmployee() != null){

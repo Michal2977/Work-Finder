@@ -156,4 +156,15 @@ public class JobsController {
         return ResponseEntity.ok(jobsService.amountsOfDeletedJobs());
     }
 
+    @GetMapping("/amounts-of-all-expires-job")
+    public ResponseEntity<?> amountsOfAllExpiresJob(){
+        return ResponseEntity.ok(jobsService.countAllExpiresOffers());
+    }
+    @GetMapping("/amounts-of-employer-expires-job")
+    public ResponseEntity<?> amountsOfEmployerExpiresJob(Authentication authentication){
+        return ResponseEntity.ok(jobsService.countExpiresJobsOffersForEmployer(authentication.getName()));
+    }
+
+
+
 }

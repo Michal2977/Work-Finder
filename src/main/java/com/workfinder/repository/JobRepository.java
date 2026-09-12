@@ -197,6 +197,11 @@ public interface JobRepository extends JpaRepository<Job,Long> {
     @Query("SELECT COUNT(j) FROM Job j Where deleted = true")
     long countByDeletedJobs();
 
+    @Query("SELECT COUNT(j) FROM Job j Where j.expiresAt <= :now")
+    long countByExpiresJobs(@Param("now")LocalDateTime now);
+
+    @Query("SELECT COUNT(j) FROM Job j WHERE j.expiresAt <= :now AND j.employer.id = :employerId")
+    long countExpiresJobForEmployerOwner(@Param("now")LocalDateTime now,@Param("employerId")Long id);
 
     @Query("SELECT j From Job j WHERE j.deleted = true AND j.deletedAt <= :date")
     List<Job>findJobsToHardDelete(@Param("date")LocalDateTime date);

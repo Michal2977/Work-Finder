@@ -19,6 +19,7 @@ import DeletedJobs from "./components/DeletedJobs";
 import Contact from "./components/Contact";
 import MyReports from "./components/MyReports";
 import ReportDetails from "./components/ReportDetails";
+import SavedJobs from "./components/SavedJobs";
 import Navbar from "./fragments/Navbar";
 
 function App(){
@@ -47,6 +48,7 @@ function App(){
       <Route path="/contact" element={<Contact/>}/>
       <Route path="/my-reports" element={<MyReports/>}/>
       <Route path="/reports/:id" element={<ReportDetails/>}/>
+       <Route path="/saved-jobs" element={<SavedJobs/>}/>
       
     </Routes>
     </BrowserRouter>

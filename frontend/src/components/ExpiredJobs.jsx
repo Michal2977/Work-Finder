@@ -1,8 +1,6 @@
 import { useState ,useEffect} from "react";
 import {  Link } from "react-router-dom";
 
-
-
 function ExpiredJobs(){
 
     const [user,setUser] = useState(null);
@@ -53,9 +51,6 @@ function ExpiredJobs(){
             setSort(sort === "expiresAtAsc" ? "expiresAtDesc" : "expiresAtAsc" );
         }
     }
-
-
-
     return(
     <div>
         {user && (
@@ -109,10 +104,6 @@ function ExpiredJobs(){
               
           <button className="btn btn-outline-primary" disabled={page >= totalPages -1} onClick={() => setPage(page + 1)}>Next</button>
         </div>
-
-   
-
- 
     </div>
     );
     

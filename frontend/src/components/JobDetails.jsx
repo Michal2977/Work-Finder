@@ -1,21 +1,33 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { data, useParams, useSearchParams } from "react-router-dom";
 
 function JobDetails(){
 
     const {id} = useParams();
     const [job,setJob] = useState("");
+    const [user,setUser] = useState(null);
 
 
     useEffect(() => {
     fetch(`http://localhost:8080/api/jobs/${id}`).then(response => response.json()).then(data => setJob(data))
     },[id]);
+    
+    useEffect(() => {
+      const token = localStorage.getItem("token");
+      if(!token){return;}
+       fetch("http://localhost:8080/api/auth/account-information",{
+        headers : {Authorization : `Bearer ${token}`}
+      }).then(response => response.json()).then(data => setUser(data))
+    });
+
+   
 
     return(
      <div>                  
        {job.picture && (
        <img src={`data:${job.pictureContentType};base64,${job.picture}`} width={"200"} height={"200px"}/>
        )}
+
        
 
     <p>{job.position}</p>

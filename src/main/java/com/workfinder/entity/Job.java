@@ -9,7 +9,9 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -153,6 +155,9 @@ public class Job {
     @JoinColumn(name = "employer_id")
     private Employer employer;
 
+    @OneToMany(mappedBy = "job",cascade = CascadeType.ALL)
+    private List<FavoriteJob> favoriteJob = new ArrayList<>();
+
 
     public Job() {
     }
@@ -164,7 +169,7 @@ public class Job {
                Currency currency,String requirements,
                String weOffer, Boolean nightShift, String companyName, String salarySystem, String aboutCompany,
                Set<Benefit> benefit, String phoneNumber, byte[] picture
-               ,boolean deleted,LocalDateTime deletedAt,Employer employer,int deletedJobs) {
+               ,boolean deleted,LocalDateTime deletedAt,Employer employer,int deletedJobs,List<FavoriteJob> favoriteJob) {
         this.position = position;
         this.createAt = createAt;
         this.expiresAt = expiresAt;
@@ -196,6 +201,7 @@ public class Job {
         this.deletedAt = deletedAt;
         this.employer = employer;
         this.deletedJobs  = deletedJobs;
+        this.favoriteJob = favoriteJob;
     }
 
 

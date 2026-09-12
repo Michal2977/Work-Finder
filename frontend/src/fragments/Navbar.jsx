@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 
 function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOfReports,deletedJobs
-  ,amountOfDeletedJobs
+  ,amountOfDeletedJobs,amountsOfFavoriteJobs,amountOfAllExpiresJob,amountOfEmployerExpiresJob
 }){
     return(
 <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -30,10 +30,23 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
         </li>
 
  {user && (Employee || Employer || Admin) && (
-      
+  
+  <>
+     <div>
+      <Link to={"/saved-jobs"}>Saved Jobs</Link>
+    </div>    
+   
+
+    
       <div>
+        {Employer && (
+          <div>
+              <h1> amount Of Employer Expires Job: {amountOfEmployerExpiresJob}</h1>
+          </div>
+        )}
           {Employee && (
                 <div>
+                  
                   <h1>employee</h1>
                   <h1>{displayName}</h1>
                 <h1>{user.email}</h1>
@@ -44,6 +57,8 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
              {Admin && (
              <>      
              <div>
+             
+                <h1>amount Of All Expires Job: {amountOfAllExpiresJob}</h1>
               <h1>Number of reports: {amountsOfReports}</h1>
               <h1>Number of Deleted Jobs {amountOfDeletedJobs}</h1>
             
@@ -73,7 +88,7 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
           >
             Dropdown
           </a>
-
+          <h1>Number of saved Jobs  Offers : {amountsOfFavoriteJobs}</h1>
           <ul className="dropdown-menu">
             <li>
               <Link className="dropdown-item"  to="/my-reports">
@@ -95,7 +110,9 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
             </li>
           </ul>
         </li>
+       
         </div>
+        </>
           )}
       </ul>
     </div>

@@ -281,10 +281,21 @@ public class JobsServiceImpl implements JobsService {
     @Override
     public void  deleteOldSoftDeletedJobs(){
         LocalDateTime date = LocalDateTime.now().minusMonths(3);
-
         List<Job> jobs = jobRepository.findJobsToHardDelete(date);
-
         jobs.forEach(job -> jobRepository.deleteById(job.getId()));
+    }
+
+    @Override
+    @PreAuthorize("hasRole('ADMIN')")
+    public long countAllExpiresOffers(){
+     return jobRepository.countByExpiresJobs(LocalDateTime.now());
+    }
+
+    @Override
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public  long countExpiresJobsOffersForEmployer(String email){
+        User user = authService.findByEmail(email);
+        return jobRepository.countExpiresJobForEmployerOwner(LocalDateTime.now(),user.getEmployer().getId());
     }
 
 

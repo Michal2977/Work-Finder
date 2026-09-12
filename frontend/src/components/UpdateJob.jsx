@@ -65,6 +65,17 @@ function UpdateJob(){
               }).then(response => response.json()).then(data => setJob(data))
     },[id]);
 
+     const softDelete = async(id) => {
+    const token = localStorage.getItem("token");
+    if(!token) {return;}
+    const response  =  await fetch(`http://localhost:8080/api/soft-delete/${id}`,{
+        method : "DELETE",
+        headers : {Authorization : `Bearer ${token}`}
+    });
+    if(response.ok){
+     navigate("/jobs");
+    }};
+
     const updateJobOffer = async(e) => {
          e.preventDefault();
 
@@ -707,6 +718,7 @@ function UpdateJob(){
   )}
 
   <button type="submit" className="btn btn-success">Update Job Offer</button>
+  <button className="btn btn-danger" type="button" onClick={() => softDelete(job.id)}>Delete</button>
 
    </div>
    </form>

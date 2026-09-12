@@ -1,6 +1,6 @@
 
 import {useEffect ,useState} from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { data, useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Navbar from "../fragments/Navbar";
 import Filters from "../fragments/Filters";
@@ -45,6 +45,13 @@ function Jobs(){
     const [contact,setContact] = useState([]);
     const [amountsOfReports,setamountOfReports] = useState(0);
     const [amountOfDeletedJobs,setAmountsOfDeletedJobs] = useState(0);
+    const [amountsOfFavoriteJobs,setAmountsOfFavoriteJobs] = useState(0);
+
+    const [amountOfAllExpiresJob,setAmountsOfAllExpiresJob] = useState(0);
+    const [amountOfEmployerExpiresJob,setAmountsOfEmployerExpiresJobs] = useState(0);
+
+   
+
     const [jobs,setJobs] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
@@ -128,10 +135,29 @@ function Jobs(){
       fetch("http://localhost:8080/api/jobs",{
        headers : {"Authorization" : `Bearer ${token}`}
       }).then(response => response.json()).then(data => setUser(data))
+
+      fetch("http://localhost:8080/api/auth/account-information",{
+        headers : {Authorization : `Bearer ${token}`}
+      }).then(response => response.json()).then(data => setUser(data))
     },[]);
 
+     const saveJobOffer = async(id) => {
+      const token = localStorage.getItem("token");
+      if(!token){return;}
 
-    
+      const response = await fetch(`http://localhost:8080/api/save-job/${id}`,{
+        method : "POST",
+        headers : {Authorization : `Bearer ${token}`}
+      });
+
+      const text = await response.json();
+      if(response.ok){
+        setMessage(text.message);
+      }else{
+        setMessage(text.message);
+      }
+     };
+
   
 
    const logout = () => {
@@ -165,7 +191,14 @@ function Jobs(){
     fetch("http://localhost:8080/api/amounts-of-reports",{
           headers : {Authorization : `Bearer ${token}`}
         }).then(response => response.json()).then(data => setamountOfReports(data));
+
+        fetch("http://localhost:8080/api/amounts-of-all-expires-job",{
+          headers : {Authorization : `Bearer ${token}`}
+        }).then(response => response.json()).then(data => setAmountsOfAllExpiresJob(data));
+
    },[Admin]);
+
+
 
 
 
@@ -178,7 +211,21 @@ function Jobs(){
     fetch("http://localhost:8080/api/amount-of-deleted-jobs",{
       headers : {Authorization : `Bearer ${token}`}
     }).then(response => response.json()).then(data => setAmountsOfDeletedJobs(data));
-   },[Admin])
+   },[Admin]);
+
+   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if(!token){return;}
+
+     fetch("http://localhost:8080/api/amount-of-favorite-jobs",{
+      headers : {Authorization : `Bearer ${token}`}
+    }).then(response => response.json()).then(data => setAmountsOfFavoriteJobs(data));
+
+    fetch("http://localhost:8080/api/amounts-of-employer-expires-job",{
+      headers : {Authorization : `Bearer ${token}`}
+    }).then(response => response.json()).then(data => setAmountsOfEmployerExpiresJobs(data));
+
+   },[]);
 
 
     return(
@@ -187,7 +234,8 @@ function Jobs(){
     
 
          <Navbar user={user} Employee={Employee} Employer={Employer} Admin={Admin} logout={logout} displayName={displayName}
-         amountsOfReports={amountsOfReports}    amountOfDeletedJobs={amountOfDeletedJobs}/>
+         amountsOfReports={amountsOfReports}    amountOfDeletedJobs={amountOfDeletedJobs} amountsOfFavoriteJobs={amountsOfFavoriteJobs}
+         amountOfAllExpiresJob={amountOfAllExpiresJob} amountOfEmployerExpiresJob={amountOfEmployerExpiresJob}/>
          
          <Filters workMode={workMode} setWorkMode={setWorkMode} contractType={contractType} setContractType={setContractType} employmentType={employmentType} setEmploymentType={setEmploymentType} jobCategory={jobCategory} setJobCategory={setJobCategory}
          salaryPeriod={salaryPeriod} setSalaryPeriod={setSalaryPeriod} setPage={setPage} jobCategoryCounts={jobCategoryCounts}
@@ -224,10 +272,10 @@ function Jobs(){
      <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
      <button  type="button" onClick={() => softDelete(job.id)}className="btn btn-danger">Delete Job</button>
     </div>     
-    )};
-   
+    )}
      <p>Expiration : {" "}</p>  
      {new Date(job.expiresAt).toLocaleDateString("pl-PL")}
+     <button type="button" className="btn btn-success" onClick={() => saveJobOffer(job?.id)}>Save Job Offer</button>
      <p>{getTimeLeft(job.expiresAt)}</p>
     <h5 className="card-title"> {job.position}</h5>
     <p className="card-text">{job.salary}</p>
