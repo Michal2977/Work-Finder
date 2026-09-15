@@ -164,7 +164,4 @@ public class JobsController {
     public ResponseEntity<?> amountsOfEmployerExpiresJob(Authentication authentication){
         return ResponseEntity.ok(jobsService.countExpiresJobsOffersForEmployer(authentication.getName()));
     }
-
-
-
 }

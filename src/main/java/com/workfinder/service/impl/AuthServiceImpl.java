@@ -1,12 +1,16 @@
 package com.workfinder.service.impl;
 
+import com.workfinder.dto.EmployeeDto;
 import com.workfinder.dto.UserDto;
 import com.workfinder.entity.*;
 import com.workfinder.enums.OAuth2UserProvider;
 import com.workfinder.exception.EmailUpdateException;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.exception.PasswordChangeNotAllowedException;
+import com.workfinder.mapper.EmployeeMapper;
+import com.workfinder.mapper.EmployerMapper;
 import com.workfinder.mapper.UserMapper;
+import com.workfinder.repository.EmployeeCvRepository;
 import com.workfinder.repository.RoleRepository;
 import com.workfinder.repository.UserRepository;
 import com.workfinder.request.*;
@@ -20,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -47,13 +52,15 @@ public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailServiceImpl emailService;
     private final RestTemplate restTemplate;
+    private final EmployeeCvRepository employeeCvRepository;
 
-    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, EmailServiceImpl emailService, RestTemplate restTemplate) {
+    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, EmailServiceImpl emailService, RestTemplate restTemplate, EmployeeCvRepository employeeCvRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.restTemplate = restTemplate;
+        this.employeeCvRepository = employeeCvRepository;
     }
 
     @Override
@@ -325,6 +332,7 @@ public class AuthServiceImpl implements AuthService {
         return UserMapper.userDto(user);
     }
 
+
     @Override
     public UserDto updateAdminData(User user, UpdateAdminDataRequest request,String siteUrl) throws MessagingException {
 
@@ -423,4 +431,39 @@ public class AuthServiceImpl implements AuthService {
             return true;
         }
     }
+
+    @Override
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public EmployeeDto updateCv(MultipartFile file,String email) throws IOException {
+
+        User user = userRepository.findByEmail(email);
+
+        if (file != null &&!file.isEmpty()){
+            String cvFileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
+            if (cvFileName.contains("..")){
+                throw new InvalidFileException("Invalid file name");
+            }
+            String contentType = file.getContentType();
+            if (contentType == null || !(contentType.equals("application/pdf"))){
+                throw new InvalidFileException("Only PDF  images are allowed");
+            }
+            if (file.getSize() > 5 * 1024 * 1024){
+                throw new InvalidFileException("Maximum file size is 5 MB.");
+            }
+            if (user.getEmployee().getEmployeeCv().size() >= 6){
+              throw new InvalidFileException("You can have a maximum of 6 CV");
+            }
+
+            EmployeeCv employeeCv = new EmployeeCv();
+            employeeCv.setCvFile(file.getBytes());
+            employeeCv.setEmployee(user.getEmployee());
+
+            employeeCvRepository.save(employeeCv);
+
+            user.getEmployee().getEmployeeCv().add(employeeCv);
+
+        }
+        return EmployeeMapper.employeeDto(user.getEmployee());
+    }
+
 }

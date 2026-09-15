@@ -6,6 +6,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -28,6 +31,10 @@ public class Employee {
     @Pattern(regexp = "^\\+?[0-9]{9,15}$")
     private String phoneNumber;
 
+
+    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL,mappedBy = "employee")
+    private List<EmployeeCv> employeeCv = new ArrayList<>();
+
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -35,10 +42,11 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String firstName, String lastName, String phoneNumber, User user) {
+    public Employee(String firstName, String lastName, String phoneNumber, List<EmployeeCv> employeeCv, User user) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phoneNumber = phoneNumber;
+        this.employeeCv = employeeCv;
         this.user = user;
     }
 }

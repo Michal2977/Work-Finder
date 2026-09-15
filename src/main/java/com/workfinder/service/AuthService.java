@@ -1,5 +1,6 @@
 package com.workfinder.service;
 
+import com.workfinder.dto.EmployeeDto;
 import com.workfinder.dto.UserDto;
 import com.workfinder.entity.User;
 import com.workfinder.request.*;
@@ -31,4 +32,5 @@ public interface AuthService {
             throws MessagingException,IOException;
     boolean emailUpdate(String code);
     UserDto updateAdminData(User user, UpdateAdminDataRequest request, String siteUrl) throws MessagingException;
+    EmployeeDto updateCv(MultipartFile file, String email) throws IOException;
 }

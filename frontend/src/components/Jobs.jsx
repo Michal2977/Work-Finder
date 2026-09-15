@@ -1,6 +1,6 @@
 
 import {useEffect ,useState} from "react";
-import { data, useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Navbar from "../fragments/Navbar";
 import Filters from "../fragments/Filters";
@@ -198,11 +198,6 @@ function Jobs(){
 
    },[Admin]);
 
-
-
-
-
-
    useEffect(() => {
     const token = localStorage.getItem("token");
     if(!token){return;}
@@ -213,6 +208,8 @@ function Jobs(){
     }).then(response => response.json()).then(data => setAmountsOfDeletedJobs(data));
    },[Admin]);
 
+
+   
    useEffect(() => {
     const token = localStorage.getItem("token");
     if(!token){return;}
@@ -221,11 +218,19 @@ function Jobs(){
       headers : {Authorization : `Bearer ${token}`}
     }).then(response => response.json()).then(data => setAmountsOfFavoriteJobs(data));
 
-    fetch("http://localhost:8080/api/amounts-of-employer-expires-job",{
-      headers : {Authorization : `Bearer ${token}`}
-    }).then(response => response.json()).then(data => setAmountsOfEmployerExpiresJobs(data));
 
    },[]);
+
+   useEffect(() => {
+ 
+    const token = localStorage.getItem("token");
+    if(!token){return;}
+    if(!Employer){return;}
+
+      fetch("http://localhost:8080/api/amounts-of-employer-expires-job",{
+      headers : {Authorization : `Bearer ${token}`}
+    }).then(response => response.json()).then(data => setAmountsOfEmployerExpiresJobs(data));
+   },[Employer])
 
 
     return(

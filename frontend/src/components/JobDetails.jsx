@@ -1,5 +1,5 @@
-import { use, useEffect, useState } from "react";
-import { data, useParams, useSearchParams } from "react-router-dom";
+import {useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 function JobDetails(){
 
@@ -7,6 +7,10 @@ function JobDetails(){
     const [job,setJob] = useState("");
     const [user,setUser] = useState(null);
 
+
+    const employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
+    const admin = user?.roleDto?.some(role => role.role === "ADMIN");
+    
 
     useEffect(() => {
     fetch(`http://localhost:8080/api/jobs/${id}`).then(response => response.json()).then(data => setJob(data))

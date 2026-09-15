@@ -20,7 +20,8 @@ import Contact from "./components/Contact";
 import MyReports from "./components/MyReports";
 import ReportDetails from "./components/ReportDetails";
 import SavedJobs from "./components/SavedJobs";
-import Navbar from "./fragments/Navbar";
+import AddCv from "./components/AddCv";
+
 
 function App(){
   return(
@@ -48,7 +49,8 @@ function App(){
       <Route path="/contact" element={<Contact/>}/>
       <Route path="/my-reports" element={<MyReports/>}/>
       <Route path="/reports/:id" element={<ReportDetails/>}/>
-       <Route path="/saved-jobs" element={<SavedJobs/>}/>
+      <Route path="/saved-jobs" element={<SavedJobs/>}/>
+      <Route path="/add-cv" element={<AddCv/>}/>
       
     </Routes>
     </BrowserRouter>

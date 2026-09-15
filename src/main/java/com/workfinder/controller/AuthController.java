@@ -22,6 +22,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 
@@ -285,6 +286,18 @@ public class AuthController {
         }else {
             return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("http://localhost:5173/login"))
                     .build();
+        }
+    }
+
+    @PostMapping("/add-cv")
+    public ResponseEntity<?> addCvAsEmployee(@RequestPart("file")MultipartFile file,Authentication authentication){
+        try {
+            authService.updateCv(file,authentication.getName());
+            return ResponseEntity.ok().body(new ApiResponse("CV added "));
+        }catch (InvalidFileException e){
+            return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.internalServerError().body(new ApiResponse("Something Went Wrong Try Again Later"));
         }
     }
 }
