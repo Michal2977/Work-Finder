@@ -15,7 +15,7 @@ function CreateJobOfferPage(){
         ,jobStart : "" ,workMode : [],duties : "",requirements: "",
         weOffer : "",jobCategory: "",salaryPeriod : "", salaryType : ""
     ,companyName : "",shiftSystem : "",workingHours :"",nightShift: null,aboutCompany : "",
-    salarySystem : "",benefit : [],phoneNumber : "",expiresAt : 7});
+    salarySystem : "",benefit : [],phoneNumber : "",expiresAt : 7,applicationType : ""});
     
     
 
@@ -103,7 +103,8 @@ function CreateJobOfferPage(){
                 salarySystem: "",
                 benefit: [],
                 phoneNumber: "",
-                expiresAt: 7
+                expiresAt: 7,
+                applicationType : ""
             })
             fileInputRef.current.value ="";
             setFile(null);
@@ -563,6 +564,13 @@ function CreateJobOfferPage(){
             <img src={URL.createObjectURL(file)} alt="preview" width={"200px"} height={"200px"} />
         )}
          <br/>
+         <select value={data.applicationType} onChange={(e) => setData({...data,applicationType : e.target.value})} required>
+            <option value="">Select Apllication Type</option>
+            <option value="QUICK">QUICK</option>
+         </select>
+
+       
+         <br/>
 
        
 
@@ -574,5 +582,5 @@ function CreateJobOfferPage(){
 
 export default CreateJobOfferPage;
 
-  
+
    

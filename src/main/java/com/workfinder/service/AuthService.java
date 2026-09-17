@@ -32,5 +32,6 @@ public interface AuthService {
             throws MessagingException,IOException;
     boolean emailUpdate(String code);
     UserDto updateAdminData(User user, UpdateAdminDataRequest request, String siteUrl) throws MessagingException;
-    EmployeeDto updateCv(MultipartFile file, String email) throws IOException;
+    EmployeeDto updateCv(MultipartFile file, String email,AddCvRequest request) throws IOException;
+    void deleteResume(Long id);
 }

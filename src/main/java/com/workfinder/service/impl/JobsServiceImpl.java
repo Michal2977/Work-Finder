@@ -64,6 +64,7 @@ public class JobsServiceImpl implements JobsService {
         job.setBenefit(request.getBenefit());
         job.setPhoneNumber(request.getPhoneNumber());
         job.setCurrency(request.getCurrency());
+        job.setApplicationType(request.getApplicationType());
 
 
         User user = authService.findByEmail(email);

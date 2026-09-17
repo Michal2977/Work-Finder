@@ -6,6 +6,7 @@ function JobDetails(){
     const {id} = useParams();
     const [job,setJob] = useState("");
     const [user,setUser] = useState(null);
+    const [selectedCv,setSeletedCv] = useState(localStorage.getItem("selectedCv") || "");
 
 
     const employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
@@ -22,9 +23,36 @@ function JobDetails(){
        fetch("http://localhost:8080/api/auth/account-information",{
         headers : {Authorization : `Bearer ${token}`}
       }).then(response => response.json()).then(data => setUser(data))
-    });
+    },[]);
 
-   
+
+   const selectedCvObject = user?.employeeDto?.employeeCvDto?.find(
+    cv => cv.id === Number(selectedCv)
+   );
+
+ 
+
+
+      const openCv = (base64) => {
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+
+        for(let i =0; i < bytes.length; i++){
+          bytes[i] = binary.charCodeAt(i);
+        }
+
+        const blob = new Blob([bytes],{ type : "application/pdf"});
+        const url = URL.createObjectURL(blob);
+
+        window.open(url,"_blank");
+      };
+ 
+
+    const handleCvChange = (e) => {
+      const cvId = e.target.value;
+      setSeletedCv(cvId);
+      localStorage.setItem("selectedCv",cvId)
+    }
 
     return(
      <div>                  
@@ -32,7 +60,30 @@ function JobDetails(){
        <img src={`data:${job.pictureContentType};base64,${job.picture}`} width={"200"} height={"200px"}/>
        )}
 
-       
+       {user && employee && (
+        <div>
+         
+          
+          <select  value={selectedCv} onChange={handleCvChange}>
+            <option value="">Select You'r Resume</option>
+
+             {user?.employeeDto?.employeeCvDto?.map(cv => {
+              return(
+              <option key={cv.id} value={cv.id}>
+                {cv.cvFileName || `CV ${cv.id}`}
+              </option>
+          )})}
+          </select>
+          {selectedCvObject && (
+            <button onClick={() => openCv(selectedCvObject.cvFile)}>
+              {selectedCvObject.cvFileName ? `Preview ${selectedCvObject.cvFileName}` : "Preview Cv"}
+               
+            </button>
+          )}
+        </div>
+       )}
+ 
+
 
     <p>{job.position}</p>
      <p>{job.salary}</p>

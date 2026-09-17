@@ -18,6 +18,9 @@ public class EmployeeCv {
     @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] cvFile;
 
+    @Column(name = "cv_file_name",nullable = false)
+    private String cvFileName;
+
     @ManyToOne()
     @JoinColumn(name = "employee_id")
     private Employee employee;
@@ -25,8 +28,9 @@ public class EmployeeCv {
     public EmployeeCv() {
     }
 
-    public EmployeeCv(byte[] cvFile, Employee employee) {
+    public EmployeeCv(byte[] cvFile, String cvFileName, Employee employee) {
         this.cvFile = cvFile;
+        this.cvFileName = cvFileName;
         this.employee = employee;
     }
 }

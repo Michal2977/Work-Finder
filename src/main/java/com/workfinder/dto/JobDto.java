@@ -43,6 +43,7 @@ public class JobDto {
     private EmployerDto employerDto;
     private int deletedJobs;
     private Currency currency;
+    private ApplicationType applicationType;
 
     public JobDto() {
     }
@@ -55,7 +56,8 @@ public class JobDto {
                   JobCategory jobCategory, SalaryPeriod salaryPeriod, SalaryType salaryType, String picture
             , String companyName, String shiftSystem, String workingHours, Boolean nightShift, String aboutCompany,
                   String salarySystem, Set<Benefit> benefit, String phoneNumber, LocalDateTime expirestAt,
-                  boolean deleted,LocalDateTime deletedAt,EmployerDto employerDto,int deletedJobs,Currency currency) {
+                  boolean deleted,LocalDateTime deletedAt,EmployerDto employerDto,int deletedJobs,Currency currency
+    ,ApplicationType applicationType) {
         this.id = id;
         this.position = position;
         this.description = description;
@@ -87,6 +89,7 @@ public class JobDto {
         this.employerDto = employerDto;
         this.deletedJobs = deletedJobs;
         this.currency = currency;
+        this.applicationType = applicationType;
 
     }
 }

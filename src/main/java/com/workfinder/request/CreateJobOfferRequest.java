@@ -38,6 +38,7 @@ public class CreateJobOfferRequest {
     private SalaryPeriod salaryPeriod;
     private Set<Benefit> benefit;
     private SalaryType salaryType;
+    private ApplicationType applicationType;
 
     private EmployerDto employerDto;
 

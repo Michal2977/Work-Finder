@@ -14,7 +14,8 @@ public class EmployeeMapper {
 
 
             List<EmployeeCvDto> employeeCvs = employee.getEmployeeCv().stream().map(
-          cv -> new EmployeeCvDto(cv.getId(),Base64.getEncoder().encodeToString(cv.getCvFile()))).toList();
+          cv -> new EmployeeCvDto(cv.getId(),Base64.getEncoder().encodeToString(cv.getCvFile())
+          ,cv.getCvFileName())).toList();
 
         return new EmployeeDto(employee.getFirstName(),employee.getLastName(),employee.getPhoneNumber(),employeeCvs);
     }

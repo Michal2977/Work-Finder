@@ -290,14 +290,21 @@ public class AuthController {
     }
 
     @PostMapping("/add-cv")
-    public ResponseEntity<?> addCvAsEmployee(@RequestPart("file")MultipartFile file,Authentication authentication){
+    public ResponseEntity<?> addCvAsEmployee(@RequestPart("file")MultipartFile file,
+        @RequestPart("request")AddCvRequest request,Authentication authentication){
         try {
-            authService.updateCv(file,authentication.getName());
+            authService.updateCv(file,authentication.getName(),request);
             return ResponseEntity.ok().body(new ApiResponse("CV added "));
         }catch (InvalidFileException e){
             return ResponseEntity.badRequest().body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.internalServerError().body(new ApiResponse("Something Went Wrong Try Again Later"));
         }
+    }
+
+    @DeleteMapping("/delete-cv/{id}")
+    public ResponseEntity<?> deleteResume(@PathVariable("id")Long id){
+        authService.deleteResume(id);
+      return   ResponseEntity.ok().body(new ApiResponse("Cv file has been removed"));
     }
 }

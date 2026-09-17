@@ -78,13 +78,17 @@ public class User {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
     private List<FavoriteJob> favoriteJob = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL)
+    private List<QuickApplication> quickApplication = new ArrayList<>();
+
     public User() {
     }
 
     public User(String email, String password, LocalDateTime createAt, LocalDateTime expiresAt,
                 String verificationCode, String verificationToken, String displayName, boolean banned,
                 boolean isEnabled, String temporaryEmail, byte[] picture, Set<Role> role, Employee employee,
-                Employer employer, List<UserProvider> providers, List<Contact> contacts, List<FavoriteJob> favoriteJob) {
+                Employer employer, List<UserProvider> providers, List<Contact> contacts, List<FavoriteJob> favoriteJob
+    ,List<QuickApplication>quickApplication) {
         this.email = email;
         this.password = password;
         this.createAt = createAt;
@@ -102,6 +106,7 @@ public class User {
         this.providers = providers;
         this.contacts = contacts;
         this.favoriteJob = favoriteJob;
+        this.quickApplication = quickApplication;
     }
 
     public void createRole(Role role){

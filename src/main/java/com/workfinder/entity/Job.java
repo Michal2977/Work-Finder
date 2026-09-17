@@ -158,6 +158,11 @@ public class Job {
     @OneToMany(mappedBy = "job",cascade = CascadeType.ALL)
     private List<FavoriteJob> favoriteJob = new ArrayList<>();
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "application_type",nullable = false)
+    private ApplicationType applicationType;
+
+
 
     public Job() {
     }
@@ -169,7 +174,8 @@ public class Job {
                Currency currency,String requirements,
                String weOffer, Boolean nightShift, String companyName, String salarySystem, String aboutCompany,
                Set<Benefit> benefit, String phoneNumber, byte[] picture
-               ,boolean deleted,LocalDateTime deletedAt,Employer employer,int deletedJobs,List<FavoriteJob> favoriteJob) {
+               ,boolean deleted,LocalDateTime deletedAt,Employer employer,int deletedJobs,List<FavoriteJob> favoriteJob
+    ,ApplicationType applicationType) {
         this.position = position;
         this.createAt = createAt;
         this.expiresAt = expiresAt;
@@ -202,6 +208,7 @@ public class Job {
         this.employer = employer;
         this.deletedJobs  = deletedJobs;
         this.favoriteJob = favoriteJob;
+        this.applicationType = applicationType;
     }
 
 

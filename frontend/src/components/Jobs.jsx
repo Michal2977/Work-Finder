@@ -292,10 +292,10 @@ function Jobs(){
         <p className="card-text">{job.contractType}</p>
         <p className="card-text">{job.jobStart}</p>
         <p className="card-text">{job.workMode}</p>
-  
+      <h2 className="card-text">{job.applicationType === "QUICK" && "QUICK Application"}</h2>
          </div> 
   </div>
-  );
+  );QUICK
 })}
 <div className="d-flex align-items-center gap-2">
   <button className="btn btn-outline-primary" disabled={page === 0}

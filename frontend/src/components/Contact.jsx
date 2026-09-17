@@ -22,7 +22,7 @@ function Contact(){
      fetch("http://localhost:8080/api/auth/account-information",{
         headers : {Authorization : `Bearer ${token}`},
      }).then(response => response.json()).then(data => setUser(data));
-    },[])
+    },[]);
 
     const sendContactMessage = async(e) => {
 

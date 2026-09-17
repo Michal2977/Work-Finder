@@ -434,7 +434,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @PreAuthorize("hasRole('EMPLOYEE')")
-    public EmployeeDto updateCv(MultipartFile file,String email) throws IOException {
+    public EmployeeDto updateCv(MultipartFile file,String email,AddCvRequest request) throws IOException {
 
         User user = userRepository.findByEmail(email);
 
@@ -458,12 +458,22 @@ public class AuthServiceImpl implements AuthService {
             employeeCv.setCvFile(file.getBytes());
             employeeCv.setEmployee(user.getEmployee());
 
+            employeeCv.setCvFileName(request.getCvFileName());
+
             employeeCvRepository.save(employeeCv);
 
             user.getEmployee().getEmployeeCv().add(employeeCv);
 
         }
         return EmployeeMapper.employeeDto(user.getEmployee());
+    }
+
+
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @Override
+    public void deleteResume(Long id){
+        EmployeeCv employeeCv = employeeCvRepository.getReferenceById(id);
+        employeeCvRepository.delete(employeeCv);
     }
 
 }

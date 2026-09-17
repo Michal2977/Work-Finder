@@ -23,7 +23,16 @@ function AddCv(){
         if(!token || !file){return;}
 
         const formData = new FormData();
-        formData.append("file",file);
+
+         const request = {
+          cvFileName: file.name
+         };
+        formData.append("request",new Blob([
+            JSON.stringify(request)
+        ],{type : "application/json"}));
+        if(file){
+           formData.append("file",file);
+        }
 
         const response = await fetch("http://localhost:8080/api/auth/add-cv",{
             method : "POST",
@@ -32,8 +41,6 @@ function AddCv(){
             
             
         });
-        console.log(user.employeeDto.employeeCvDto[0].cvFile);
-          console.log(response);
         const text = await response.json();
         if(response.ok){
          setMessage(text.message);
@@ -63,6 +70,22 @@ function AddCv(){
         window.open(url,"_blank");
     };
 
+    const deleteCv = async(id) => {
+        const token = localStorage.getItem("token")
+        if(!token){return;}
+        const response = await fetch(`http://localhost:8080/api/auth/delete-cv/${id}`,{
+            method : "DELETE",
+            headers : {Authorization : `Bearer ${token}`}
+        });
+
+        const text = await response.json();
+        if(response.ok){
+            setMessage(text.message);
+            setTimeout(() => {
+                window.location.reload();
+            },2000)
+        }
+    }
 
 
 
@@ -72,13 +95,17 @@ function AddCv(){
             {message && <h2>{message}</h2>}
 
             {user && (
-                <div>    
+                <div >     
                 {user?.employeeDto?.employeeCvDto?.map(cv => (
-                    <button key={cv.id} onClick={() => openCv(cv.cvFile)}>Open Cv</button>
-                ))}    
+                    <div  key={cv.id}>
+                    <button onClick={() => openCv(cv.cvFile)}>{cv.cvFileName ? cv.cvFileName : "Open Cv"}</button>
+                    <button type="button" className="btn btn-danger" onClick={() => deleteCv(cv.id)}>Deelte Cv</button>
+                    </div>
+                ))} 
+                   
                 </div>
             )}
-           
+
             <label>Add Resume:</label>
             <br/>
             <input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
