@@ -21,6 +21,7 @@ import MyReports from "./components/MyReports";
 import ReportDetails from "./components/ReportDetails";
 import SavedJobs from "./components/SavedJobs";
 import AddCv from "./components/AddCv";
+import EmployerJobs from "./components/EmployerJobs";
 
 
 function App(){
@@ -51,6 +52,7 @@ function App(){
       <Route path="/reports/:id" element={<ReportDetails/>}/>
       <Route path="/saved-jobs" element={<SavedJobs/>}/>
       <Route path="/add-cv" element={<AddCv/>}/>
+       <Route path="/employer-jobs" element={<EmployerJobs/>}/>
       
     </Routes>
     </BrowserRouter>

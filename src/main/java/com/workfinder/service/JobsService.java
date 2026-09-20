@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface JobsService {
-    public JobDto createAJobOffer(CreateJobOfferRequest request, String email,MultipartFile file) throws IOException;
+     JobDto createAJobOffer(CreateJobOfferRequest request, String email,MultipartFile file) throws IOException;
     Map<String,Object> jobDtoList(int page, int size, String keyword, String location, String sort, WorkMode workMode
             , ContractType contractType, EmploymentType employmentType, JobCategory jobCategory,
                                   List<String> publicationDate, SalaryPeriod salaryPeriod, SalaryType salaryType,
@@ -33,5 +33,7 @@ public interface JobsService {
     void  deleteOldSoftDeletedJobs();
     long countAllExpiresOffers();
     long countExpiresJobsOffersForEmployer(String email);
+    List<JobDto> findAllEmployerOwnerJobs(Long employerId);
+    long countAllJobsOffersEmployerOwner(String email);
 
 }

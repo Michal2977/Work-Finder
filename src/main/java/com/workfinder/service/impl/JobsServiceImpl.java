@@ -1,6 +1,7 @@
 package com.workfinder.service.impl;
 
 import com.workfinder.dto.JobDto;
+import com.workfinder.entity.Application;
 import com.workfinder.entity.Employer;
 import com.workfinder.entity.Job;
 import com.workfinder.entity.User;
@@ -8,6 +9,7 @@ import com.workfinder.enums.*;
 import com.workfinder.enums.Currency;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.mapper.JobMapper;
+import com.workfinder.repository.ApplicationRepository;
 import com.workfinder.repository.JobRepository;
 import com.workfinder.request.CreateJobOfferRequest;
 import com.workfinder.request.UpdateJobOfferRequest;
@@ -34,13 +36,16 @@ public class JobsServiceImpl implements JobsService {
 
     private final JobRepository jobRepository;
     private final AuthServiceImpl authService;
+    private final ApplicationRepository applicationRepository;
 
-    public JobsServiceImpl(JobRepository jobRepository, AuthServiceImpl authService) {
+    public JobsServiceImpl(JobRepository jobRepository, AuthServiceImpl authService, ApplicationRepository applicationRepository) {
         this.jobRepository = jobRepository;
         this.authService = authService;
+        this.applicationRepository = applicationRepository;
     }
 
     @Override
+    @Transactional
     @PreAuthorize("hasAnyRole('EMPLOYER','ADMIN')")
     public JobDto createAJobOffer(CreateJobOfferRequest request, String email,MultipartFile file) throws IOException {
 
@@ -100,8 +105,21 @@ public class JobsServiceImpl implements JobsService {
         job.setEmployer(employer);
         job.setCompanyName(request.getCompanyName());
 
-        jobRepository.save(job);
-        return JobMapper.jobDto(job);
+        Job savedJob = jobRepository.save(job);
+
+        if (job.getApplicationType() == ApplicationType.FORM){
+
+            for (String questions : request.getQuestions()){
+                Application application = new Application();
+                application.setJob(savedJob);
+                application.setQuestion(questions);
+
+                applicationRepository.save(application);
+
+            }
+
+        }
+        return JobMapper.jobDto(savedJob);
 
     }
 
@@ -299,6 +317,13 @@ public class JobsServiceImpl implements JobsService {
         return jobRepository.countExpiresJobForEmployerOwner(LocalDateTime.now(),user.getEmployer().getId());
     }
 
+    @PreAuthorize("hasRole('EMPLOYER')")
+    @Override
+    public long countAllJobsOffersEmployerOwner(String email){
+        User user = authService.findByEmail(email);
+        return jobRepository.countAllEmployerOwnerJobs(LocalDateTime.now(),user.getEmployer().getId());
+    }
+
 
     @Override
     public JobDto findJobById(Long id){
@@ -356,6 +381,13 @@ public class JobsServiceImpl implements JobsService {
         job.setDeletedJobs(job.getDeletedJobs() -1);
         job.setDeletedAt(null);
         job.setDeleted(false);
+    }
+
+    @Override
+    @PreAuthorize("hasRole('EMPLOYER')")
+    public List<JobDto> findAllEmployerOwnerJobs(Long employerId){
+        List<Job> job =  jobRepository.findAllEmployerIdAndJobId(employerId);
+         return job.stream().map(JobMapper :: jobDto).toList();
     }
 }
 

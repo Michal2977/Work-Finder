@@ -6,6 +6,7 @@ import lombok.Getter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -24,6 +25,7 @@ public class CreateJobOfferRequest {
     private String salarySystem;
     private String phoneNumber;
     private Long expiresAt;
+    private List<String> questions;
 
     private String duties;
     private String requirements;

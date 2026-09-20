@@ -49,6 +49,7 @@ function Jobs(){
 
     const [amountOfAllExpiresJob,setAmountsOfAllExpiresJob] = useState(0);
     const [amountOfEmployerExpiresJob,setAmountsOfEmployerExpiresJobs] = useState(0);
+    const [jobsEmployerOwner,setJobsEmployerOwner] = useState(0);
 
    
 
@@ -217,8 +218,6 @@ function Jobs(){
      fetch("http://localhost:8080/api/amount-of-favorite-jobs",{
       headers : {Authorization : `Bearer ${token}`}
     }).then(response => response.json()).then(data => setAmountsOfFavoriteJobs(data));
-
-
    },[]);
 
    useEffect(() => {
@@ -230,6 +229,10 @@ function Jobs(){
       fetch("http://localhost:8080/api/amounts-of-employer-expires-job",{
       headers : {Authorization : `Bearer ${token}`}
     }).then(response => response.json()).then(data => setAmountsOfEmployerExpiresJobs(data));
+
+    fetch("http://localhost:8080/api/amounts-of-employer-jobs",{
+      headers : {Authorization : `Bearer ${token}`}
+    }).then(response => response.json()).then(data => setJobsEmployerOwner(data));
    },[Employer])
 
 
@@ -240,7 +243,8 @@ function Jobs(){
 
          <Navbar user={user} Employee={Employee} Employer={Employer} Admin={Admin} logout={logout} displayName={displayName}
          amountsOfReports={amountsOfReports}    amountOfDeletedJobs={amountOfDeletedJobs} amountsOfFavoriteJobs={amountsOfFavoriteJobs}
-         amountOfAllExpiresJob={amountOfAllExpiresJob} amountOfEmployerExpiresJob={amountOfEmployerExpiresJob}/>
+         amountOfAllExpiresJob={amountOfAllExpiresJob} amountOfEmployerExpiresJob={amountOfEmployerExpiresJob} 
+         jobsEmployerOwner={jobsEmployerOwner}/>
          
          <Filters workMode={workMode} setWorkMode={setWorkMode} contractType={contractType} setContractType={setContractType} employmentType={employmentType} setEmploymentType={setEmploymentType} jobCategory={jobCategory} setJobCategory={setJobCategory}
          salaryPeriod={salaryPeriod} setSalaryPeriod={setSalaryPeriod} setPage={setPage} jobCategoryCounts={jobCategoryCounts}
@@ -267,7 +271,7 @@ function Jobs(){
     return(     
                 <div className="card" width={"18rem"}  key={job.id}>
                    {job.picture && (
-                   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  width={"200px"} height={"200px;"} alt="empty"/>
+                   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  width={"200px"} height={"200px"} alt="empty"/>
                     )}
                    
   <div className="card-body">
@@ -295,8 +299,9 @@ function Jobs(){
       <h2 className="card-text">{job.applicationType === "QUICK" && "QUICK Application"}</h2>
          </div> 
   </div>
-  );QUICK
+  );
 })}
+
 <div className="d-flex align-items-center gap-2">
   <button className="btn btn-outline-primary" disabled={page === 0}
    onClick={() => setPage(page -1)}>Previous

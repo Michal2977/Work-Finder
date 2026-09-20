@@ -1,12 +1,15 @@
-import {useEffect, useState } from "react";
+import {useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 
 function JobDetails(){
 
     const {id} = useParams();
     const [job,setJob] = useState("");
+    const [message,setMessage] = useState("");
     const [user,setUser] = useState(null);
+    const fileInputRef = useRef(null);
     const [selectedCv,setSeletedCv] = useState(localStorage.getItem("selectedCv") || "");
+    const [file,setFile] = useState(null);
 
 
     const employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
@@ -30,6 +33,52 @@ function JobDetails(){
     cv => cv.id === Number(selectedCv)
    );
 
+
+   const qucikApplication = async(id,cv) => {
+     const token  = localStorage.getItem("token");
+     if(!token){return;}
+       
+     const  formData = new FormData();
+     const request = {
+      sendCvName: cv.cvFileName
+     };
+
+     formData.append("request",new Blob([
+      JSON.stringify(request)
+     ],{type : "application/json"}));
+
+     const binary = atob(cv.cvFile);
+     const bytes = new Uint8Array(binary.length);
+
+     for(let i =0; i < bytes.length; i++){
+      bytes[i] = binary.charCodeAt(i);
+     }
+     const blob = new Blob([bytes],{type : "application/pdf"});
+
+    formData.append("file",blob,cv.cvFileName);
+
+     const response = await fetch(`http://localhost:8080/api/jobs/quick-application/${id}`,{
+      method : "POST",
+      headers : {Authorization : `Bearer ${token}`},
+      body : formData
+     });
+
+     const text = await response.json();
+     if(response.ok){
+      setMessage(text.message);
+      setTimeout(() => {
+       setMessage("");
+      },2000)
+   
+     }else{
+      setMessage(text.message);
+      setTimeout(() => {
+      setMessage("");
+      },2000);
+     }
+   }
+   
+   
  
 
 
@@ -55,12 +104,13 @@ function JobDetails(){
     }
 
     return(
-     <div>                  
+     <div> 
+      {message && <h1>{message}</h1>}                 
        {job.picture && (
        <img src={`data:${job.pictureContentType};base64,${job.picture}`} width={"200"} height={"200px"}/>
        )}
 
-       {user && employee && (
+       {user && employee && job.applicationType === "QUICK" && (
         <div>
          
           
@@ -75,14 +125,17 @@ function JobDetails(){
           )})}
           </select>
           {selectedCvObject && (
-            <button onClick={() => openCv(selectedCvObject.cvFile)}>
+            <>            <button onClick={() => openCv(selectedCvObject.cvFile)}>
               {selectedCvObject.cvFileName ? `Preview ${selectedCvObject.cvFileName}` : "Preview Cv"}
                
             </button>
+             <button className="btn btn-success" onClick={() => qucikApplication(id,selectedCvObject)}>Apply </button>
+           </>
+
           )}
         </div>
        )}
- 
+
 
 
     <p>{job.position}</p>

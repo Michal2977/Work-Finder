@@ -15,7 +15,7 @@ function CreateJobOfferPage(){
         ,jobStart : "" ,workMode : [],duties : "",requirements: "",
         weOffer : "",jobCategory: "",salaryPeriod : "", salaryType : ""
     ,companyName : "",shiftSystem : "",workingHours :"",nightShift: null,aboutCompany : "",
-    salarySystem : "",benefit : [],phoneNumber : "",expiresAt : 7,applicationType : ""});
+    salarySystem : "",benefit : [],phoneNumber : "",expiresAt : 7,applicationType : "",questions: []});
     
     
 
@@ -56,6 +56,7 @@ function CreateJobOfferPage(){
     aboutCompany: data.aboutCompany || null,
     salarySystem: data.salarySystem || null,
     phoneNumber: data.phoneNumber || null,
+    questions : data.questions || null
 };
 
         const formData = new FormData();
@@ -104,7 +105,8 @@ function CreateJobOfferPage(){
                 benefit: [],
                 phoneNumber: "",
                 expiresAt: 7,
-                applicationType : ""
+                applicationType : "",
+                questions : []
             })
             fileInputRef.current.value ="";
             setFile(null);
@@ -564,15 +566,35 @@ function CreateJobOfferPage(){
             <img src={URL.createObjectURL(file)} alt="preview" width={"200px"} height={"200px"} />
         )}
          <br/>
-         <select value={data.applicationType} onChange={(e) => setData({...data,applicationType : e.target.value})} required>
+ 
+         <select value={data.applicationType} onChange={(e) => {
+            const applicationType = e.target.value; 
+            setData({...data,applicationType : applicationType,questions: applicationType === "FORM" && data.questions.length ===0
+                ? [""] : applicationType === "QUICK" ? [] :data.questions
+            });
+         }} required>
             <option value="">Select Apllication Type</option>
             <option value="QUICK">QUICK</option>
+             <option value="FORM">FORM</option>
          </select>
-
+          {data.applicationType === "FORM" && (
+            <div>
+                {data.questions.map((question,index) => (
+                 <div key={index}>
+                  <input type="text" value={question} placeholder={`Question ${index + 1}`} minLength={5} maxLength={500} required
+                  onChange={(e) => {
+                    const questions = [...data.questions];
+                    
+                    questions[index] = e.target.value;
+                    setData({...data,questions : questions})
+                  }}/>
+                 </div>
+                ))}
+                <button type="button" onClick={() => setData({...data,questions : [...data.questions,""]})}>Add new </button>
+            </div>
+          )}
        
          <br/>
-
-       
 
          <button type="submit" className="btn btn-success" >Create Job Offer</button>
         </div>

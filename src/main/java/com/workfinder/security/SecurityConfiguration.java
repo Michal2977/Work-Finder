@@ -68,7 +68,8 @@ public class SecurityConfiguration {
                         requestMatchers("/api/auth/account-information/employee","/api/auth/add-cv"
                         ,"/api/auth/delete-cv/**","/api/jobs/quick-application/**").hasRole("EMPLOYEE")
                          .requestMatchers("/api/auth/account-information/employer",
-                                 "/api/amounts-of-employer-expires-job").hasRole("EMPLOYER")
+                                 "/api/amounts-of-employer-expires-job","/api/my-jobs-offers",
+                                 "/api/amounts-of-employer-jobs").hasRole("EMPLOYER")
                         .requestMatchers("/api/user-respond/**").hasAnyRole("EMPLOYER","EMPLOYEE")
                         .requestMatchers("/auth/deleted-jobs","/auth/recover-job/**"
                         ,"/api/auth//account-information/admin","/api/admin-respond/**","/api/ban-user/**"

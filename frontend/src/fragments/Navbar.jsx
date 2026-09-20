@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 
 function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOfReports,deletedJobs
-  ,amountOfDeletedJobs,amountsOfFavoriteJobs,amountOfAllExpiresJob,amountOfEmployerExpiresJob
+  ,amountOfDeletedJobs,amountsOfFavoriteJobs,amountOfAllExpiresJob,amountOfEmployerExpiresJob,jobsEmployerOwner
 }){
     return(
 <nav className="navbar navbar-expand-lg bg-body-tertiary">
@@ -42,6 +42,8 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
         {Employer && (
           <div>
               <h1> amount Of Employer Expires Job: {amountOfEmployerExpiresJob}</h1>
+              <Link to={"/employer-jobs"}>My Jobs Offer</Link>
+              <h1>amount of your jobs: {jobsEmployerOwner}</h1>
           </div>
         )}
           {Employee && (

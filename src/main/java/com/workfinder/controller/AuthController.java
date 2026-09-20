@@ -307,4 +307,6 @@ public class AuthController {
         authService.deleteResume(id);
       return   ResponseEntity.ok().body(new ApiResponse("Cv file has been removed"));
     }
+
+
 }

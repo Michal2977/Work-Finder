@@ -164,4 +164,16 @@ public class JobsController {
     public ResponseEntity<?> amountsOfEmployerExpiresJob(Authentication authentication){
         return ResponseEntity.ok(jobsService.countExpiresJobsOffersForEmployer(authentication.getName()));
     }
+
+    @GetMapping("/amounts-of-employer-jobs")
+    public ResponseEntity<?> findAllJobOfferEmployerOwner(Authentication authentication){
+        return ResponseEntity.ok(jobsService.countAllJobsOffersEmployerOwner(authentication.getName()));
+    }
+
+    @GetMapping("/my-jobs-offers")
+    public ResponseEntity<?> findAllEmployerOwnerJobs(Authentication authentication){
+        User user = authService.findByEmail(authentication.getName());
+        List<JobDto> jobDto = jobsService.findAllEmployerOwnerJobs(user.getEmployer().getId());
+        return ResponseEntity.ok(jobDto);
+    }
 }

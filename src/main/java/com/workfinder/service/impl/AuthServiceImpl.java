@@ -11,6 +11,7 @@ import com.workfinder.mapper.EmployeeMapper;
 import com.workfinder.mapper.EmployerMapper;
 import com.workfinder.mapper.UserMapper;
 import com.workfinder.repository.EmployeeCvRepository;
+import com.workfinder.repository.JobRepository;
 import com.workfinder.repository.RoleRepository;
 import com.workfinder.repository.UserRepository;
 import com.workfinder.request.*;
@@ -35,6 +36,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -52,14 +54,16 @@ public class AuthServiceImpl implements AuthService {
     private final BCryptPasswordEncoder passwordEncoder;
     private final EmailServiceImpl emailService;
     private final RestTemplate restTemplate;
+    private final JobRepository jobRepository;
     private final EmployeeCvRepository employeeCvRepository;
 
-    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, EmailServiceImpl emailService, RestTemplate restTemplate, EmployeeCvRepository employeeCvRepository) {
+    public AuthServiceImpl(UserRepository userRepository, RoleRepository roleRepository, BCryptPasswordEncoder passwordEncoder, EmailServiceImpl emailService, RestTemplate restTemplate, JobRepository jobRepository, EmployeeCvRepository employeeCvRepository) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.restTemplate = restTemplate;
+        this.jobRepository = jobRepository;
         this.employeeCvRepository = employeeCvRepository;
     }
 
@@ -475,5 +479,7 @@ public class AuthServiceImpl implements AuthService {
         EmployeeCv employeeCv = employeeCvRepository.getReferenceById(id);
         employeeCvRepository.delete(employeeCv);
     }
+
+
 
 }
