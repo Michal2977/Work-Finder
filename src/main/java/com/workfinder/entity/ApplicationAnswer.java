@@ -1,11 +1,15 @@
 package com.workfinder.entity;
 
-import com.workfinder.enums.ApplicationStatus;
+
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+
 
 @Getter
 @Setter
@@ -17,9 +21,11 @@ public class ApplicationAnswer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "answer",nullable = false)
-    private String answer;
 
+    @ElementCollection
+    @CollectionTable(name = "application_answer_values",joinColumns = @JoinColumn(name = "application_answer_id"))
+    @Column(name = "answer",nullable = false)
+    private List<@Size(min = 5,max = 300)String> answer = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "application_submission_id",nullable = false)
@@ -36,7 +42,8 @@ public class ApplicationAnswer {
     public ApplicationAnswer() {
     }
 
-    public ApplicationAnswer(String answer, ApplicationSubmission applicationSubmission, Application application, User user) {
+    public ApplicationAnswer(List<String> answer,
+                             ApplicationSubmission applicationSubmission, Application application, User user) {
         this.answer = answer;
         this.applicationSubmission = applicationSubmission;
         this.application = application;

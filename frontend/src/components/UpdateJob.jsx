@@ -1,6 +1,6 @@
 
 import { useState,useEffect } from "react";
-import { data, useNavigate, useParams } from "react-router-dom";
+import {  useNavigate, useParams } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css"
 function UpdateJob(){
@@ -15,7 +15,7 @@ function UpdateJob(){
         ,jobStart : "" ,workMode : [],duties : "",requirements: "",
         weOffer : "",jobCategory: "",salaryPeriod : "", salaryType : ""
     ,companyName : "",shiftSystem : "",workingHours :"",nightShift: null,aboutCompany : "",
-    salarySystem : "",benefit : [],phoneNumber : "", expiresAt : ""});
+    salarySystem : "",benefit : [],phoneNumber : "", expiresAt : "",applicationDto: []});
     const {id} = useParams();
    
     const getTimeLeft = (expiresAt) => {
@@ -92,7 +92,9 @@ function UpdateJob(){
     workingHours: job.workingHours || null,
     aboutCompany: job.aboutCompany || null,
     salarySystem: job.salarySystem || null,
-    phoneNumber: job.phoneNumber || null
+    phoneNumber: job.phoneNumber || null,
+    applicationType : job.applicationType || null
+   
         };
         if (expirationDays) {
          request.expiresAt = expirationDays;
@@ -131,6 +133,7 @@ function UpdateJob(){
        {message && <h1>{message}</h1>}
        <h1>{user?.email}</h1>
        <br/>
+       <h1>{job.applicationType}</h1>
        <input type="text" placeholder="position" value={job.position || ""} required
        onChange={(e) => setJob({ ...job,position : e.target.value})} minLength={3} maxLength={50}/>
        <br/>
@@ -711,6 +714,124 @@ function UpdateJob(){
         setJob({...job, phoneNumber: value ?? null})
     }
 />
+  <br/>
+ <select value={job.applicationType} onChange={(e) => {
+            const applicationType = e.target.value; 
+            setJob({...job,applicationType,applicationDto : applicationType === "FORM" ? {
+                question: [],
+                applicationField: []
+            } : {
+                question : [],
+                applicationField : []
+            }});
+         }} required>
+            <option value="">Select Apllication Type</option>
+            <option value="QUICK">QUICK</option>
+             <option value="FORM">FORM</option>
+         </select>
+           {job.applicationType === "FORM" && (
+            <div>
+                 <div>
+            <label>
+       
+               <input
+    type="checkbox"
+    checked={job?.applicationDto?.applicationField?.includes("AVAILABILITY")}
+    onChange={(e) => {
+        if (e.target.checked) {
+            setJob({...job, applicationDto: {...job.applicationDto,
+                    applicationField: [
+                        ...job.applicationDto.applicationField,
+                        "AVAILABILITY"
+                    ]
+                }
+            });
+        } else {
+            setJob({...job,applicationDto: {...job.applicationDto,applicationField:
+                        job.applicationDto.applicationField.filter(
+                            field => field !== "AVAILABILITY"
+                        )}
+         });
+            }}}/>
+            AVAILABILITY
+            </label>
+        </div>
+        <div>
+            <label>
+                <input type="checkbox" checked={job?.applicationDto?.applicationField?.includes("EXPERIENCE")}
+                 onChange={(e) => {
+                    if(e.target.checked){
+                        setJob({...job,applicationDto: {...job.applicationDto,applicationField:[
+                            ...job.applicationDto.applicationField,"EXPERIENCE"
+                        ]}});
+                    }else{
+                       setJob({...job,applicationDto : {...job.applicationDto,applicationField :
+                        job.applicationDto.applicationField.filter(field => field !== "EXPERIENCE" )
+                       }})
+                    }
+                 }}  
+            />
+            EXPERIENCE
+            </label>
+        </div>
+
+        <div>
+            <label>
+                <input type="checkbox" checked={job?.applicationDto?.applicationField?.includes("EXPECTED_SALARY")}
+                onChange={(e) => {
+                    if(e.target.checked){
+                        setJob({...job,applicationDto : {...job.applicationDto,applicationField : [
+                            ...job.applicationDto.applicationField,"EXPECTED_SALARY"
+                        ]}});
+                    }else{
+                        setJob({...job,applicationDto : {...job.applicationDto,applicationField : job.applicationDto.applicationField
+                            .filter(field => field !== "EXPECTED_SALARY")
+                        }})
+                    }
+                }}/>
+              Expected Salary
+            </label>
+        </div>
+            </div>
+           )}
+
+          {job.applicationType === "FORM" && (
+            <div>
+                {job?.applicationDto?.question?.map((question,index)  => {
+                return (
+                 <div key={index}>
+                    <input type="text" value={question} placeholder={`Question ${index + 1}`}
+                    minLength={5}  maxLength={500} required
+                    onChange={(e) => {
+                        const questions = [...job.applicationDto.question ];
+                        questions[index] = e.target.value;
+                        setJob({...job, applicationDto: { ...job.applicationDto, question: questions
+                            }
+                        }); 
+                    }}
+                 />
+               <button type="button" 
+                onClick={() => {
+                 const questions = job.applicationDto.question.filter((_, i) => i !== index);
+                        setJob({...job,applicationDto: {...job.applicationDto, question: questions}
+                        });
+                    }}
+                    >
+                    Remove
+                </button>
+               
+                 </div>
+                )})}    
+                 <button type="button"
+                      onClick={() => {setJob({...job, applicationDto: {...job.applicationDto,
+                        question: [
+                            ...job.applicationDto.question,""]
+                    }
+                });
+            }}
+                >Add new Question</button>   
+            </div> 
+          )}
 <br/>
  <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])}/>
   {job.picture && (

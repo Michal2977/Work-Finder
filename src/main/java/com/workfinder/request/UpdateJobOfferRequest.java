@@ -1,10 +1,13 @@
 package com.workfinder.request;
 
+import com.workfinder.dto.ApplicationDto;
 import com.workfinder.dto.EmployerDto;
+import com.workfinder.entity.Application;
 import com.workfinder.enums.*;
 import lombok.Getter;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -23,6 +26,8 @@ public class UpdateJobOfferRequest {
     private String salarySystem;
     private String phoneNumber;
     private Long expiresAt;
+    private ApplicationType applicationType;
+    private ApplicationDto applicationDto;
 
     private String duties;
     private String requirements;

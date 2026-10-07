@@ -4,7 +4,6 @@ import com.workfinder.enums.*;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.Getter;
-import lombok.NonNull;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -162,6 +161,12 @@ public class Job {
     @Column(name = "application_type",nullable = false)
     private ApplicationType applicationType;
 
+    @OneToOne(mappedBy = "job",orphanRemoval = true,cascade = CascadeType.ALL)
+    private Application application;
+
+    @Transient
+    private boolean alreadyApplied;
+
 
 
     public Job() {
@@ -175,7 +180,7 @@ public class Job {
                String weOffer, Boolean nightShift, String companyName, String salarySystem, String aboutCompany,
                Set<Benefit> benefit, String phoneNumber, byte[] picture
                ,boolean deleted,LocalDateTime deletedAt,Employer employer,int deletedJobs,List<FavoriteJob> favoriteJob
-    ,ApplicationType applicationType) {
+    ,ApplicationType applicationType,Application application,boolean alreadyApplied ) {
         this.position = position;
         this.createAt = createAt;
         this.expiresAt = expiresAt;
@@ -209,6 +214,8 @@ public class Job {
         this.deletedJobs  = deletedJobs;
         this.favoriteJob = favoriteJob;
         this.applicationType = applicationType;
+        this.application = application;
+        this.alreadyApplied = alreadyApplied;
     }
 
 

@@ -5,6 +5,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -23,10 +27,15 @@ public class ApplicationSubmission {
     @Column(name = "send_cv_name",nullable = false)
     private String sendCvName;
 
+    @Column(name = "sent_at")
+    private LocalDateTime sentAt;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "application_status")
     private ApplicationStatus applicationStatus;
 
+    @OneToMany(mappedBy = "applicationSubmission")
+    private List<ApplicationAnswer> applicationAnswers = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id",nullable = false)
@@ -39,10 +48,14 @@ public class ApplicationSubmission {
     public ApplicationSubmission() {
     }
 
-    public ApplicationSubmission(byte[] sendCv, String sendCvName, ApplicationStatus applicationStatus, User user, Job job) {
+    public ApplicationSubmission(byte[] sendCv, String sendCvName, LocalDateTime sentAt,
+                                 ApplicationStatus applicationStatus, List<ApplicationAnswer> applicationAnswers,
+                                 User user, Job job) {
         this.sendCv = sendCv;
         this.sendCvName = sendCvName;
+        this.sentAt = sentAt;
         this.applicationStatus = applicationStatus;
+        this.applicationAnswers = applicationAnswers;
         this.user = user;
         this.job = job;
     }

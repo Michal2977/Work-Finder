@@ -34,6 +34,7 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
   <>
      <div>
       <Link to={"/saved-jobs"}>Saved Jobs</Link>
+       
     </div>    
    
 
@@ -52,6 +53,7 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
                   <h1>employee</h1>
                   <h1>{displayName}</h1>
                 <h1>{user.email}</h1>
+               <Link to={"/employee-applications"}>My Applications</Link>
                 <Link to={"/add-cv"}>Add Resume</Link>
                 </div>
                 

@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 function JobDetails(){
 
@@ -9,7 +9,7 @@ function JobDetails(){
     const [user,setUser] = useState(null);
     const fileInputRef = useRef(null);
     const [selectedCv,setSeletedCv] = useState(localStorage.getItem("selectedCv") || "");
-    const [file,setFile] = useState(null);
+    const [selectedComputerFile,setSelectedComputerFile] = useState(null);
 
 
     const employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
@@ -17,9 +17,15 @@ function JobDetails(){
     
 
     useEffect(() => {
-    fetch(`http://localhost:8080/api/jobs/${id}`).then(response => response.json()).then(data => setJob(data))
+      const token = localStorage.getItem("token");
+      
+
+     fetch(`http://localhost:8080/api/jobs/${id}`,{
+      headers : token ? {Authorization : `Bearer ${token}`} : {}
+     }) .then(response => response.json()).then(data => setJob(data))
+  
     },[id]);
-    
+
     useEffect(() => {
       const token = localStorage.getItem("token");
       if(!token){return;}
@@ -38,14 +44,19 @@ function JobDetails(){
      const token  = localStorage.getItem("token");
      if(!token){return;}
        
-     const  formData = new FormData();
-     const request = {
-      sendCvName: cv.cvFileName
-     };
+    const  formData = new FormData();
 
-     formData.append("request",new Blob([
+     const request = {
+        sendCvName: selectedComputerFile
+            ? selectedComputerFile.name
+            : cv.cvFileName
+    };
+
+      formData.append("request",new Blob([
       JSON.stringify(request)
      ],{type : "application/json"}));
+
+     const file = selectedComputerFile || (() => {
 
      const binary = atob(cv.cvFile);
      const bytes = new Uint8Array(binary.length);
@@ -53,10 +64,14 @@ function JobDetails(){
      for(let i =0; i < bytes.length; i++){
       bytes[i] = binary.charCodeAt(i);
      }
-     const blob = new Blob([bytes],{type : "application/pdf"});
-
-    formData.append("file",blob,cv.cvFileName);
-
+       return new File(
+            [bytes],
+            cv.cvFileName,
+            { type: "application/pdf" }
+        );
+    })();
+   formData.append("file", file);
+     
      const response = await fetch(`http://localhost:8080/api/jobs/quick-application/${id}`,{
       method : "POST",
       headers : {Authorization : `Bearer ${token}`},
@@ -109,33 +124,78 @@ function JobDetails(){
        {job.picture && (
        <img src={`data:${job.pictureContentType};base64,${job.picture}`} width={"200"} height={"200px"}/>
        )}
-
-       {user && employee && job.applicationType === "QUICK" && (
+       {user && employee && job.applicationType === "FORM" && (
         <div>
-         
           
-          <select  value={selectedCv} onChange={handleCvChange}>
-            <option value="">Select You'r Resume</option>
-
-             {user?.employeeDto?.employeeCvDto?.map(cv => {
-              return(
-              <option key={cv.id} value={cv.id}>
-                {cv.cvFileName || `CV ${cv.id}`}
-              </option>
-          )})}
-          </select>
-          {selectedCvObject && (
-            <>            <button onClick={() => openCv(selectedCvObject.cvFile)}>
-              {selectedCvObject.cvFileName ? `Preview ${selectedCvObject.cvFileName}` : "Preview Cv"}
-               
-            </button>
-             <button className="btn btn-success" onClick={() => qucikApplication(id,selectedCvObject)}>Apply </button>
-           </>
-
-          )}
+          {job.alreadyApplied ? (
+            <button className="btn btn-success" disabled > Already applied</button>
+          ) : (<Link to={`/form-application/${id}`}><button className="btn btn-success">Apply</button></Link>)}
+         
         </div>
        )}
 
+      {user && employee && job.applicationType === "QUICK" && (
+    <div>
+
+        <select
+            value={selectedCv}
+            onChange={(e) => {
+                handleCvChange(e);
+                setSelectedComputerFile(null);
+            }}
+        >
+            <option value="">Select Your Resume</option>
+
+            {user?.employeeDto?.employeeCvDto?.map(cv => (
+                <option key={cv.id} value={cv.id}>
+                    {cv.cvFileName || `CV ${cv.id}`}
+                </option>
+            ))}
+        </select>
+
+        <input
+            type="file"
+            accept=".pdf,application/pdf"
+            onChange={(e) => {
+                setSelectedComputerFile(e.target.files[0]);
+                setSelectedCv("");
+            }}
+        />
+
+        {selectedCvObject && (
+            <div>
+                <button onClick={() => openCv(selectedCvObject.cvFile)}>
+                    {selectedCvObject.cvFileName
+                        ? `Preview ${selectedCvObject.cvFileName}`
+                        : "Preview CV"}
+                </button>
+
+                <button
+                    className="btn btn-success"
+                    disabled={job.alreadyApplied}
+                    onClick={() => qucikApplication(id, selectedCvObject)}
+                >
+                    {job.alreadyApplied ? "Already applied" : "Apply"}
+                </button>
+            </div>
+        )}
+
+        {selectedComputerFile && (
+            <div>
+                <p>{selectedComputerFile.name}</p>
+
+                <button
+                    className="btn btn-success"
+                    disabled={job.alreadyApplied}
+                    onClick={() => qucikApplication(id, null)}
+                >
+                    {job.alreadyApplied ? "Already applied" : "Apply"}
+                </button>
+            </div>
+        )}
+
+    </div>
+)}
 
 
     <p>{job.position}</p>
@@ -146,7 +206,7 @@ function JobDetails(){
         <p>{job.contractType}</p>
          <p>{job.phoneNumber}</p>
         <hr/>
-        <p>{job.description}</p>
+        <p>{job?.description}</p>
         <hr/>
 
          <p>{job.location}</p>

@@ -1,16 +1,16 @@
 package com.workfinder.service.impl;
 
+import com.workfinder.dto.ApplicationDto;
 import com.workfinder.dto.JobDto;
-import com.workfinder.entity.Application;
-import com.workfinder.entity.Employer;
-import com.workfinder.entity.Job;
-import com.workfinder.entity.User;
+import com.workfinder.entity.*;
 import com.workfinder.enums.*;
 import com.workfinder.enums.Currency;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.mapper.JobMapper;
 import com.workfinder.repository.ApplicationRepository;
+import com.workfinder.repository.ApplicationSubmissionRepository;
 import com.workfinder.repository.JobRepository;
+import com.workfinder.repository.QuickApplicationRepository;
 import com.workfinder.request.CreateJobOfferRequest;
 import com.workfinder.request.UpdateJobOfferRequest;
 import com.workfinder.service.JobsService;
@@ -37,11 +37,15 @@ public class JobsServiceImpl implements JobsService {
     private final JobRepository jobRepository;
     private final AuthServiceImpl authService;
     private final ApplicationRepository applicationRepository;
+    private final QuickApplicationRepository quickApplicationRepository;
+    private final ApplicationSubmissionRepository applicationSubmissionRepository;
 
-    public JobsServiceImpl(JobRepository jobRepository, AuthServiceImpl authService, ApplicationRepository applicationRepository) {
+    public JobsServiceImpl(JobRepository jobRepository, AuthServiceImpl authService, ApplicationRepository applicationRepository, QuickApplicationRepository quickApplicationRepository, ApplicationSubmissionRepository applicationSubmissionRepository) {
         this.jobRepository = jobRepository;
         this.authService = authService;
         this.applicationRepository = applicationRepository;
+        this.quickApplicationRepository = quickApplicationRepository;
+        this.applicationSubmissionRepository = applicationSubmissionRepository;
     }
 
     @Override
@@ -108,24 +112,21 @@ public class JobsServiceImpl implements JobsService {
         Job savedJob = jobRepository.save(job);
 
         if (job.getApplicationType() == ApplicationType.FORM){
-
-            for (String questions : request.getQuestions()){
+              ApplicationDto applicationDto = request.getApplicationDto();
                 Application application = new Application();
                 application.setJob(savedJob);
-                application.setQuestion(questions);
+                application.setQuestion(applicationDto.getQuestion());
+                application.setApplicationField(applicationDto.getApplicationField());
 
                 applicationRepository.save(application);
-
-            }
-
         }
         return JobMapper.jobDto(savedJob);
-
     }
 
     @PreAuthorize("hasAnyRole('EMPLOYER','ADMIN')")
     @Override
     public JobDto updateJobOffer(Long id ,UpdateJobOfferRequest request,String email,MultipartFile file) throws IOException {
+
         Job job = jobRepository.getReferenceById(id);
         User user = authService.findByEmail(email);
         Employer employer = user.getEmployer();
@@ -156,11 +157,37 @@ public class JobsServiceImpl implements JobsService {
         job.setCompanyName(request.getCompanyName());
         job.setEmployer(employer);
 
+
+        ApplicationType oldApplicationType  = job.getApplicationType();
+        job.setApplicationType(request.getApplicationType());
+
+
+        Application application = applicationRepository.findByJobId(job.getId());
+
+
+        if (job.getApplicationType() == ApplicationType.FORM){
+
+            ApplicationDto applicationDto = request.getApplicationDto();
+
+            if(oldApplicationType == ApplicationType.QUICK && application == null){
+                application = new Application();
+                application.setJob(job);
+            }
+
+             application.setQuestion(applicationDto.getQuestion());
+             application.setApplicationField(applicationDto.getApplicationField());
+
+             applicationRepository.save(application);
+
+        }else if (job.getApplicationType() == ApplicationType.QUICK){
+            if (oldApplicationType == ApplicationType.FORM && application != null){
+                applicationRepository.delete(application);
+            }
+
+        }
         if (request.getExpiresAt() != null ){
             job.setExpiresAt(LocalDateTime.now().plusDays(request.getExpiresAt()));
         }
-
-
         if (file != null &&  !file.isEmpty()){
            String fileName = StringUtils.cleanPath(Objects.requireNonNull(file.getOriginalFilename()));
            if (fileName.contains("..")){
@@ -326,9 +353,23 @@ public class JobsServiceImpl implements JobsService {
 
 
     @Override
-    public JobDto findJobById(Long id){
+    public JobDto findJobById(Long id,String email){
         Job job =  jobRepository.findById(id).get();
+
+        boolean alreadyApplied = false;
+
+        if (email != null){
+            User user = authService.findByEmail(email);
+
+            if (job.getApplicationType() == ApplicationType.QUICK ){
+                alreadyApplied = quickApplicationRepository.existsByUserIdAndJobId(user.getId(),job.getId());
+            }else {
+                alreadyApplied = applicationSubmissionRepository.existsByUserIdAndJobId(user.getId(),job.getId());
+            }
+        }
+        job.setAlreadyApplied(alreadyApplied);
         return JobMapper.jobDto(job);
+
     }
 
     @Override
@@ -386,7 +427,7 @@ public class JobsServiceImpl implements JobsService {
     @Override
     @PreAuthorize("hasRole('EMPLOYER')")
     public List<JobDto> findAllEmployerOwnerJobs(Long employerId){
-        List<Job> job =  jobRepository.findAllEmployerIdAndJobId(employerId);
+        List<Job> job =  jobRepository.findAllEmployerIdAndJobId(employerId,LocalDateTime.now());
          return job.stream().map(JobMapper :: jobDto).toList();
     }
 }

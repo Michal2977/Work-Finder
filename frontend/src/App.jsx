@@ -22,6 +22,10 @@ import ReportDetails from "./components/ReportDetails";
 import SavedJobs from "./components/SavedJobs";
 import AddCv from "./components/AddCv";
 import EmployerJobs from "./components/EmployerJobs";
+import FormApplication from "./components/FormApplication";
+import ApplicationSubmitted from "./components/ApplicationSubmitted";
+import FindEmployeeAplications from "./components/FindEmployeeApplications";
+import AllApplications from "./components/AllApplications";
 
 
 function App(){
@@ -53,6 +57,10 @@ function App(){
       <Route path="/saved-jobs" element={<SavedJobs/>}/>
       <Route path="/add-cv" element={<AddCv/>}/>
        <Route path="/employer-jobs" element={<EmployerJobs/>}/>
+      <Route path="/form-application/:id" element={<FormApplication/>}/> 
+      <Route path="/application-submitted" element={<ApplicationSubmitted/>}/>
+      <Route path="/employee-applications" element={<FindEmployeeAplications/>}/>
+      <Route path="/all-applications/:id" element={<AllApplications/>}/>
       
     </Routes>
     </BrowserRouter>

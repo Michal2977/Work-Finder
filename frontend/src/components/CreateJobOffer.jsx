@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
-import { useNavigate } from "react-router-dom";
+
 
 function CreateJobOfferPage(){
 
@@ -15,7 +15,7 @@ function CreateJobOfferPage(){
         ,jobStart : "" ,workMode : [],duties : "",requirements: "",
         weOffer : "",jobCategory: "",salaryPeriod : "", salaryType : ""
     ,companyName : "",shiftSystem : "",workingHours :"",nightShift: null,aboutCompany : "",
-    salarySystem : "",benefit : [],phoneNumber : "",expiresAt : 7,applicationType : "",questions: []});
+    salarySystem : "",benefit : [],phoneNumber : "",expiresAt : 7,applicationType : "", applicationDto : [] });
     
     
 
@@ -35,9 +35,6 @@ function CreateJobOfferPage(){
         });
     },[]);
 
-
-    
-
     const createJobOffer = async(e) => {
         e.preventDefault();
       
@@ -56,7 +53,7 @@ function CreateJobOfferPage(){
     aboutCompany: data.aboutCompany || null,
     salarySystem: data.salarySystem || null,
     phoneNumber: data.phoneNumber || null,
-    questions : data.questions || null
+ 
 };
 
         const formData = new FormData();
@@ -77,6 +74,8 @@ function CreateJobOfferPage(){
         });
        
        const text = await response.json();
+console.log(JSON.stringify(request, null, 2));
+
         if(response.ok){
             setMessage(text.message);
             window.scrollTo({top : 0, behavior : "smooth"});
@@ -106,7 +105,7 @@ function CreateJobOfferPage(){
                 phoneNumber: "",
                 expiresAt: 7,
                 applicationType : "",
-                questions : []
+                applicationDto : []
             })
             fileInputRef.current.value ="";
             setFile(null);
@@ -178,7 +177,7 @@ function CreateJobOfferPage(){
          <br/>
 
          <input type="number" placeholder="salary" value={data.salary} min={"0"} max={"99999999.99"} step={"0.01"}
-         onChange={(e) => setData({...data,salary : e.target.value})}/>
+         onChange={(e) => setData({...data,salary : e.target.value})} required/>
 
          <br/>
          <select value={data.currency} onChange={(e) => setData({...data, currency : e.target.value})} required>
@@ -566,34 +565,124 @@ function CreateJobOfferPage(){
             <img src={URL.createObjectURL(file)} alt="preview" width={"200px"} height={"200px"} />
         )}
          <br/>
- 
+
          <select value={data.applicationType} onChange={(e) => {
             const applicationType = e.target.value; 
-            setData({...data,applicationType : applicationType,questions: applicationType === "FORM" && data.questions.length ===0
-                ? [""] : applicationType === "QUICK" ? [] :data.questions
-            });
+            setData({...data,applicationType,applicationDto : applicationType === "FORM" ? {
+                question: [],
+                applicationField: []
+            } : {
+                question : [],
+                applicationField : []
+            }});
          }} required>
             <option value="">Select Apllication Type</option>
             <option value="QUICK">QUICK</option>
              <option value="FORM">FORM</option>
          </select>
+           {data.applicationType === "FORM" && (
+            <div>
+                 <div>
+            <label>
+       
+               <input
+    type="checkbox"
+    checked={data.applicationDto.applicationField.includes("AVAILABILITY")}
+    onChange={(e) => {
+        if (e.target.checked) {
+            setData({...data, applicationDto: {...data.applicationDto,
+                    applicationField: [
+                        ...data.applicationDto.applicationField,
+                        "AVAILABILITY"
+                    ]
+                }
+            });
+        } else {
+            setData({...data,applicationDto: {...data.applicationDto,applicationField:
+                        data.applicationDto.applicationField.filter(
+                            field => field !== "AVAILABILITY"
+                        )}
+         });
+            }}}/>
+            AVAILABILITY
+            </label>
+        </div>
+        <div>
+            <label>
+                <input type="checkbox" checked={data.applicationDto.applicationField.includes("EXPERIENCE")}
+                 onChange={(e) => {
+                    if(e.target.checked){
+                        setData({...data,applicationDto: {...data.applicationDto,applicationField:[
+                            ...data.applicationDto.applicationField,"EXPERIENCE"
+                        ]}});
+                    }else{
+                       setData({...data,applicationDto : {...data.applicationDto,applicationField :
+                        data.applicationDto.applicationField.filter(field => field !== "EXPERIENCE" )
+                       }})
+                    }
+                 }}  
+            />
+            EXPERIENCE
+            </label>
+        </div>
+
+        <div>
+            <label>
+                <input type="checkbox" checked={data.applicationDto.applicationField.includes("EXPECTED_SALARY")}
+                onChange={(e) => {
+                    if(e.target.checked){
+                        setData({...data,applicationDto : {...data.applicationDto,applicationField : [
+                            ...data.applicationDto.applicationField,"EXPECTED_SALARY"
+                        ]}});
+                    }else{
+                        setData({...data,applicationDto : {...data.applicationDto,applicationField : data.applicationDto.applicationField
+                            .filter(field => field !== "EXPECTED_SALARY")
+                        }})
+                    }
+                }}/>
+              Expected Salary
+            </label>
+        </div>
+            </div>
+           )}
+
           {data.applicationType === "FORM" && (
             <div>
-                {data.questions.map((question,index) => (
+                {data.applicationDto.question.map((question,index)  => {
+                return (
                  <div key={index}>
-                  <input type="text" value={question} placeholder={`Question ${index + 1}`} minLength={5} maxLength={500} required
-                  onChange={(e) => {
-                    const questions = [...data.questions];
-                    
-                    questions[index] = e.target.value;
-                    setData({...data,questions : questions})
-                  }}/>
+                    <input type="text" value={question} placeholder={`Question ${index + 1}`}
+                    minLength={5}  maxLength={500} required
+                    onChange={(e) => {
+                        const questions = [...data.applicationDto.question ];
+                        questions[index] = e.target.value;
+                        setData({...data, applicationDto: { ...data.applicationDto, question: questions
+                            }
+                        }); 
+                    }}
+                 />
+               <button type="button" 
+                onClick={() => {
+                 const questions = data.applicationDto.question.filter((_, i) => i !== index);
+                        setData({...data,applicationDto: {...data.applicationDto, question: questions}
+                        });
+                    }}
+                    >
+                    Remove
+                </button>
+               
                  </div>
-                ))}
-                <button type="button" onClick={() => setData({...data,questions : [...data.questions,""]})}>Add new </button>
-            </div>
+                )})}    
+                 <button type="button"
+                      onClick={() => {setData({...data, applicationDto: {...data.applicationDto,
+                        question: [
+                            ...data.applicationDto.question,""]
+                    }
+                });
+            }}
+                >Add new Question</button>   
+            </div> 
           )}
-       
          <br/>
 
          <button type="submit" className="btn btn-success" >Create Job Offer</button>

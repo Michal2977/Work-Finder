@@ -39,6 +39,8 @@ function DeletedJobs(){
        return `Left: ${minutes}minutes`;
     }
 
+
+    
     useEffect(() => {
         const token = localStorage.getItem("token");
         if(!token){ return;}

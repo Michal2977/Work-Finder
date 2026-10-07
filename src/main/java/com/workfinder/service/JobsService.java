@@ -20,7 +20,7 @@ public interface JobsService {
             , ContractType contractType, EmploymentType employmentType, JobCategory jobCategory,
                                   List<String> publicationDate, SalaryPeriod salaryPeriod, SalaryType salaryType,
                                   BigDecimal salary,SalaryPeriod selectedSalaryPeriod,Currency currency);
-    JobDto findJobById(Long id);
+    JobDto findJobById(Long id,String email);
     void checkedJobOfferOwner(Job job, User user);
     JobDto findJobOfferById(Long id,User user);
     JobDto updateJobOffer(Long id , UpdateJobOfferRequest request, String email, MultipartFile file) throws IOException;

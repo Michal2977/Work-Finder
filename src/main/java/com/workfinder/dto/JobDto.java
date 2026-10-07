@@ -1,11 +1,13 @@
 package com.workfinder.dto;
 
+import com.workfinder.entity.Application;
 import com.workfinder.enums.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -44,7 +46,8 @@ public class JobDto {
     private int deletedJobs;
     private Currency currency;
     private ApplicationType applicationType;
-
+    private ApplicationDto applicationDto;
+    private boolean alreadyApplied;
     public JobDto() {
     }
 
@@ -56,8 +59,8 @@ public class JobDto {
                   JobCategory jobCategory, SalaryPeriod salaryPeriod, SalaryType salaryType, String picture
             , String companyName, String shiftSystem, String workingHours, Boolean nightShift, String aboutCompany,
                   String salarySystem, Set<Benefit> benefit, String phoneNumber, LocalDateTime expirestAt,
-                  boolean deleted,LocalDateTime deletedAt,EmployerDto employerDto,int deletedJobs,Currency currency
-    ,ApplicationType applicationType) {
+                  boolean deleted, LocalDateTime deletedAt, EmployerDto employerDto, int deletedJobs, Currency currency
+    , ApplicationType applicationType, ApplicationDto applicationDto,boolean alreadyApplied ) {
         this.id = id;
         this.position = position;
         this.description = description;
@@ -90,6 +93,8 @@ public class JobDto {
         this.deletedJobs = deletedJobs;
         this.currency = currency;
         this.applicationType = applicationType;
+        this.applicationDto = applicationDto;
+        this.alreadyApplied = alreadyApplied;
 
     }
 }

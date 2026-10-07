@@ -86,8 +86,9 @@ public class JobsController {
     }
 
     @GetMapping("/jobs/{id}")
-    public ResponseEntity<?> getOfferById(@PathVariable("id") Long id){
-        return ResponseEntity.ok(jobsService.findJobById(id));
+    public ResponseEntity<?> getOfferById(@PathVariable("id") Long id,Authentication authentication){
+        String email = authentication != null ? authentication.getName() : null;
+        return ResponseEntity.ok(jobsService.findJobById(id,email));
     }
 
     @GetMapping("/update-job/{id}")
@@ -160,6 +161,8 @@ public class JobsController {
     public ResponseEntity<?> amountsOfAllExpiresJob(){
         return ResponseEntity.ok(jobsService.countAllExpiresOffers());
     }
+
+
     @GetMapping("/amounts-of-employer-expires-job")
     public ResponseEntity<?> amountsOfEmployerExpiresJob(Authentication authentication){
         return ResponseEntity.ok(jobsService.countExpiresJobsOffersForEmployer(authentication.getName()));

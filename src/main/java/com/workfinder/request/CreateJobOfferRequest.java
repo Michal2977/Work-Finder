@@ -1,5 +1,6 @@
 package com.workfinder.request;
 
+import com.workfinder.dto.ApplicationDto;
 import com.workfinder.dto.EmployerDto;
 import com.workfinder.enums.*;
 import lombok.Getter;
@@ -25,7 +26,8 @@ public class CreateJobOfferRequest {
     private String salarySystem;
     private String phoneNumber;
     private Long expiresAt;
-    private List<String> questions;
+    private ApplicationDto applicationDto;
+
 
     private String duties;
     private String requirements;

@@ -5,7 +5,10 @@ import com.workfinder.entity.Application;
 
 public class ApplicationMapper {
     public static ApplicationDto applicationDto(Application application){
-        return new ApplicationDto(application.getId(),application.getQuestion(),
-                JobMapper.jobDto(application.getJob()));
+
+        if (application == null){
+            return null;
+        }
+        return new ApplicationDto(application.getId(),application.getQuestion(),application.getApplicationField());
     }
 }

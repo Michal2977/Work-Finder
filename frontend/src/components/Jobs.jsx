@@ -252,8 +252,7 @@ function Jobs(){
          countJobSalaryPeriod={countJobSalaryPeriod} publicationDate={publicationDate} setPublicationDate={setPublicationDate}
           publicationDateCounts={publicationDateCounts} salary={salary} setSalary={setSalary} salaryType={salaryType} 
           setSalaryType={setSalaryType} selectedSalaryPeriod={selectedSalaryPeriod} setSelectedSalaryPeriod={setSelectedSalaryPeriod}
-          countJobSalary={countJobSalary} currency={currency} setCurrency={setCurrency}
-         />
+          countJobSalary={countJobSalary} currency={currency} setCurrency={setCurrency}/>
  
             <form className="d-flex" role="search" onSubmit={(e) => {
             e.preventDefault(); setKeyword(keywordInput); setLocations(locationInput); setPage(0);
@@ -297,6 +296,7 @@ function Jobs(){
         <p className="card-text">{job.jobStart}</p>
         <p className="card-text">{job.workMode}</p>
       <h2 className="card-text">{job.applicationType === "QUICK" && "QUICK Application"}</h2>
+      <h2 className="card-text">{job.applicationType === "FORM" && "Form Application"}</h2>
          </div> 
   </div>
   );
