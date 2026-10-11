@@ -1,0 +1,204 @@
+.card-container {
+    position: absolute;
+    top: 240px;
+    left: 30%;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+   background-color: #F5F7FA;
+    padding: 30px;
+    width: 65%;
+     height: auto;
+    overflow: visible;
+}
+.card {
+    position: relative;
+    height: 220px !important;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    border-radius: 20px;
+    border: 1px solid black;
+}
+.page {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.page button {
+    border: none;
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+    padding: 5px;
+    color: #64748b;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.page button:hover:not(:disabled) {
+    color: #2563eb;
+}
+
+.page button:disabled {
+    color: #cbd5e1;
+    cursor: not-allowed;
+}
+
+.page button.btn-primary {
+    color: #2563eb;
+    font-weight: 600;
+    background: transparent;
+    border: none;
+}
+
+.page button.btn-outline-secoundary {
+    color: #64748b;
+    background: transparent;
+    border: none;
+}
+
+.page button.btn-outline-secoundary:hover {
+    color: #2563eb;
+}
+
+.card img {
+    padding: 10px;
+    width: 120px;
+    height: 120px;
+}
+.card .save {
+    position: absolute;
+    top: 15px;
+    right: 15px;;
+    background-color: white;
+    border: none;
+    color: #7A8499;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.card .operations{
+    position: absolute;
+    top: 13px;
+    right: 50px;;
+    background-color: white;
+    border: none;
+    color: #7A8499;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer; 
+    display: flex;
+    gap: 10px;
+}
+.operations .delete {
+    background-color: #FEE2E2;
+    color: #DC2626;
+      padding: 4px;
+    border: none;
+    border-radius: 8px;
+}
+.operations a {
+     background-color: #DBEAFE;
+    color: #2563EB;
+    padding: 4px;
+    border: none;
+    border-radius: 8px;
+}
+
+.job-info{
+position: absolute;
+top: 15px;
+left: 130px;
+display: flex;
+flex-direction: column;
+gap: 5px;
+}
+.job-info span{
+    font-weight: 500;
+    color: #7d8492;
+}
+.job-info .company{
+font-size: 15px;
+font-weight: 500;
+color: black;
+}
+.job-info .position {
+font-size: 18px;
+font-weight: 500;
+color: #1F39CC;
+}
+.job-info .location{
+    font-weight: 500;
+    color: #64676b;
+    font-size: 15px;
+}
+.job-details{
+display: flex;
+flex-direction: row;
+gap: 5px;  
+width: 300px;
+margin-left: 112px;
+gap: 5px;
+
+}
+.job-details span{
+    color: rgb(83, 81, 81);
+    font-weight: 400;
+    font-size: 15px;
+}
+
+.publication {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding-right: 10px;
+    top: -5px;
+    transform: translateY(-5px);
+    box-sizing: border-box;
+ 
+   
+}
+.publication span {
+    font-size: 15px;
+    font-weight: 400;
+    color: #656b77;
+}
+.application{
+display: flex;
+box-sizing: border-box;
+top: -25px;
+transform: translateY(-25px);
+}
+.application span{
+     font-size: 15px;
+    font-weight: 400;
+    color: #656b77;
+}
+.notifications {
+  position: fixed;
+    top: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #e8f5e9;
+    border: 1px solid #a5d6a7;
+    border-radius: 10px;
+    padding: 12px 24px;
+    color: #2e7d32;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+}
+.notifications h1{
+     font-size: 16px;
+    font-weight: 500;
+    margin: 0;
+
+}
+
+

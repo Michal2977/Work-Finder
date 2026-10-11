@@ -1,0 +1,81 @@
+
+
+
+.filters {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    margin-top: 30px;
+    margin-left: 50px ;
+    margin-right: auto;
+    background-color: #FAF7F7;
+    border-radius: 10px;
+    align-items: flex-start;
+    text-align: left;
+    border-radius: 15px;
+}
+
+.filters span{
+    display: flex;
+    gap: 5px;
+    font-size:15px;
+    font-weight: 400;
+    margin-left: 25px;
+    margin-top: 5px;
+}
+
+.filters label{
+display: flex;    
+align-items: center;
+gap: 10px;
+font-size:20px;
+font-weight: 500;
+background-color: #DEDCDC;
+width: 90%;
+margin: 15px auto 0;
+}
+
+.filters .salary {
+      border: 1px solid #BDBDBD;
+    margin-left: 25px;
+    margin-top: 10px;
+    border-radius: 5px; 
+    width: 90%;
+    height: 40px;
+}
+
+.filters .type{
+     font-size:17px;
+    font-weight: 500;
+    margin-left: 25px;
+    margin-top: 5px;
+}
+.filters .currency{
+     font-size:17px;
+    font-weight: 500;
+    margin-left: 25px;
+    margin-top: 5px;
+}
+.filters .period{
+     font-size:17px;
+    font-weight: 500;
+    margin-left: 25px;
+    margin-top: 5px;
+}
+
+.filters select{
+    width: 90%;
+    margin: 5px auto 0;
+    height: 32px;
+    border: 1px solid #BDBDBD;
+    color: #7A8499;
+}
+input::placeholder {
+    color: #7A8499;
+    opacity: 1;
+}
+select::placeholder {
+    color: #7A8499;
+    opacity: 1;
+}
+

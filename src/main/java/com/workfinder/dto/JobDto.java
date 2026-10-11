@@ -48,6 +48,7 @@ public class JobDto {
     private ApplicationType applicationType;
     private ApplicationDto applicationDto;
     private boolean alreadyApplied;
+    private LocalDateTime createAt;
     public JobDto() {
     }
 
@@ -60,7 +61,7 @@ public class JobDto {
             , String companyName, String shiftSystem, String workingHours, Boolean nightShift, String aboutCompany,
                   String salarySystem, Set<Benefit> benefit, String phoneNumber, LocalDateTime expirestAt,
                   boolean deleted, LocalDateTime deletedAt, EmployerDto employerDto, int deletedJobs, Currency currency
-    , ApplicationType applicationType, ApplicationDto applicationDto,boolean alreadyApplied ) {
+    , ApplicationType applicationType, ApplicationDto applicationDto,boolean alreadyApplied ,LocalDateTime createAt) {
         this.id = id;
         this.position = position;
         this.description = description;
@@ -95,6 +96,7 @@ public class JobDto {
         this.applicationType = applicationType;
         this.applicationDto = applicationDto;
         this.alreadyApplied = alreadyApplied;
+        this.createAt = createAt;
 
     }
 }

@@ -4,6 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Navbar from "../fragments/Navbar";
 import Filters from "../fragments/Filters";
+import "../styles/searcher.css";
+import "../styles/job-card.css";
+import { ChevronLeft, ChevronRight, Pencil, Star, Trash2 } from "lucide-react";
 
 function Jobs(){
 
@@ -51,44 +54,22 @@ function Jobs(){
     const [amountOfEmployerExpiresJob,setAmountsOfEmployerExpiresJobs] = useState(0);
     const [jobsEmployerOwner,setJobsEmployerOwner] = useState(0);
 
+    const [isSaved,setIsSaved] = useState(new Set());
+
    
 
     const [jobs,setJobs] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
 
-    const getTimeLeft = (expiresAt) => {
-     const now = new Date();
-     const expiration = new Date(expiresAt);
-
-     const diff = expiration - now;
-     
-     if(diff <= 0 ){
-           return "The listing has expired";
-     }
-
-     const minutes = Math.floor(diff / (1000 * 60));
-     const days = Math.floor(minutes /(60 *24));
-
-     if(days >= 1){
-        return `Left: ${days}days`;
-     }
-
-     const hours = Math.floor(minutes / 60);
-
-     if(hours >= 1){
-          return `Left: ${hours}hours`;
-     }
-
-     return `Left: ${minutes}minutes`;
-
-    }
+    
 
     const Admin = user?.roleDto?.some(role => role.role === "ADMIN");
     const Employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
-    const employeeName = `${user?.employeeDto?.firstName ?? ""} ${user?.employeeDto?.lastName ?? ""}`.trim();
-    const displayName = employeeName !== "" ? employeeName : user?.displayName;
     const Employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
+
+    const employeeName = `${user?.employeeDto?.firstName ?? ""} ${user?.employeeDto?.lastName ?? ""}`.trim();
+    const displayName = employeeName !== "" ? employeeName : user?.displayName || "My Account";
 
       useEffect(() => {
         fetch(`http://localhost:8080/api/jobs?page=${page}&size=${size}` 
@@ -153,7 +134,11 @@ function Jobs(){
 
       const text = await response.json();
       if(response.ok){
-        setMessage(text.message);
+        setAmountsOfFavoriteJobs(prev => prev + 1);
+       setMessage(text.message);
+    setTimeout(() => {
+        setMessage("");
+    }, 2000);
       }else{
         setMessage(text.message);
       }
@@ -254,57 +239,90 @@ function Jobs(){
           setSalaryType={setSalaryType} selectedSalaryPeriod={selectedSalaryPeriod} setSelectedSalaryPeriod={setSelectedSalaryPeriod}
           countJobSalary={countJobSalary} currency={currency} setCurrency={setCurrency}/>
  
-            <form className="d-flex" role="search" onSubmit={(e) => {
+           <div className="searcher">
+            <form  role="search" onSubmit={(e) => {
             e.preventDefault(); setKeyword(keywordInput); setLocations(locationInput); setPage(0);
           }}>
-          <input className="form-control me-2" type="search" placeholder="Job title, company, or keyword"  value={keywordInput}
+          <input  type="search" placeholder="Job title, company, or keyword"  value={keywordInput}
           onChange={(e) => setKeywordInput(e.target.value)}/>
-          <input className="form-control me-2" type="search" placeholder="location" value={locationInput}
+          <input  type="search" placeholder="location" value={locationInput}
           onChange={(e) => setLocationInput(e.target.value)}/>
-          <button className="btn btn-success" type="submit">Search</button>
+          <button  type="submit">Search</button>
           </form>
+         </div>
 
-         {message && <h1>{message}</h1>}
+       
+          {message && (
+          <div className="notifications">
+            <h1>{message}</h1>
+         </div>
+          )}     
+
+            <div className="card-container">
              {jobs.map(job => {
             const employerOwner = user?.employerDto?.id === job?.employerDto?.id;
+            
     return(     
-                <div className="card" width={"18rem"}  key={job.id}>
+      
+
+           
+                <div className="card"   key={job.id} onClick={() => navigate(`/jobs/${job.id}`)}
+                style={{cursor : "pointer"}}>
                    {job.picture && (
-                   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  width={"200px"} height={"200px"} alt="empty"/>
+                   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  alt="No Image"/>
                     )}
                    
   <div className="card-body">
-    <Link to={`/jobs/${job.id}`}>Details</Link>
-    {user && (Admin || employerOwner) && (
-    <div>
-     <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
-     <button  type="button" onClick={() => softDelete(job.id)}className="btn btn-danger">Delete Job</button>
+
+     {user && (Admin || employerOwner) && (
+    <div className="operations">
+     <Link to={`/update-job/${job.id}`} onClick={(e) => {e.stopPropagation()}}><Pencil size={22}/></Link>
+     <button  type="button" 
+      onClick={(e) => {e.stopPropagation();softDelete(job.id)}}className="delete"><Trash2 size={22}/></button>
     </div>     
     )}
-     <p>Expiration : {" "}</p>  
-     {new Date(job.expiresAt).toLocaleDateString("pl-PL")}
-     <button type="button" className="btn btn-success" onClick={() => saveJobOffer(job?.id)}>Save Job Offer</button>
-     <p>{getTimeLeft(job.expiresAt)}</p>
-    <h5 className="card-title"> {job.position}</h5>
-    <p className="card-text">{job.salary}</p>
-     <p className="card-text">{job.salaryPeriod}</p>
-      <p className="card-text">{job.salaryType}</p>
-       <p className="card-text">{job.location}</p>
-       <p className="card-text">{job.jobCategory}</p>
-       <p className="card-text">{job.employmentType}</p>
-        <p className="card-text">{job.contractType}</p>
-        <p className="card-text">{job.jobStart}</p>
-        <p className="card-text">{job.workMode}</p>
-      <h2 className="card-text">{job.applicationType === "QUICK" && "QUICK Application"}</h2>
-      <h2 className="card-text">{job.applicationType === "FORM" && "Form Application"}</h2>
+     <button type="button" className="save" onClick={(e) => {e.stopPropagation();saveJobOffer(job?.id);
+      setIsSaved(prev => {
+        const update = new Set(prev);
+        update.has(job.id) ? update.delete(job.id) : update.add(job.id);
+        return update;
+      });
+      setTimeout(() => {
+        setMessage("");
+      },2000);
+     }}><Star size={22}  fill={isSaved.has(job.id) ? "yellow" : "none"} color={isSaved.has(job.id) ? "#EAB308" : "currentColor"}/></button>
+
+     
+     <div className="job-info">
+    <span  className="position"> {job.position}</span>
+    <span >{job.salary} {job.salaryPeriod} {job.salaryType}</span>
+    <span className="company">{job?.companyName}</span>
+       <span className="location">{job.location}</span>
+       </div>
+       <div className="job-details">
+       <span >{job.jobCategory}</span>
+       <span >{job.employmentType}</span>
+        <span >{job.contractType}</span>
+        <span >{job.jobStart}</span>
+        <span >{job.workMode}</span>
+        </div>
+        <hr/>
+ 
+     <div className="publication">
+     <span>Publication :{new Date(job.createAt).toLocaleDateString("pl-PL")}</span>
+     </div>
+     <div className="application">
+      <span >{job.applicationType === "QUICK" && "QUICK Application"}</span>
+      <span >{job.applicationType === "FORM" && "Form Application"}</span>
+      </div>
          </div> 
   </div>
   );
 })}
-
+<div className="page">
 <div className="d-flex align-items-center gap-2">
-  <button className="btn btn-outline-primary" disabled={page === 0}
-   onClick={() => setPage(page -1)}>Previous
+  <button  disabled={page === 0}
+   onClick={() => setPage(page -1)}><ChevronLeft  size={25}/>
    </button>
 
     {Array.from({length : totalPages},(_, index) => (
@@ -313,11 +331,16 @@ function Jobs(){
       </button>
     ))}
    
-   <button className="btn btn-outline-primary" disabled={page >= totalPages - 1}
+   <button  disabled={page >= totalPages - 1}
 
-   onClick={() => setPage(page +1)}>Next</button>
+   onClick={() => setPage(page +1)}><ChevronRight size={25}/></button>
 
 </div>
+</div>
+</div>
+
+
+
         </div>
     );
 }

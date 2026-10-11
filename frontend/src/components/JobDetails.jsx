@@ -40,6 +40,34 @@ function JobDetails(){
    );
 
 
+   const getTimeLeft = (expiresAt) => {
+     const now = new Date();
+     const expiration = new Date(expiresAt);
+
+     const diff = expiration - now;
+     
+     if(diff <= 0 ){
+           return "The listing has expired";
+     }
+
+     const minutes = Math.floor(diff / (1000 * 60));
+     const days = Math.floor(minutes /(60 *24));
+
+     if(days >= 1){
+        return `Left: ${days}days`;
+     }
+
+     const hours = Math.floor(minutes / 60);
+
+     if(hours >= 1){
+          return `Left: ${hours}hours`;
+     }
+
+     return `Left: ${minutes}minutes`;
+
+    }
+
+
    const qucikApplication = async(id,cv) => {
      const token  = localStorage.getItem("token");
      if(!token){return;}
@@ -199,6 +227,7 @@ function JobDetails(){
 
 
     <p>{job.position}</p>
+    <span>{getTimeLeft(job.expiresAt)}</span>
      <p>{job.salary}</p>
       <p>{job.companyName}</p>
       <p>{job.salaryType}</p>

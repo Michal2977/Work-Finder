@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-
+import { BriefcaseBusiness } from "lucide-react";
+import "../styles/navbar.css";
 
 function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOfReports,deletedJobs
   ,amountOfDeletedJobs,amountsOfFavoriteJobs,amountOfAllExpiresJob,amountOfEmployerExpiresJob,jobsEmployerOwner
@@ -7,82 +8,14 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
     return(
 <nav className="navbar navbar-expand-lg bg-body-tertiary">
   <div className="container-fluid">
-    <Link className="navbar-brand" to={"/jobs"}>Navbar</Link>
-
-    <button
-      className="navbar-toggler"
-      type="button"
-      data-bs-toggle="collapse"
-      data-bs-target="#navbarSupportedContent"
-      aria-controls="navbarSupportedContent"
-      aria-expanded="false"
-      aria-label="Toggle navigation"
-    >
-      <span className="navbar-toggler-icon"></span>
-    </button>
-
-    <div className="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul className="navbar-nav me-auto mb-2 mb-lg-0">
-       
-
-        <li className="nav-item">
-           <button onClick={logout} className="btn btn-danger">Logout</button>
-        </li>
-
- {user && (Employee || Employer || Admin) && (
-  
-  <>
-     <div>
-      <Link to={"/saved-jobs"}>Saved Jobs</Link>
-       
-    </div>    
-   
-
     
-      <div>
-        {Employer && (
-          <div>
-              <h1> amount Of Employer Expires Job: {amountOfEmployerExpiresJob}</h1>
-              <Link to={"/employer-jobs"}>My Jobs Offer</Link>
-              <h1>amount of your jobs: {jobsEmployerOwner}</h1>
-          </div>
-        )}
-          {Employee && (
-                <div>
-                  
-                  <h1>employee</h1>
-                  <h1>{displayName}</h1>
-                <h1>{user.email}</h1>
-               <Link to={"/employee-applications"}>My Applications</Link>
-                <Link to={"/add-cv"}>Add Resume</Link>
-                </div>
-                
-            )}
-
-             {Admin && (
-             <>      
-             <div>
-             
-                <h1>amount Of All Expires Job: {amountOfAllExpiresJob}</h1>
-              <h1>Number of reports: {amountsOfReports}</h1>
-              <h1>Number of Deleted Jobs {amountOfDeletedJobs}</h1>
-            
-             </div>
-                <div>
-                  <Link to={"/deleted-jobs"}>Deleted Offer</Link>
-                  </div>
-                  </>
-              )}
-
-                  {user && (Employer || Admin) && (
-                <div>
-                    <Link to={"/expired-jobs"}>Expired Jobs</Link>
-                    <Link to={"/create-job"}>Create a Job Offer</Link>
-                    <h1>{user?.employerDto?.firstName || ""}</h1>
-                     <h1>{user?.employerDto?.lastName || ""}</h1>
-                </div>
-            )}
-
+    <div className="name">
+      <Link>
+          <BriefcaseBusiness className="logo"/>
+          <span className="work">Work</span><span className="finder">Finder</span>
+      </Link>
+    </div>
+      <div className="select">
         <li className="nav-item dropdown">
           <a
             className="nav-link dropdown-toggle"
@@ -91,14 +24,20 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
             data-bs-toggle="dropdown"
             aria-expanded="false"
           >
-            Dropdown
+            {!user && (
+              <span>My Account</span>
+            )}
+           {user && (Employee || Employer || Admin) && (           
+             <span>{displayName}</span>      
+           )}         
           </a>
-          <h1>Number of saved Jobs  Offers : {amountsOfFavoriteJobs}</h1>
           <ul className="dropdown-menu">
+             {user && (Employee || Employer || Admin) && (
+              <div>
             <li>
-              <Link className="dropdown-item"  to="/my-reports">
-              My Reports
-              </Link>
+              {user && Admin && (
+             <Link className="dropdown-item"  to="/my-reports"> My Reports ({amountsOfReports})  </Link>
+              )}
             </li>
             <li>
               <Link className="dropdown-item"   to="/contact">
@@ -106,22 +45,92 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
               </Link>
             </li>
             <li>
-              <hr className="dropdown-divider" />
+          
             </li>
             <li>
               <Link className="dropdown-item"  to="/account-information">
                   Account
               </Link>
             </li>
+                <hr className="dropdown-divider" />
+          <li className="nav-item">
+           <button onClick={logout} ><span>Logout</span></button>
+          </li>
+               </div>
+             )}
+             {!user && (
+              <div>
+                    <li>
+              <Link className="dropdown-item"  to="/login">
+                  Login
+              </Link>
+            </li>
+             <li>
+              <Link className="dropdown-item"  to="/employee-registration">
+                  Register As Employee
+              </Link>
+            </li>
+             <li>
+              <Link className="dropdown-item"  to="/employer-registration">
+                  Register As Employer
+              </Link>
+            </li>
+              </div>
+             )}
           </ul>
         </li>
-       
         </div>
-        </>
+      <ul className="navbar-nav nav-links">
+        {user && (Employee || Employer || Admin) && (
+          <>
+          <li className="nav-item">
+            <Link to={"/saved-jobs"}>Saved Jobs: {amountsOfFavoriteJobs}</Link>
+          </li>
+          {user && Employee && (
+          <>
+          <li className="nav-item">
+            <Link to={"/employee-applications"}>My Applications</Link>
+          </li>
+            <li className="nav-item">
+            <Link to={"/add-cv"}>Add Resume</Link>
+            </li>
+        
+            </>
           )}
+          {user && Employer && (
+            <>
+             <li className="nav-item">
+            <Link to={"/create-job"}>Create a Job Offer</Link>
+             </li>
+              <li className="nav-item">
+            <Link to={"/expired-jobs"}>Expired Jobs: {amountOfEmployerExpiresJob}</Link>
+             </li>
+              <li className="nav-item">
+            <Link to={"/employer-jobs"}>My Jobs Offer: {jobsEmployerOwner}</Link>
+             </li>
+            </>
+           
+          )}
+          {user && Admin && (
+            <>
+             <li className="nav-item">
+            <Link to={"/create-job"}>Create a Job Offer</Link>
+             </li>
+              <li className="nav-item">
+            <Link to={"/expired-jobs"}>Expired Jobs: {amountOfAllExpiresJob}</Link>
+             </li>
+            <li className="nav-item">
+            <Link to={"/deleted-jobs"}>Deleted Jobs: {amountOfDeletedJobs}</Link>
+             </li>
+            </>
+          )}       
+          </>
+        )}
+ 
       </ul>
-    </div>
-  </div>
+      </div>
+   
+ 
 </nav>
     )
 }
