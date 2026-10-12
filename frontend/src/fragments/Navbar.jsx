@@ -10,9 +10,9 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
   <div className="container-fluid">
     
     <div className="name">
-      <Link>
+      <Link to={"/jobs"}>
           <BriefcaseBusiness className="logo"/>
-          <span className="work">Work</span><span className="finder">Finder</span>
+         <span className="work">Work</span><span className="finder">Finder</span>
       </Link>
     </div>
       <div className="select">

@@ -2,7 +2,7 @@
 import { useState,useEffect } from "react";
 import {Link, useLocation, useNavigate } from "react-router-dom";
 
-function Login(){
+function Login({fetchUser}){
 
     const [message,setMessage] = useState("");
 
@@ -18,6 +18,7 @@ function Login(){
       }
     },[location.state]);
 
+  
     async function handleLogin(){
         const resposne = await fetch("http://localhost:8080/api/auth/login",{
          
@@ -30,6 +31,7 @@ function Login(){
         if(resposne.ok){
              const data = await resposne.json();
             localStorage.setItem("token",data.token);
+            await fetchUser();
             navigate("/jobs");
         }else{
              const text = await resposne.json();

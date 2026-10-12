@@ -2,7 +2,6 @@
 import {useEffect ,useState} from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
-import Navbar from "../fragments/Navbar";
 import Filters from "../fragments/Filters";
 import "../styles/searcher.css";
 import "../styles/job-card.css";
@@ -46,13 +45,13 @@ function Jobs(){
 
     const [message,setMessage] = useState("");
     const [contact,setContact] = useState([]);
-    const [amountsOfReports,setamountOfReports] = useState(0);
-    const [amountOfDeletedJobs,setAmountsOfDeletedJobs] = useState(0);
+
+   
     const [amountsOfFavoriteJobs,setAmountsOfFavoriteJobs] = useState(0);
 
-    const [amountOfAllExpiresJob,setAmountsOfAllExpiresJob] = useState(0);
-    const [amountOfEmployerExpiresJob,setAmountsOfEmployerExpiresJobs] = useState(0);
-    const [jobsEmployerOwner,setJobsEmployerOwner] = useState(0);
+    
+    
+    
 
     const [isSaved,setIsSaved] = useState(new Set());
 
@@ -146,10 +145,6 @@ function Jobs(){
 
   
 
-   const logout = () => {
-    localStorage.removeItem("token");
-    navigate("/login" , {state : {message : "You have been successfully logged out."}});
-   }
 
    const softDelete = async(id) => {
     const token = localStorage.getItem("token");
@@ -169,68 +164,11 @@ function Jobs(){
         fetch("http://localhost:8080/api/my-reports",{
           headers : {Authorization : `Bearer ${token}`}
         }).then(response => response.json()).then(data => setContact(data));
-
       },[]);
-   useEffect(() => {
-   const token = localStorage.getItem("token");
-   if(!Admin){return;}
-    fetch("http://localhost:8080/api/amounts-of-reports",{
-          headers : {Authorization : `Bearer ${token}`}
-        }).then(response => response.json()).then(data => setamountOfReports(data));
-
-        fetch("http://localhost:8080/api/amounts-of-all-expires-job",{
-          headers : {Authorization : `Bearer ${token}`}
-        }).then(response => response.json()).then(data => setAmountsOfAllExpiresJob(data));
-
-   },[Admin]);
-
-   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if(!token){return;}
-    if(!Admin){return;}
-
-    fetch("http://localhost:8080/api/amount-of-deleted-jobs",{
-      headers : {Authorization : `Bearer ${token}`}
-    }).then(response => response.json()).then(data => setAmountsOfDeletedJobs(data));
-   },[Admin]);
-
-
-   
-   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if(!token){return;}
-
-     fetch("http://localhost:8080/api/amount-of-favorite-jobs",{
-      headers : {Authorization : `Bearer ${token}`}
-    }).then(response => response.json()).then(data => setAmountsOfFavoriteJobs(data));
-   },[]);
-
-   useEffect(() => {
- 
-    const token = localStorage.getItem("token");
-    if(!token){return;}
-    if(!Employer){return;}
-
-      fetch("http://localhost:8080/api/amounts-of-employer-expires-job",{
-      headers : {Authorization : `Bearer ${token}`}
-    }).then(response => response.json()).then(data => setAmountsOfEmployerExpiresJobs(data));
-
-    fetch("http://localhost:8080/api/amounts-of-employer-jobs",{
-      headers : {Authorization : `Bearer ${token}`}
-    }).then(response => response.json()).then(data => setJobsEmployerOwner(data));
-   },[Employer])
-
 
     return(
 
-        <div>
-    
-
-         <Navbar user={user} Employee={Employee} Employer={Employer} Admin={Admin} logout={logout} displayName={displayName}
-         amountsOfReports={amountsOfReports}    amountOfDeletedJobs={amountOfDeletedJobs} amountsOfFavoriteJobs={amountsOfFavoriteJobs}
-         amountOfAllExpiresJob={amountOfAllExpiresJob} amountOfEmployerExpiresJob={amountOfEmployerExpiresJob} 
-         jobsEmployerOwner={jobsEmployerOwner}/>
-         
+        <div>     
          <Filters workMode={workMode} setWorkMode={setWorkMode} contractType={contractType} setContractType={setContractType} employmentType={employmentType} setEmploymentType={setEmploymentType} jobCategory={jobCategory} setJobCategory={setJobCategory}
          salaryPeriod={salaryPeriod} setSalaryPeriod={setSalaryPeriod} setPage={setPage} jobCategoryCounts={jobCategoryCounts}
          jobWorkModeCount={jobWorkModeCount} countJobContactType={countJobContactType} countJobEmploymentType={countJobEmploymentType}
