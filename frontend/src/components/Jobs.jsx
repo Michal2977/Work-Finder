@@ -45,23 +45,12 @@ function Jobs(){
 
     const [message,setMessage] = useState("");
     const [contact,setContact] = useState([]);
-
-   
     const [amountsOfFavoriteJobs,setAmountsOfFavoriteJobs] = useState(0);
-
-    
-    
-    
-
     const [isSaved,setIsSaved] = useState(new Set());
-
-   
 
     const [jobs,setJobs] = useState([]);
     const location = useLocation();
     const navigate = useNavigate();
-
-    
 
     const Admin = user?.roleDto?.some(role => role.role === "ADMIN");
     const Employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
@@ -143,9 +132,6 @@ function Jobs(){
       }
      };
 
-  
-
-
    const softDelete = async(id) => {
     const token = localStorage.getItem("token");
     if(!token) {return;}
@@ -200,10 +186,7 @@ function Jobs(){
              {jobs.map(job => {
             const employerOwner = user?.employerDto?.id === job?.employerDto?.id;
             
-    return(     
-      
-
-           
+    return(           
                 <div className="card"   key={job.id} onClick={() => navigate(`/jobs/${job.id}`)}
                 style={{cursor : "pointer"}}>
                    {job.picture && (

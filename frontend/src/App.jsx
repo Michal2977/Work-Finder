@@ -159,7 +159,7 @@ function App(){
       <Route path="/reports/:id" element={<ReportDetails/>}/>
       <Route path="/saved-jobs" element={<SavedJobs/>}/>
       <Route path="/add-cv" element={<AddCv/>}/>
-       <Route path="/employer-jobs" element={<EmployerJobs/>}/>
+      <Route path="/employer-jobs" element={<EmployerJobs/>}/>
       <Route path="/form-application/:id" element={<FormApplication/>}/> 
       <Route path="/application-submitted" element={<ApplicationSubmitted/>}/>
       <Route path="/employee-applications" element={<FindEmployeeAplications/>}/>
