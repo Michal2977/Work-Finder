@@ -4,6 +4,8 @@ import {Link, useNavigate } from "react-router-dom";
 import {Turnstile,useTurnstile} from "react-turnstile"
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import "../styles/employer-registration.css";
+import { Mail, Phone,Lock, Building2, UserRound } from "lucide-react";
 
 function EmployerRegistration(){
 
@@ -45,32 +47,61 @@ function EmployerRegistration(){
 
     return(
         <div>
-            {message && <h1>{message}</h1>}
+        {message && (
+          <div className="notifications">
+            <h1>{message}</h1>
+         </div>
+          )} 
 
+           <div className="registration-container">
+
+            <div className="welcome">
+            <h1>Employer Registration</h1>
+            <span>Find the right candidates for your company</span>
+            </div>
+
+
+            <div className="icon">
+            <Mail size={20}/>
             <input type="email" placeholder="email" value={data.email} minLength={5} maxLength={254} required
             onChange={(e) => setData({...data,email : e.target.value})}/>
-
+           </div>
+            <div className="icon">
+           <Lock size={20}/>
             <input type="password" placeholder="password" value={data.password} minLength={8} maxLength={64} required
             onChange={(e) => setData({...data,password : e.target.value})}/>
-            
+            </div>
+             <div className="icon">
+            <UserRound size={20}/>
             <input type="text" placeholder="firstName" value={data.firstName} minLength={2} maxLength={40} required
             onChange={(e) => setData({...data,firstName : e.target.value})}/>
-
+            </div>
+              <div className="icon">
+            <UserRound size={20}/>
             <input type="text" placeholder="lastName" value={data.lastName} minLength={2} maxLength={40} required
             onChange={(e) => setData({...data,lastName : e.target.value})}/>
+            </div>
+               <div className="icon">
+             <Phone size={20}/>
+            <PhoneInput defaultCountry="PL" className="phone" international value= {data.phoneNumber} onChange={(phone) => setData({...data,phoneNumber : phone})}/>
+                </div>
 
-            <PhoneInput defaultCountry="PL" international value= {data.phoneNumber} onChange={(phone) => setData({...data,phoneNumber : phone})}/>
-
+            <div className="icon">
+            <Building2 size={20}/>
             <input type="text" placeholder="nip" value={data.nip} minLength={10} maxLength={10}
             onChange={(e) => setData({...data,nip : e.target.value})} required/>
+            </div>
 
-            <button onClick={registration}>Sign Up</button>
+          
+         <Turnstile  sitekey="0x4AAAAAADsdFGr1bVY65jeD" 
+         onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
+            
+            <button className="button" onClick={registration}>Sign Up</button>
 
-            <br/>
-             <Link to={"/login"}>Sing In</Link>
-             <br/>
-             <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
-
+           <div className="exist">
+           <span>Already have account?  <Link to={"/login"}>Log In</Link> </span>
+           </div>
+       </div>
         </div>
     );
 }

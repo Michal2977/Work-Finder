@@ -1,5 +1,5 @@
 body{
-      background-color: #F1F5FC;
+     background: linear-gradient(135deg, #F1F5F9 0%, #DBEAFE 100%);
 }
 .login-container{
     position: absolute;

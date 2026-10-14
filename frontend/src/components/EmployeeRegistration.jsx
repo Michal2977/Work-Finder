@@ -1,7 +1,9 @@
 
+import { Mail,Lock } from "lucide-react";
 import { useState} from "react"
 import {Link, useNavigate } from "react-router-dom";
 import {Turnstile,useTurnstile} from "react-turnstile";
+import "../styles/employee-registration.css";
 
 
 
@@ -44,21 +46,39 @@ function EmployeeRegistration(){
 
     return(
         <div>
-            {message && <h1>{message}</h1>}
+            {message && (
+                <div className="notifications">
+                <h1>{message}</h1>
+                </div>
+            )}
+           
+            <div className="employee-registration">
+                 
+            <div className="welcome">
+            <h1>Employee Registration</h1>
+            <span>Find your next job and connect with the right employers</span>
+            </div>
 
+             <div className="icon">
+             <Mail size={20}/>   
             <input type="email" placeholder="email" value={data.email} required
             onChange={(e) => setData({...data,email : e.target.value})} minLength={5} maxLength={254}/>
+               </div> 
+                <div className="icon">
 
+              <Lock size={20}/> 
             <input type="password" placeholder="password" value={data.password} minLength={8} maxLength={64} required
             onChange={(e) => setData({...data,password : e.target.value})}/>
+              </div> 
+           
+             <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
 
-            <button onClick={registration}>Sign Up</button>
-
-            <br/>
-            <Link to={"/login"}>Sing In</Link>
-            <br/>
-            <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
-       
+            <button className="button" onClick={registration}>Sign Up</button>
+            
+             <div className="exist">
+            <span>Already have account?  <Link to={"/login"}>Log In</Link> </span>
+            </div>
+           </div>
         </div>
     );
 

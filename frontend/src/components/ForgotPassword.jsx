@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {Turnstile,useTurnstile} from "react-turnstile"
+import "../styles/forgot-password.css";
+import { Mail } from "lucide-react";
 
 function ForgotPassword(){
 
@@ -36,14 +38,27 @@ function ForgotPassword(){
 
     return(
         <div>
-            {message && <h1>{message}</h1>}
+            {message && (
+             <div className="notifications">
+               {message && <h1>{message}</h1>}
+            </div>
+            )}
+            
+            <div className="send">
+            <div className="icon">
 
+           
+            <Mail size={20}/>
             <input type="email" placeholder="email" value={email}
             onChange={(e) => setEmail(e.target.value)}/>
+            </div>
 
+             <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
             <button onClick={ForgotPassword}>Send</button>
-            <br/>
-            <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
+       
+        
+
+                </div>
         </div>
     );
 
