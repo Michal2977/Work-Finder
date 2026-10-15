@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSearchParams } from "react-router-dom";
+import "../styles/reset-password.css";
+import { Lock } from "lucide-react";
 
 function ResetPassword(){
 
@@ -28,14 +30,28 @@ function ResetPassword(){
     }
 
     return(
-        <div>
-            {message && <h1>{message}</h1>}
+           <div className="reset">
+               {message && (
+                <div className="notifications">
+                <h1>{message}</h1>
+                </div>
+            )}
+         
+        
+             <h1>Reset Password</h1>
+             <span>Enter your new password below to secure your account</span>
 
-            <input type="password" placeholder="password" value={password}
+             <div className="icon">
+             <Lock size={20}/>   
+            <input type="password" placeholder="new password" value={password}
             onChange={(e) => setPassword(e.target.value)}/>
+            </div>
 
-            <button onClick={ResetPassword}>Reset Password</button>
+            <button onClick={ResetPassword} className="button">Reset Password</button>
+
+           <span>Remember your password? <Link to="/login">Back to Login</Link></span>
         </div>
+    
     );
 
 }

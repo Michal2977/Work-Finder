@@ -2,7 +2,8 @@
 import { useState,useEffect } from "react";
 import {  useNavigate, useParams } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
-import "react-phone-number-input/style.css"
+import "react-phone-number-input/style.css";
+import "../styles/update-job.css";
 function UpdateJob(){
 
     const [user,setUser]  = useState(null);
@@ -130,38 +131,51 @@ function UpdateJob(){
     return(
         <form onSubmit={updateJobOffer}>
    <div>
-       {message && <h1>{message}</h1>}
-       <h1>{user?.email}</h1>
-       <br/>
-       <h1>{job.applicationType}</h1>
+           {message && (
+                <div className="notifications">
+                <h1>{message}</h1>
+                </div>
+            )}
+       
+   
+      
+     <div className="main-container">
+
+         <div className="welcome">
+            <h1>Update a Job Offer</h1>
+            <span>Update a job opening and find the right candidates for your company</span>
+         </div>
+         <div className="expiration">
+            
+       <span>Expiration:{" "}{new Date(job.expiresAt).toLocaleDateString("pl-PL") }</span>
+       <p>{getTimeLeft(job.expiresAt)}</p>
+       </div>
+      <div className="picture">
+       <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])}/>
+     {job.picture && (
+   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  alt="empty"/>
+       )}
+</div>
        <input type="text" placeholder="position" value={job.position || ""} required
        onChange={(e) => setJob({ ...job,position : e.target.value})} minLength={3} maxLength={50}/>
-       <br/>
+      
        <input type="text" placeholder="comapny Name " value={job.companyName || ""} required minLength={2} maxLength={100}
        onChange={(e) => setJob({...job,companyName : e.target.value})}/>
-       <br/> 
+    
 
-       Expiration:{" "}
-       {new Date(job.expiresAt).toLocaleDateString("pl-PL")
-       }
-       <p>{getTimeLeft(job.expiresAt)}</p>
+    
         
       <select className="form-select" id="expirationDays" name="expirationDays" value={expirationDays}
      onChange= {(e) => setExpirationDays(Number(e.target.value))}>
-    <option value="">Select expiration time</option>
+    <option value="" disabled>Select expiration time</option>
     <option value={7}>7 days</option>
     <option value={14}>14 days</option>
     <option value={30}>30 days</option>
     <option value={60}>60 days</option>
     </select>
 
-
-
- 
-
-       <br/>
        <select value={job.jobCategory} onChange={(e) => setJob({...job, jobCategory : e.target.value})} required>
-          <option value="">Choose job Category</option>
+          <option value="" disabled>Choose job Category</option>
           <option value="IT">IT</option>
           <option value="PHYSICAL_WORK">PHYSICAL_WORK</option>
           <option value="OFFICE_WORK">OFFICE_WORK</option>
@@ -188,36 +202,37 @@ function UpdateJob(){
           <option value="BEAUTY">BEAUTY</option>
           <option value="OTHER">OTHER</option>
          </select>
-         <br/>
-         <input type="text" placeholder="description" value={job.description || ""} minLength={10} maxLength={5000}
+      
+         <textarea  type="text" placeholder="description" value={job.description || ""} minLength={10} maxLength={5000}
          onChange={(e) => setJob({...job,description : e.target.value})}/>
-         <br/>
+
+     
          <input type="number" placeholder="salary" value={job.salary} min={"0"} max={"99999999.99"} step={"0.01"}
          onChange={(e) => setJob({...job,salary : e.target.value})}/>
-         <br/>
+     
          <select value={job.salaryType} onChange={(e) => setJob({...job, salaryType : e.target.value})} required>
-          <option value="">Choose Salary Type</option>
+          <option value="" disabled>Choose Salary Type</option>
           <option value="GROSS">GROSS</option>
           <option value="NET">NET</option>
          </select>
-         <br/>
+      
 
          <select value={job.salaryPeriod} onChange={(e) => setJob({...job, salaryPeriod : e.target.value})} required>
-          <option value="">Choose Salary Period </option>
+          <option value="" disabled>Choose Salary Period </option>
           <option value="HOUR">HOUR</option>
           <option value="DAY">DAY</option>
           <option value="WEEK">WEEK</option>
           <option value="MONTH">MONTH</option>
           <option value="YEAR">YEAR</option>
          </select>
-         <br/>
-         <input type="text" placeholder="salary System" value={job.salarySystem} minLength={5} maxLength={100}
+ 
+         <textarea  type="text" placeholder="salary System" value={job.salarySystem} minLength={5} maxLength={100} 
          onChange={(e) => setJob({...job,salarySystem : e.target.value })}/>
-         <br/>
+      
 
          <input type="text" placeholder="location" value={job.location} minLength={2} maxLength={40} required
          onChange={(e) => setJob({...job,location : e.target.value})}/>
-         <br/>
+    
 
           <div className="form-check">
          <input className="form-check-input" type="checkbox"  id="onsite" checked={job.workMode.includes("ONSITE")} 
@@ -353,17 +368,19 @@ function UpdateJob(){
         </label>
         </div> 
 
-        <br/>
+      
         <input type="text" placeholder="work schedule" value={job.workSchedule || ""} minLength={5} maxLength={40}
          onChange={(e) => setJob({...job,workSchedule : e.target.value})}/>
-         <br/>
+       
          <input type="text" placeholder="working Hours " value={job.workingHours || ""} minLength={5} maxLength={40}
          onChange={(e) => setJob({...job,workingHours : e.target.value})}/>
-         <br/>
+       
          <input type="text" placeholder="shiftSystem" value={job.shiftSystem || ""} minLength={3} maxLength={50}
          onChange={(e) => setJob({...job,shiftSystem : e.target.value})}/>
-         <br/>
-         <p>mozliwosc pracy w godinach nocnych ? </p>
+     
+             <div className="night">
+          <p >Availability for night shifts </p>
+          </div>
          <div className="form-check">
          <input className="form-check-input" type="radio" id="nightShiftYes" name="nightShift" checked={job.nightShift === true}
          onChange={() => setJob({...job,nightShift : true})}/>
@@ -379,43 +396,26 @@ function UpdateJob(){
         </label>
         </div>
 
-         <br/>
+   
          <select value={job.jobStart} onChange={(e) => setJob({...job, jobStart : e.target.value})}>
-          <option value="">Choose job Start</option>
+          <option value="" disabled>Choose job Start</option>
           <option value="IMMEDIATELY">IMMEDIATELY</option>
           <option value="WITHIN_WEEK">WITHIN_WEEK</option>
           <option value="WITHIN_MONTH">WITHIN_MONTH</option>
           <option value="TO_BE_AGREED">TO_BE_AGREED</option>
          </select>
-         <br/>
-         <input
-    type="text"
-    placeholder="duties"
-    value={job.duties || ""}
-    minLength={10}
-    maxLength={5000}
-    onChange={(e) => setJob({...job, duties: e.target.value})}
-/>
+       
 
-<input
-    type="text"
-    placeholder="requirements"
-    value={job.requirements || ""}
-    minLength={10}
-    maxLength={5000}
-    onChange={(e) => setJob({...job, requirements: e.target.value})}
-/>
-<br/>
+       <textarea  type="text"    placeholder="duties"   value={job.duties || ""}  minLength={10} maxLength={5000}
+         onChange={(e) => setJob({...job, duties: e.target.value})}/>
 
-<input
-    type="text"
-    placeholder="we Offer"
-    value={job.weOffer || ""}
-    minLength={10}
-    maxLength={5000}
-    onChange={(e) => setJob({...job, weOffer: e.target.value})}
-/>
-<br/>
+     < textarea  type="text" placeholder="requirements"  value={job.requirements || ""}  minLength={10}  maxLength={5000} 
+     onChange={(e) => setJob({...job, requirements: e.target.value})}/>
+
+        <textarea type="text"  placeholder="we Offer" value={job.weOffer || ""} minLength={10} maxLength={5000}
+          onChange={(e) => setJob({...job, weOffer: e.target.value})}/>
+
+
 
 <div className="form-check">
     <input
@@ -443,7 +443,7 @@ function UpdateJob(){
         PRIVATE_MEDICAL_CARE
     </label>
 </div>
-<br/>
+
 
 <div className="form-check">
     <input
@@ -471,7 +471,7 @@ function UpdateJob(){
         MULTISPORT
     </label>
 </div>
-<br/>
+
 
 <div className="form-check">
     <input
@@ -499,7 +499,7 @@ function UpdateJob(){
         LIFE_INSURANCE
     </label>
 </div>
-<br/>
+
 
 <div className="form-check">
     <input
@@ -527,7 +527,7 @@ function UpdateJob(){
         REMOTE_WORK
     </label>
 </div>
-<br/>
+
 
 <div className="form-check">
     <input
@@ -555,7 +555,7 @@ function UpdateJob(){
         FLEXIBLE_HOURS
     </label>
 </div>
-<br/>
+
 
 <div className="form-check">
     <input
@@ -583,7 +583,7 @@ function UpdateJob(){
         TRAINING
     </label>
 </div>
-<br/>
+
 
 <div className="form-check">
     <input
@@ -611,7 +611,7 @@ function UpdateJob(){
         COMPANY_CAR
     </label>
 </div>
-<br/>
+
 
 <div className="form-check">
     <input
@@ -639,7 +639,7 @@ function UpdateJob(){
         MEAL_CARD
     </label>
 </div>
-<br/>
+
 
 <div className="form-check">
     <input
@@ -667,7 +667,7 @@ function UpdateJob(){
         FRUIT
     </label>
 </div>
-<br/>
+
 
 <div className="form-check">
     <input
@@ -695,9 +695,9 @@ function UpdateJob(){
         EMPLOYEE_DISCOUNTS
     </label>
 </div>
-<br/>
 
-<input
+
+<textarea
     type="text"
     placeholder="about Company"
     value={job.aboutCompany || ""}
@@ -705,16 +705,11 @@ function UpdateJob(){
     maxLength={4000}
     onChange={(e) => setJob({...job, aboutCompany: e.target.value})}
 />
-<br/>
 
-<PhoneInput
-    defaultCountry="PL"
-    value={job.phoneNumber || ""}
-    onChange={(value) =>
-        setJob({...job, phoneNumber: value ?? null})
-    }
-/>
-  <br/>
+    <div className="phone">
+    <PhoneInput defaultCountry="PL"  value={job.phoneNumber || ""} 
+    onChange={(value) =>  setJob({...job, phoneNumber: value ?? null}) }/>
+</div>
  <select value={job.applicationType} onChange={(e) => {
             const applicationType = e.target.value; 
             setJob({...job,applicationType,applicationDto : applicationType === "FORM" ? {
@@ -730,7 +725,7 @@ function UpdateJob(){
              <option value="FORM">FORM</option>
          </select>
            {job.applicationType === "FORM" && (
-            <div>
+            <div className="checkboxs"> 
                  <div>
             <label>
        
@@ -796,7 +791,7 @@ function UpdateJob(){
            )}
 
           {job.applicationType === "FORM" && (
-            <div>
+            <div className="form" >
                 {job?.applicationDto?.question?.map((question,index)  => {
                 return (
                  <div key={index}>
@@ -832,15 +827,12 @@ function UpdateJob(){
                 >Add new Question</button>   
             </div> 
           )}
-<br/>
- <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])}/>
-  {job.picture && (
-   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  width={"150px"} height={"150px"} alt="empty"/>
-  )}
 
-  <button type="submit" className="btn btn-success">Update Job Offer</button>
-  <button className="btn btn-danger" type="button" onClick={() => softDelete(job.id)}>Delete</button>
-
+  <div className="buttons-update">
+  <button type="submit" className="update-button">Update Job Offer</button>
+  <button className="delete-button" type="button" onClick={() => softDelete(job.id)}>Delete</button>
+  </div>
+</div>
    </div>
    </form>
     );

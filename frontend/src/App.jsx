@@ -30,6 +30,7 @@ import Navbar from "./fragments/Navbar";
 import { useEffect, useState } from "react";
 
 
+
 function App(){
   return(
   <BrowserRouter>
@@ -164,6 +165,7 @@ function App(){
       <Route path="/application-submitted" element={<ApplicationSubmitted/>}/>
       <Route path="/employee-applications" element={<FindEmployeeAplications/>}/>
       <Route path="/all-applications/:id" element={<AllApplications/>}/>
+      
       
     </Routes>
     </>

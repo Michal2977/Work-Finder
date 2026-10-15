@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import "../styles/create-job-offer.css";
 
 
 function CreateJobOfferPage(){
@@ -15,7 +16,7 @@ function CreateJobOfferPage(){
         ,jobStart : "" ,workMode : [],duties : "",requirements: "",
         weOffer : "",jobCategory: "",salaryPeriod : "", salaryType : ""
     ,companyName : "",shiftSystem : "",workingHours :"",nightShift: null,aboutCompany : "",
-    salarySystem : "",benefit : [],phoneNumber : "",expiresAt : 7,applicationType : "", applicationDto : [] });
+    salarySystem : "",benefit : [],phoneNumber : "",expiresAt : "",applicationType : "", applicationDto : [] });
     
     
 
@@ -116,22 +117,34 @@ console.log(JSON.stringify(request, null, 2));
 
 
     return(
+       
         <form onSubmit={createJobOffer}>
         <div>
-            {message && <h1>{message}</h1>}
+             {message && (
+                <div className="notifications">
+                <h1>{message}</h1>
+                </div>
+            )}
+            
+    
 
+        <div className="main-container">
+  
+             <div className="welcome">
+            <h1>Create a Job Offer</h1>
+            <span>Post a job opening and find the right candidates for your company</span>
+         </div>
          <input type="text" placeholder="position" value={data.position} required minLength={3} maxLength={50}
-         onChange={(e) => setData({...data,position : e.target.value})}/>
-         <br/>
+          onChange={(e) => setData({...data,position : e.target.value})}/>
+      
 
          <input type="text" placeholder="company Name" value={data.companyName} required minLength={2} maxLength={100}
          onChange={(e) => setData({...data,companyName : e.target.value })}/>
-         <br/>
+    
 
-        <label htmlFor="expirationDays">Expiration:</label>
-      <select className="form-select" id="expirationDays" name="expirationDays" value={data.expiresAt}
+      <select className="form-select" required value={data.expiresAt}
       onChange={(e) =>setData({ ...data, expiresAt: Number(e.target.value)})}>
-    <option value="">Select expiration time</option>
+       <option value="" disabled>Select expiration time</option>
     <option value={7}>7 days</option>
     <option value={14}>14 days</option>
     <option value={30}>30 days</option>
@@ -139,10 +152,10 @@ console.log(JSON.stringify(request, null, 2));
     </select>
 
          
-         <br/>
+      
 
          <select value={data.jobCategory} onChange={(e) => setData({...data, jobCategory : e.target.value})} required>
-          <option value="">Choose job Category</option>
+          <option value="" disabled>Choose job Category</option>
           <option value="IT">IT</option>
           <option value="PHYSICAL_WORK">PHYSICAL_WORK</option>
           <option value="OFFICE_WORK">OFFICE_WORK</option>
@@ -170,18 +183,16 @@ console.log(JSON.stringify(request, null, 2));
           <option value="OTHER">OTHER</option>
          </select>
 
-         <br/>
 
-         <input type="text" placeholder="description" value={data.description} minLength={10} maxLength={5000}
-         onChange={(e) => setData({...data,description : e.target.value})}/>
-         <br/>
+         <textarea type="text" placeholder="description" value={data.description} minLength={10} maxLength={5000}
+           onChange={(e) => setData({...data,description : e.target.value})} />
+      
 
          <input type="number" placeholder="salary" value={data.salary} min={"0"} max={"99999999.99"} step={"0.01"}
          onChange={(e) => setData({...data,salary : e.target.value})} required/>
 
-         <br/>
          <select value={data.currency} onChange={(e) => setData({...data, currency : e.target.value})} required>
-          <option value="">Choose currency</option>
+          <option value="" disabled>Choose currency</option>
           <option value="PLN">PLN</option>
           <option value="EUR">EUR</option>
           <option value="USD">USD</option>
@@ -198,32 +209,29 @@ console.log(JSON.stringify(request, null, 2));
           <option value="AUD">AUD</option>
           <option value="JPY">JPY</option>
          </select>
-         <br/>
    
          <select value={data.salaryType} onChange={(e) => setData({...data, salaryType : e.target.value})} required>
-          <option value="">Choose Salary Type</option>
+          <option value="" disabled>Choose Salary Type</option>
           <option value="GROSS">GROSS</option>
           <option value="NET">NET</option>
          </select>
 
          <select value={data.salaryPeriod} onChange={(e) => setData({...data, salaryPeriod : e.target.value})} required>
-          <option value="">Choose Salary Period </option>
+          <option value="" disabled>Choose Salary Period </option>
           <option value="HOUR">HOUR</option>
           <option value="DAY">DAY</option>
           <option value="WEEK">WEEK</option>
           <option value="MONTH">MONTH</option>
           <option value="YEAR">YEAR</option>
          </select>
-         <br/>
 
 
-         <input type="text" placeholder="salary System" value={data.salarySystem} minLength={5} maxLength={100}
-         onChange={(e) => setData({...data,salarySystem : e.target.value })}/>
-         <br/>
+         <textarea type="text" placeholder="salary System" value={data.salarySystem} minLength={5} maxLength={100}
+          onChange={(e) => setData({...data,salarySystem : e.target.value })}/>
+     
 
          <input type="text" placeholder="location" value={data.location} minLength={2} maxLength={40} required
          onChange={(e) => setData({...data,location : e.target.value})}/>
-         <br/>
 
           <div className="form-check">
          <input className="form-check-input" type="checkbox"  id="onsite" checked={data.workMode.includes("ONSITE")} 
@@ -267,8 +275,6 @@ console.log(JSON.stringify(request, null, 2));
         </label>
         </div>
 
-        <br/>
-
         <select value={data.employmentType} onChange={(e) => setData({...data, employmentType : e.target.value})} required>
           <option value="">Choose employment Type</option>
           <option value="FULL_TIME">FULL_TIME</option>
@@ -276,7 +282,6 @@ console.log(JSON.stringify(request, null, 2));
           <option value="CONTRACT">CONTRACT</option>
           <option value="TEMPORARY">TEMPORARY</option>
          </select>
-         <br/>
 
          <div className="form-check">
          <input className="form-check-input" type="checkbox"  id="EMPLOYMENT_CONTRACT" checked={data.contractType.includes("EMPLOYMENT_CONTRACT")}
@@ -362,23 +367,24 @@ console.log(JSON.stringify(request, null, 2));
         </label>
         </div> 
 
-        <br/>
 
-        <input type="text" placeholder="work schedule" value={data.workSchedule} minLength={5} maxLength={40}
+        
+       <input type="text" placeholder="work schedule" value={data.workSchedule} minLength={5} maxLength={40}
          onChange={(e) => setData({...data,workSchedule : e.target.value})}/>
-         <br/>
+        
 
         
          <input type="text" placeholder="working Hours " value={data.workingHours} minLength={5} maxLength={40}
          onChange={(e) => setData({...data,workingHours : e.target.value})}/>
-         <br/>
+        
 
-
-           <input type="text" placeholder="shiftSystem" value={data.shiftSystem} minLength={3} maxLength={50}
+            
+        <input type="text" placeholder="shiftSystem" value={data.shiftSystem} minLength={3} maxLength={50}
          onChange={(e) => setData({...data,shiftSystem : e.target.value})}/>
-         <br/>
-
-          <p>mozliwosc pracy w godinach nocnych ? </p>
+        
+          <div className="night">
+          <p >Availability for night shifts </p>
+          </div>
          <div className="form-check">
          <input className="form-check-input" type="radio" id="nightShiftYes" name="nightShift" checked={data.nightShift === true}
          onChange={() => setData({...data,nightShift : true})}/>
@@ -394,28 +400,28 @@ console.log(JSON.stringify(request, null, 2));
         </label>
         </div>
 
-         <br/>
+        
 
          <select value={data.jobStart} onChange={(e) => setData({...data, jobStart : e.target.value})}>
-          <option value="">Choose job Start</option>
+          <option value="" disabled>Choose job Start</option>
           <option value="IMMEDIATELY">IMMEDIATELY</option>
           <option value="WITHIN_WEEK">WITHIN_WEEK</option>
           <option value="WITHIN_MONTH">WITHIN_MONTH</option>
           <option value="TO_BE_AGREED">TO_BE_AGREED</option>
          </select>
-         <br/>
+        
 
          <input type="text" placeholder="duties" value={data.duties} minLength={10} maxLength={5000}
          onChange={(e) => setData({...data,duties : e.target.value})}/>
-         <br/>
+        
 
          <input type="text" placeholder="requirements" value={data.requirements} minLength={10} maxLength={5000}
          onChange={(e) => setData({...data,requirements : e.target.value})}/>
-         <br/>
+         
 
           <input type="text" placeholder="we Offer" value={data.weOffer} minLength={10} maxLength={5000}
          onChange={(e) => setData({...data,weOffer : e.target.value})}/>
-         <br/>
+        
 
           <div className="form-check">
             <input className="form-check-input" type="checkbox" id="PRIVATE_MEDICAL_CARE" checked={data.benefit.includes("PRIVATE_MEDICAL_CARE")}
@@ -429,7 +435,7 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="PRIVATE_MEDICAL_CARE"> PRIVATE_MEDICAL_CARE</label>
           </div>
-         <br/>
+         
            <div className="form-check">
             <input className="form-check-input" type="checkbox" id="MULTISPORT" checked={data.benefit.includes("MULTISPORT")}
             onChange={(e) => {
@@ -442,7 +448,7 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="MULTISPORT"> PRIVATE_MEDICAL_CARE</label>
           </div>
-         <br/>
+        
                <div className="form-check">
             <input className="form-check-input" type="checkbox" id="LIFE_INSURANCE" checked={data.benefit.includes("LIFE_INSURANCE")}
             onChange={(e) => {
@@ -455,7 +461,7 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="LIFE_INSURANCE"> LIFE_INSURANCE</label>
           </div>
-         <br/>
+       
                <div className="form-check">
             <input className="form-check-input" type="checkbox" id="REMOTE_WORK" checked={data.benefit.includes("REMOTE_WORK")}
             onChange={(e) => {
@@ -468,7 +474,7 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="REMOTE_WORK"> REMOTE_WORK</label>
           </div>
-         <br/>
+        
                 <div className="form-check">
             <input className="form-check-input" type="checkbox" id="FLEXIBLE_HOURS" checked={data.benefit.includes("FLEXIBLE_HOURS")}
             onChange={(e) => {
@@ -481,7 +487,7 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="FLEXIBLE_HOURS"> FLEXIBLE_HOURS</label>
           </div>
-         <br/>
+        
                   <div className="form-check">
             <input className="form-check-input" type="checkbox" id="TRAINING" checked={data.benefit.includes("TRAINING")}
             onChange={(e) => {
@@ -494,7 +500,7 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="TRAINING"> TRAINING</label>
           </div>
-         <br/>
+        
                    <div className="form-check">
             <input className="form-check-input" type="checkbox" id="COMPANY_CAR" checked={data.benefit.includes("COMPANY_CAR")}
             onChange={(e) => {
@@ -507,7 +513,7 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="COMPANY_CAR"> COMPANY_CAR</label>
           </div>
-         <br/>
+        
                       
             <div className="form-check">
             <input className="form-check-input" type="checkbox" id="MEAL_CARD" checked={data.benefit.includes("MEAL_CARD")}
@@ -521,7 +527,7 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="MEAL_CARD"> MEAL_CARD</label>
           </div>
-         <br/>
+      
            <div className="form-check">
             <input className="form-check-input" type="checkbox" id="FRUIT" checked={data.benefit.includes("FRUIT")}
             onChange={(e) => {
@@ -534,7 +540,7 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="FRUIT"> FRUIT</label>
           </div>
-         <br/>
+        
              <div className="form-check">
             <input className="form-check-input" type="checkbox" id="EMPLOYEE_DISCOUNTS" checked={data.benefit.includes("EMPLOYEE_DISCOUNTS")}
             onChange={(e) => {
@@ -547,24 +553,21 @@ console.log(JSON.stringify(request, null, 2));
             }}/>
                  <label className="form-check-label" htmlFor="EMPLOYEE_DISCOUNTS"> EMPLOYEE_DISCOUNTS</label>
           </div>
-         <br/>
-
-          <input type="text" placeholder="about Company" value={data.aboutCompany} minLength={20} maxLength={4000}
-         onChange={(e) => setData({...data,aboutCompany : e.target.value })}/>
-         <br/>
-
+       
+         <textarea type="text" placeholder="about Company" value={data.aboutCompany} minLength={20} maxLength={4000}
+           onChange={(e) => setData({...data,aboutCompany : e.target.value })}/>
 
          <PhoneInput defaultCountry="PL" value= {data.phoneNumber}
            onChange={(value) => setData({...data,phoneNumber : value ?? null})}/>
-         <br/>
- 
          
+ 
+         <div className="picture">
         <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
-        <br/>
+       
         {file && (
             <img src={URL.createObjectURL(file)} alt="preview" width={"200px"} height={"200px"} />
         )}
-         <br/>
+        </div>
 
          <select value={data.applicationType} onChange={(e) => {
             const applicationType = e.target.value; 
@@ -581,7 +584,7 @@ console.log(JSON.stringify(request, null, 2));
              <option value="FORM">FORM</option>
          </select>
            {data.applicationType === "FORM" && (
-            <div>
+            <div  className="checkboxs">
                  <div>
             <label>
        
@@ -647,7 +650,7 @@ console.log(JSON.stringify(request, null, 2));
            )}
 
           {data.applicationType === "FORM" && (
-            <div>
+            <div className="form" >
                 {data.applicationDto.question.map((question,index)  => {
                 return (
                  <div key={index}>
@@ -683,11 +686,13 @@ console.log(JSON.stringify(request, null, 2));
                 >Add new Question</button>   
             </div> 
           )}
-         <br/>
+        
 
-         <button type="submit" className="btn btn-success" >Create Job Offer</button>
+         <button type="submit" className="button" >Create Job Offer</button>
+          </div>
         </div>
         </form>
+       
     );
 } 
 

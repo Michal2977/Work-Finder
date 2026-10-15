@@ -1,7 +1,9 @@
 
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {Turnstile,useTurnstile} from "react-turnstile";
+import "../styles/resend-email.css";
+import { Mail } from "lucide-react";
 
 function ResendEmail(){
 
@@ -35,15 +37,29 @@ function ResendEmail(){
     }
 
     return(
-        <div>
-            {message && <h1>{message}</h1>}
+        <div >
+            {message && (
+                <div className="notifications">
+                <h1>{message}</h1>
+                </div>
+            )}
+           <div className="resend">
+
+         <h1>Resend Verification Email</h1>
+        <span>Enter your email address to receive a new verification link</span>
+       <div className="icon">
+       <Mail size={20}/>    
       <input type="email" placeholder="email" value={email}
       onChange={(e) => setEmail(e.target.value)}/>
+      </div> 
 
-      <button onClick={resend}>Resend </button>
 
-      <br/>
-      <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
+   <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
+      <button onClick={resend} className="button">Resend </button>
+      <span>Already have an account? <Link to={"/login"}>Back to Login</Link></span>
+         
+            </div>
+
       </div>
     );
 }

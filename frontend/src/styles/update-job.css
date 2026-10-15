@@ -1,0 +1,61 @@
+.expiration{
+    display: flex;
+    flex-direction: row;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+.phone{
+        height: 35px;
+    width: 100%;
+    border: none;
+    outline: none;
+    margin-right: 15px;
+    padding: 0 10px;
+    font-size: 15px;
+    box-sizing: border-box;
+}
+.expiration span{
+    font-size: 17px;
+ margin-right: 10px;
+ transform: translateY(3px);
+  color: #334155;
+}
+.expiration p{
+    font-size: 25px;
+    margin: 0;
+    padding: 0;
+    color: #2563EB;
+}
+.buttons-update{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    gap: 10px;
+}
+.buttons-update .update-button{
+    width: 45%;
+    border-radius: 15px;
+    font-size: 15px;
+   border: 1px solid #2563EB;
+color: #1D4ED8;
+background-color: #EFF6FF;
+}
+.buttons-update .update-button:hover {
+background-color: #DBEAFE;
+border-color: #1D4ED8;
+}
+.buttons-update .delete-button{
+    width: 45%;
+    border-radius: 15px;
+    border: 1px solid #DC2626;
+    font-size: 15px;
+      color: #B91C1C;
+        background-color: #FEF2F2;
+}
+.buttons-update .delete-button:hover {
+    background-color: #FEE2E2;
+    border-color: #B91C1C;
+}

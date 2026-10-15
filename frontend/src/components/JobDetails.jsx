@@ -1,5 +1,6 @@
 import {useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import "../styles/job-detalis.css";
 
 function JobDetails(){
 
@@ -148,10 +149,33 @@ function JobDetails(){
 
     return(
      <div> 
-      {message && <h1>{message}</h1>}                 
+        {message && (
+            <div className="notifications">
+                <h1>{message}</h1>
+            </div>
+        )}
+
+        <div className="job-detalis-first">           
        {job.picture && (
        <img src={`data:${job.pictureContentType};base64,${job.picture}`} width={"200"} height={"200px"}/>
        )}
+
+        <h1>{job.position}</h1>
+        <span>{getTimeLeft(job.expiresAt)}</span>
+        <p>{job.companyName}</p>
+
+       <p>{job.salary}</p>
+       <p>{job.salaryType}</p>
+       <p>{job.salaryPeriod}</p>
+
+        <p>{job.contractType}</p>
+        <p>{job.employmentType}</p>
+        <p>{job.jobCategory}</p>
+        <p>{job.location}</p>
+        <p>{job.workMode}</p>
+        <p>{job.jobStart}</p>
+                    
+</div> 
        {user && employee && job.applicationType === "FORM" && (
         <div>
           
@@ -226,41 +250,33 @@ function JobDetails(){
 )}
 
 
-    <p>{job.position}</p>
-    <span>{getTimeLeft(job.expiresAt)}</span>
-     <p>{job.salary}</p>
-      <p>{job.companyName}</p>
-      <p>{job.salaryType}</p>
-       <p>{job.salaryPeriod}</p>
-        <p>{job.contractType}</p>
-         <p>{job.phoneNumber}</p>
-        <hr/>
-        <p>{job?.description}</p>
-        <hr/>
+   
 
-         <p>{job.location}</p>
-          <p>{job.contractType}</p>
-          <p>{job.employmentType}</p>
-               <p>{job.jobCategory}</p>
-                <p>{job.workMode}</p>
-                <p>{job.jobStart}</p>
-                <hr/>
+              
                  <p>{job.shiftSystem}</p>
-                   <p>{job.workSchedule}</p>
-                     <p>{job.workingHours}</p>
+                  <p>{job.workSchedule}</p>
+                        <p>{job.workingHours}</p>
                        <p>{job.nightShift}</p>
                        <p>{job.salaryPeriod}</p>
                          <p>{job.salarySystem}</p>
-                    <hr/>
+
+               
+                <p>{job?.description}</p>
+              
+              {/* po prawej */}
+                     <p>{job.phoneNumber}</p>
+               
+                    
+                  
                      <p>{job.duties}</p>
-                     <hr/>
+                    
                       <p>{job.requirements}</p>
-                      <hr/>
+                     
                       <p>{job.weOffer}</p>
-                      <hr/>
+                     
                       <p>{job.benefit}</p>
-                      <hr/>
-                         <p>{job.aboutCompany}</p>
+                    
+                    <p>{job.aboutCompany}</p>
 
 
 
