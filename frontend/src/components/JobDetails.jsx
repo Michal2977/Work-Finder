@@ -154,29 +154,73 @@ function JobDetails(){
                 <h1>{message}</h1>
             </div>
         )}
-
-        <div className="job-detalis-first">           
+    
+        <div className="job-detalis-first">
+                   
        {job.picture && (
-       <img src={`data:${job.pictureContentType};base64,${job.picture}`} width={"200"} height={"200px"}/>
+       <img src={`data:${job.pictureContentType};base64,${job.picture}`}/>
        )}
-
+   <div className="company"> 
         <h1>{job.position}</h1>
+         <p>{job.companyName}</p>
         <span>{getTimeLeft(job.expiresAt)}</span>
-        <p>{job.companyName}</p>
-
-       <p>{job.salary}</p>
+        </div>
+      <div className="salary">
+        <p>{job.salary}</p>
+        <p>{job.currency}</p>
        <p>{job.salaryType}</p>
-       <p>{job.salaryPeriod}</p>
-
-        <p>{job.contractType}</p>
+       <p>{job.salaryPeriod}</p> 
+        
+       </div>
+        <div className="new-hr">
+        <hr/>
+        </div>
+        <div className="first-detalis">
+     {Array.isArray(job.contractType) && job.contractType.map((type, index) => (
+    <p key={index}>{type}</p>
+     ))}
         <p>{job.employmentType}</p>
         <p>{job.jobCategory}</p>
         <p>{job.location}</p>
         <p>{job.workMode}</p>
-        <p>{job.jobStart}</p>
-                    
+        <p>{job.jobStart}</p> 
+        </div>            
 </div> 
-       {user && employee && job.applicationType === "FORM" && (
+     <div className="additional">
+        <h1>Additional Information</h1>
+        {job?.shiftSystem && (
+            <div>
+            <span>Compensation system:</span>
+            <p>{job?.shiftSystem}</p>
+            <hr/>
+            </div>
+            
+        )}
+           {job?.workSchedule && (
+            <div>
+            <span>Work system:</span>
+            <p>{job?.workSchedule}</p>
+             <hr/>
+            </div>
+        )}
+             {job?.workingHours && (
+            <div>
+            <span>Working hours:</span>
+            <p>{job?.workingHours}</p>
+             <hr/>
+            </div>
+        )}
+             {job?.nightShift && (
+            <div>
+            <span>Night shift:</span>
+            <p>{job?.nightShift === true ? "Yes" : "No"}</p>
+             <hr/>
+            </div>
+        )}
+     
+       
+    </div> 
+       {/* {user && employee && job.applicationType === "FORM" && (
         <div>
           
           {job.alreadyApplied ? (
@@ -253,17 +297,13 @@ function JobDetails(){
    
 
               
-                 <p>{job.shiftSystem}</p>
-                  <p>{job.workSchedule}</p>
-                        <p>{job.workingHours}</p>
-                       <p>{job.nightShift}</p>
-                       <p>{job.salaryPeriod}</p>
-                         <p>{job.salarySystem}</p>
+               
+
 
                
                 <p>{job?.description}</p>
               
-              {/* po prawej */}
+             
                      <p>{job.phoneNumber}</p>
                
                     
@@ -276,11 +316,11 @@ function JobDetails(){
                      
                       <p>{job.benefit}</p>
                     
-                    <p>{job.aboutCompany}</p>
+                    <p>{job.aboutCompany}</p> */}
 
 
-
-    </div>
+</div>
+    
     );
 }
 
