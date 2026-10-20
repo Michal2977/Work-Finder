@@ -1,4 +1,5 @@
 
+
 .job-detalis-first {
     display: flex;
     align-items: center;
@@ -12,6 +13,157 @@
     min-height: 150px;
     height: auto;
      flex-wrap: wrap;
+}
+.quick-application {
+    position: absolute;
+    left: calc(73% + 50px);
+    top: 30%;
+    transform: translateY(-30%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    gap: 15px;
+    padding: 25px;
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 15px;
+    width: 320px;
+    box-sizing: border-box;
+}
+
+.quick-application > div {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.quick-application select,
+.quick-application input[type="file"] {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.quick-application p,
+.quick-application h1 {
+    margin: 0;
+    text-align: center;
+}
+.quick-application h1{
+ font-size: 24px;
+    color: #0F172A;
+    font-weight: 500;
+}
+.quick-application select {
+    align-self: center;
+    text-align: center;
+    padding: 10px 12px;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    color: #252D5A;
+    font-size: 14px;
+    cursor: pointer;
+}
+.quick-application input[type="file"] {
+    align-self: center;
+    padding: 10px;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    background-color: #FFFFFF;
+    color: #252D5A;
+    font-size: 13px;
+    cursor: pointer;
+    box-sizing: border-box;
+}
+
+.quick-application input[type="file"]::file-selector-button {
+    margin-right: 10px;
+    padding: 7px 12px;
+    border: 1px solid #60A5FA;
+    border-radius: 6px;
+    background-color: #EFF6FF;
+    color: #2563EB;
+    font-weight: 600;
+    cursor: pointer;
+}
+.quick-application > div p {
+    margin: 0 0 10px;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+      color: #252D5A;
+    font-size: 17px;
+    font-weight: 400;
+    text-align: center;
+}
+.quick-application p {
+    margin: 0 0 10px;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    color: #252D5A;
+    font-size: 13px;
+    text-align: center;
+}
+.quick-application button {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #60A5FA;
+    border-radius: 8px;
+    background-color: #EFF6FF;
+    color: #2563EB;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.quick-application h1 {
+    margin: 15px 0 5px;
+    color: #252D5A;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.quick-application p {
+    margin: 0;
+    color: #64748B;
+    font-size: 14px;
+    text-align: center;
+}
+
+
+.form-application {
+    position: absolute;
+    left: calc(75% + 50px);
+    top: 30%;
+    transform: translateY(-30%);
+    width: 258px;
+    box-sizing: border-box;
+    padding: 24px 30px;
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 15px;
+}
+
+.form-application h1 {
+    font-size: 24px;
+    color: #0F172A;
+    font-weight: 500;
+    margin: 0 0 14px;
+    white-space: nowrap;
+}
+
+.form-application button {
+    width: 100%;
+    padding: 13px 16px;
+    border: none;
+    border-radius: 10px;
+    background-color: #65B394;
+    color: #FFFFFF;
+    font-size: 14px;
+    font-weight: 600;
 }
 .job-detalis-first img{
     width: 100px;
@@ -155,3 +307,201 @@ margin: 5px 0;
 box-sizing: border-box;
 
 }
+.responsibilities {
+display: flex;
+flex-direction: column;
+margin: 0px auto;
+margin-top: 30px;
+width: fit-content;
+padding: 30px;
+justify-content: left;
+
+background-color: #FFFFFF;
+border: 1px solid #CBD5E1;
+border-radius: 15px;
+width: 40%;
+}
+
+.responsibilities h1{
+color: #0F172A;
+font-weight: 500;
+font-size: 20px;   
+margin-bottom: 15px;
+}
+.responsibilities span{
+display: flex;
+color: #334155;
+font-size: 15px;
+justify-content: left;
+width: 100%;
+overflow-wrap: anywhere;
+}
+.requirements {
+display: flex;
+flex-direction: column;
+margin: 0px auto;
+margin-top: 30px;
+width: fit-content;
+padding: 30px;
+justify-content: left;
+
+background-color: #FFFFFF;
+border: 1px solid #CBD5E1;
+border-radius: 15px;
+width: 40%;
+}
+.requirements h1{
+    color: #0F172A;
+font-weight: 500;
+font-size: 20px;   
+margin-bottom: 15px;
+}
+.requirements span{
+ display: flex;
+color: #334155;
+font-size: 15px;
+justify-content: left;
+width: 100%;
+overflow-wrap: anywhere;   
+}
+.description{
+ display: flex;
+flex-direction: column;
+margin: 0px auto;
+margin-top: 30px;
+width: fit-content;
+padding: 30px;
+justify-content: left;
+
+background-color: #FFFFFF;
+border: 1px solid #CBD5E1;
+border-radius: 15px;
+width: 40%;   
+}
+.description h1{
+    color: #0F172A;
+font-weight: 500;
+font-size: 20px;   
+margin-bottom: 15px;
+}
+.description span{
+ display: flex;
+color: #334155;
+font-size: 15px;
+justify-content: left;
+width: 100%;
+overflow-wrap: anywhere;   
+}
+.weOffer{
+ display: flex;
+flex-direction: column;
+margin: 0px auto;
+margin-top: 30px;
+width: fit-content;
+padding: 30px;
+justify-content: left;
+
+background-color: #FFFFFF;
+border: 1px solid #CBD5E1;
+border-radius: 15px;
+width: 40%;   
+}
+.weOffer h1{
+    color: #0F172A;
+font-weight: 500;
+font-size: 20px;   
+margin-bottom: 15px;
+}
+.weOffer span{
+ display: flex;
+color: #334155;
+font-size: 15px;
+justify-content: left;
+width: 100%;
+overflow-wrap: anywhere;   
+}
+
+.aboutCompany{
+ display: flex;
+flex-direction: column;
+margin: 0px auto;
+margin-top: 30px;
+width: fit-content;
+padding: 30px;
+justify-content: left;
+
+background-color: #FFFFFF;
+border: 1px solid #CBD5E1;
+border-radius: 15px;
+width: 40%;   
+}
+.aboutCompany h1{
+    color: #0F172A;
+font-weight: 500;
+font-size: 20px;   
+margin-bottom: 15px;
+}
+.aboutCompany span{
+ display: flex;
+color: #334155;
+font-size: 15px;
+justify-content: left;
+width: 100%;
+overflow-wrap: anywhere;   
+}
+
+
+
+
+.benefits {
+ display: flex;
+flex-direction: column;
+margin: 0px auto;
+margin-top: 30px;
+width: fit-content;
+padding: 30px;
+justify-content: left;
+
+background-color: #FFFFFF;
+border: 1px solid #CBD5E1;
+border-radius: 15px;
+width: 40%;   
+}
+.benefits h1{
+color: #0F172A;
+font-weight: 500;
+font-size: 20px;   
+margin-bottom: 15px;
+}
+.benefits-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    align-items: start;
+}
+
+.benefits-list span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 25px 12px;
+    min-height: 140px;
+    box-sizing: border-box;
+    border-radius: 8px;
+    background-color: #EFF6FC;
+    color: #252D5A;
+    text-align: center;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.benefits-list span svg {
+    width: 40px;
+    height: 40px;
+    color: #2196F3;
+    stroke-width: 1.5;
+    flex-shrink: 0;
+}
+

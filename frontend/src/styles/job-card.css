@@ -72,7 +72,9 @@
 .card .save {
     position: absolute;
     top: 15px;
-    right: 15px;;
+    right: 15px;
+    z-index: 11;
+    pointer-events: auto;
     background-color: white;
     border: none;
     color: #7A8499;
@@ -108,22 +110,37 @@
     border-radius: 8px;
 }
 
-.job-info{
-position: absolute;
-top: 15px;
-left: 130px;
-display: flex;
-flex-direction: column;
-gap: 5px;
+
+.card .operations {
+    z-index: 10;
+}
+
+.card .operations a,
+.card .operations button {
+    position: relative;
+    z-index: 11;
+    pointer-events: auto;
+    cursor: pointer;
+}
+
+.job-info {
+    position: absolute;
+    top: 15px;
+    left: 130px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: calc(100% - 150px);
+}
+
+.companyName {
+    font-size: 15px;
+    font-weight: 500;
+    color: black;
 }
 .job-info span{
     font-weight: 500;
     color: #7d8492;
-}
-.job-info .company{
-font-size: 15px;
-font-weight: 500;
-color: black;
 }
 .job-info .position {
 font-size: 18px;

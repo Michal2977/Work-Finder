@@ -184,7 +184,8 @@ function Jobs(){
 
             <div className="card-container">
              {jobs.map(job => {
-            const employerOwner = user?.employerDto?.id === job?.employerDto?.id;
+            const employerOwner =     user?.employerDto?.id != null && job?.employerDto?.id != null &&
+             user.employerDto.id === job.employerDto.id;
             
     return(           
                 <div className="card"   key={job.id} onClick={() => navigate(`/jobs/${job.id}`)}
@@ -195,7 +196,7 @@ function Jobs(){
                    
   <div className="card-body">
 
-     {user && (Admin || employerOwner) && (
+     {(Admin || employerOwner) && (
     <div className="operations">
      <Link to={`/update-job/${job.id}`} onClick={(e) => {e.stopPropagation()}}><Pencil size={22}/></Link>
      <button  type="button" 
@@ -216,8 +217,8 @@ function Jobs(){
      
      <div className="job-info">
     <span  className="position"> {job.position}</span>
-    <span >{job.salary} {job.salaryPeriod} {job.salaryType}</span>
-    <span className="company">{job?.companyName}</span>
+    <span >{job.salary} {job.currency} {job.salaryPeriod} {job.salaryType}</span>
+    <span className="companys">{job?.companyName}</span>
        <span className="location">{job.location}</span>
        </div>
        <div className="job-details">

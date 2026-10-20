@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import "../styles/job-detalis.css";
+import { Apple, Car, Clock, CreditCard, Dumbbell, GraduationCap, House, ShieldCheck, Stethoscope, Tags } from "lucide-react";
 
 function JobDetails(){
 
@@ -121,10 +122,6 @@ function JobDetails(){
       },2000);
      }
    }
-   
-   
- 
-
 
       const openCv = (base64) => {
         const binary = atob(base64);
@@ -216,23 +213,186 @@ function JobDetails(){
             <p>{job?.nightShift === true ? "Yes" : "No"}</p>
              <hr/>
             </div>
-        )}
-     
-       
-    </div> 
-       {/* {user && employee && job.applicationType === "FORM" && (
-        <div>
+        )} 
+    </div>
+       <div className="responsibilities">
+    
+        <h1>Your scope of responsibilities</h1>
+        <span>{job?.duties}</span>
+        </div> 
+     <div className="requirements">
+        <h1>Requirements</h1>
+        <span>{job?.requirements}</span>
+        </div> 
+
+        <div className="description">
+        <h1>Description</h1>
+           <span>{job?.description}</span>
+        </div> 
+        
+            <div className="weOffer">
+            <h1>This is what we offer</h1>    
+          <span>{job.weOffer}</span>
+        </div> 
+
+
+        <div className="benefits">
+            <h1>Benefity</h1>
+
+            <div className="benefits-list">
+            {Array.isArray(job.benefit) && job.benefit.map((benefits,index) => (
+              <div key={index}>
+                
           
+             {benefits ===  "PRIVATE_MEDICAL_CARE" && (
+                <span>
+                <>
+                
+                 <Stethoscope size={24} />
+                  Private medical care
+                </>
+                 </span>
+           
+             )}
+          
+          
+             {benefits ===  "MULTISPORT" && (
+                  <span>
+                <>
+                
+                 <Dumbbell size={24} />
+                  Multisport
+                </>
+                  </span>
+             )}
+         
+
+         
+             {benefits ===  "LIFE_INSURANCE" && (
+                   <span>
+                <>
+           
+                 <ShieldCheck size={24} />
+                  Life insurance
+                </>
+                  </span>
+             )}
+         
+
+         
+             {benefits ===  "REMOTE_WORK" && (
+                   <span>
+                <>
+             
+                 <House size={24} />
+                 Remote Work
+                </>
+                       </span>
+             )}
+    
+
+              
+             {benefits ===  "FLEXIBLE_HOURS" && (
+                 <span>
+                <>
+                
+                 <Clock size={24} />
+                 Flexible Hours
+                </>
+                </span>
+             )}
+           
+
+         
+             {benefits ===  "TRAINING" && (
+                    <span>
+                <>
+               
+                 <GraduationCap size={24} />
+                 Training
+                </>
+                </span>
+             )}
+           
+
+          
+             {benefits ===  "COMPANY_CAR" && (
+                  <span>
+                <>
+              
+                 <Car size={24} />
+                  Company Car
+                </>
+                  </span>
+             )}
+         
+         
+             {benefits ===  "MEAL_CARD" && (
+                   <span>
+                <>
+               
+                 <CreditCard size={24} />
+                  Meal Card
+                </>
+                   </span>
+             )}
+        
+
+             
+             {benefits ===  "FRUIT" && (
+                <span>
+                <>
+                
+                 <Apple size={24} />
+                 Fruit
+                </>
+                  </span>
+             )}
+         
+
+           
+             {benefits ===  "EMPLOYEE_DISCOUNTS" && (
+                  <span>
+                <>
+               
+                 <Tags size={24} />
+                  Employee Discount 
+                </>
+                   </span>
+             )}
+        
+              </div>
+                
+             
+            ))}
+             </div>
+        </div>
+
+            <div className="aboutCompany">
+            <h1>About us</h1>    
+            
+          <span>{job.aboutCompany}</span>
+          
+        </div> 
+
+
+  
+       {user && employee && job.applicationType === "FORM" && (
+         <div className="form-application">
+        <div>
+         <h1>Apply for this job</h1>
           {job.alreadyApplied ? (
-            <button className="btn btn-success" disabled > Already applied</button>
-          ) : (<Link to={`/form-application/${id}`}><button className="btn btn-success">Apply</button></Link>)}
+            <button  disabled > Already applied</button>
+          ) : (<Link to={`/form-application/${id}`}><button >Apply</button></Link>)}
          
         </div>
+        </div>
        )}
-
+   
       {user && employee && job.applicationType === "QUICK" && (
-    <div>
 
+    <div className="quick-application"> 
+       <h1>Apply for this job</h1>
         <select
             value={selectedCv}
             onChange={(e) => {
@@ -267,12 +427,14 @@ function JobDetails(){
                 </button>
 
                 <button
-                    className="btn btn-success"
+                    
                     disabled={job.alreadyApplied}
                     onClick={() => qucikApplication(id, selectedCvObject)}
                 >
                     {job.alreadyApplied ? "Already applied" : "Apply"}
                 </button>
+                   <h1>Contact with us </h1>
+                 <p>{job.phoneNumber}</p>
             </div>
         )}
 
@@ -281,42 +443,20 @@ function JobDetails(){
                 <p>{selectedComputerFile.name}</p>
 
                 <button
-                    className="btn btn-success"
+                   
                     disabled={job.alreadyApplied}
                     onClick={() => qucikApplication(id, null)}
                 >
                     {job.alreadyApplied ? "Already applied" : "Apply"}
                 </button>
+                 <h1>Contact with us </h1>
+                 <p>{job.phoneNumber}</p>
             </div>
         )}
 
     </div>
-)}
-
-
+)}                  
    
-
-              
-               
-
-
-               
-                <p>{job?.description}</p>
-              
-             
-                     <p>{job.phoneNumber}</p>
-               
-                    
-                  
-                     <p>{job.duties}</p>
-                    
-                      <p>{job.requirements}</p>
-                     
-                      <p>{job.weOffer}</p>
-                     
-                      <p>{job.benefit}</p>
-                    
-                    <p>{job.aboutCompany}</p> */}
 
 
 </div>
