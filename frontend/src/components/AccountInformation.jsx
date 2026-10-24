@@ -3,6 +3,8 @@ import { useState,useEffect, useRef } from "react";
 import {useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+import "../styles/account-information.css";
+import { Mail ,Lock, User, Building, Building2, FileText} from "lucide-react";
 
 
 function AccountInformation(){
@@ -28,6 +30,7 @@ function AccountInformation(){
     const admin = user?.roleDto?.some(role => role.role === "ADMIN");
     const employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
     const employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
+
 
     const changeAdminData = async() => {
        
@@ -120,86 +123,141 @@ function AccountInformation(){
 
     return(
         <div>
-          {message && <h1>{message}</h1>}
+           {message && (
+                <div className="notifications">
+                <h1>{message}</h1>
+                </div>
+            )}
 
         {user && admin && (
-          <div>
+          <div className="main-containers">
+
+              <div className="welcome">
+              <h1>Manage Your Account</h1>
+              <p>Update your personal information and account details to keep your profile accurate and up to date</p>
+            </div>
+
+            <div className="icons">
+              <Mail size={20}/>
             <input type="email" placeholder="email" value={user?.email || ""} minLength={5} maxLength={254}
             onChange={(e) => setUser({...user,email : e.target.value})}/>
-            <br/>
+            </div>
+              <div className="icons">
+              <Lock size={20}/>
             <input type="password" placeholder="password" value={user?.password || ""}
             onChange={(e) => setUser({...user,password : e.target.value})}/>
-
-            <button onClick={changeAdminData} className="btn btn-success">Update </button>
+            </div>
+            <button className="button" onClick={changeAdminData}>Update </button>
           </div>
         )}  
         {user && employee && (
           
-             <div>
+             <div className="main-containers">
+                    <div className="welcome">
+              <h1>Manage Your Account</h1>
+              <p>Update your personal information and account details to keep your profile accurate and up to date</p>
+            </div>
+
+              <PhoneInput defaultCountry="PL" value={user?.employeeDto?.phoneNumber || ""} placeholder="Enter your phone number"
+           onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,phoneNumber : e ?? ""}})}/>
+
+                  <div className="icons">
+           <Mail size={20}/>
             <input type="email" placeholder="email" value={user?.email || ""} minLength={5} maxLength={254}
             onChange={(e) => setUser({...user,email : e.target.value})}/>
+             </div>
 
+          <div className="icons">
+             <Lock size={20}/>
           <input type="password" placeholder="password" value={user?.password || ""} minLength={8} maxLength={64}
           onChange={(e) => setUser({...user,password : e.target.value})}/>
+         </div>
 
+          <div className="icons">
+            <User size={20}/>
           <input type="text" placeholder="firstName" value={user?.employeeDto?.firstName || ""} minLength={2} maxLength={40}
-          onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,firstName : e.target.value}})}/> 
+          onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,firstName : e.target.value}})}/>
+          </div> 
           
+           <div className="icons">
+            <User size={20}/>
           <input type="text" placeholder="lastName" value={user?.employeeDto?.lastName || ""} minLength={2} maxLength={40}
           onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,lastName : e.target.value}})}/>
-
-           <PhoneInput defaultCountry="PL" value={user?.employeeDto?.phoneNumber || ""}
-           onChange={(e) => setUser({...user,employeeDto : {...user.employeeDto,phoneNumber : e ?? ""}})}/>
+           </div> 
           
+         
+        
+           <div className="picture">
             {user?.picture && (
               <img src={`data:${user.pictureContentType};base64,${user.picture}`}  width={"200px"} height={"200px"} alt="no profile"/>
             )}
 
-
-          <br/>
           <input type="file" accept="image/png,image/jpeg,image/webp" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
           {file && (
             <img src={URL.createObjectURL(file)} width={"200px"} height={"200px"}/>
           )}
-
-          <button onClick={changeEmployeeData}>Update </button>
+          </div>
+          <button className="button" onClick={changeEmployeeData}>Update </button>
             </div>
         )}
 
         {user && employer && (
-          <div>
-           <input type="email" placeholder="email" value={user?.email || ""} minLength={5} maxLength={254}
-           onChange={(e) => setUser({...user,email : e.target.value})}/>
-
-           <input type="password" placeholder="password" value={user?.password || ""} minLength={8} maxLength={64}
-           onChange={(e) => setUser({...user,password : e.target.value})}/>
-
-           <input type="text" placeholder="first Name" value={user?.employerDto?.firstName || ""}  minLength={2} maxLength={40}
-           onChange={(e) => setUser({...user,employerDto : {...user.employerDto,firstName : e.target.value}})}/>
-
-           <input type="text" placeholder="last Name" value={user?.employerDto?.lastName || ""}  minLength={2} maxLength={40}
-           onChange={(e) => setUser({...user,employerDto : {...user.employerDto,lastName : e.target.value}})}/>
-        
-       <PhoneInput defaultCountry="PL" value={user?.employerDto?.phoneNumber || ""}
+          <div className="main-containers">
+            <div className="welcome">
+              <h1>Manage Your Account</h1>
+              <p>Update your personal information and account details to keep your profile accurate and up to date</p>
+            </div>
+              <PhoneInput defaultCountry="PL" value={user?.employerDto?.phoneNumber || ""}
           onChange={(e) =>setUser({...user,employerDto: {...user.employerDto,phoneNumber: e ?? ""}
         })}/>
+           
+           <div className="icons">
+           <Mail size={20}/>
+           <input type="email" placeholder="email" value={user?.email || ""} minLength={5} maxLength={254}
+           onChange={(e) => setUser({...user,email : e.target.value})}/>
+            </div> 
 
+              <div className="icons">
+           <Lock size={20}/>
+           <input type="password" placeholder="password" value={user?.password || ""} minLength={8} maxLength={64}
+           onChange={(e) => setUser({...user,password : e.target.value})}/>
+         </div> 
+
+          <div className="icons">
+           <User size={20}/>
+           <input type="text" placeholder="first Name" value={user?.employerDto?.firstName || ""}  minLength={2} maxLength={40}
+           onChange={(e) => setUser({...user,employerDto : {...user.employerDto,firstName : e.target.value}})}/>
+           </div> 
+
+           <div className="icons">
+           <User size={20}/>
+           <input type="text" placeholder="last Name" value={user?.employerDto?.lastName || ""}  minLength={2} maxLength={40}
+           onChange={(e) => setUser({...user,employerDto : {...user.employerDto,lastName : e.target.value}})}/>
+           </div> 
+        
+     
+              <div className="icons">
+            <Building2 size={20}/>
            <input type="text" placeholder="company Name" value={user?.employerDto?.companyName || ""}  minLength={1} maxLength={100}
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,companyName : e.target.value}})}/>
+             </div> 
 
+                <div className="icons">
+           <FileText size={20}/>
            <input type="text" placeholder="nip" value={user?.employerDto?.nip || ""}  minLength={10} maxLength={10}
            onChange={(e) => setUser({...user,employerDto : {...user.employerDto,nip : e.target.value}})}/>
-
+            </div>  
+            <div className="picture">
             {user?.picture && (
               <img src={`data:${user.pictureContentType};base64,${user.picture}`}  width={"200px"} height={"200px"} alt="no profile"/>
             )}
-           <br/>
+          
            <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
            {file && (
             <img src={URL.createObjectURL(file)} width={"200px"} height={"200px"}/>
            )}
-
-           <button onClick={changeEmployerData}>Update Data</button>
+          </div>
+           <button className="button" onClick={changeEmployerData}>Update Data</button>
           </div>
         )}
       </div>

@@ -69,9 +69,19 @@ function Contact(){
    
     return(
         <div>
-            {message && <h1>{message}</h1>}
+            {message && (
+                <div className="notifications">
+                    <h1>{message}</h1>
+                </div>
+            )}
+          
         
             <form onSubmit={sendContactMessage}>
+             <div className="main-container">
+                <div className="welcome">
+                <h1>Contact Our Support Team</h1>
+                <p>Have a question or need help? Send us a message and our team will get back to you as soon as possible</p>
+                </div>
             <select className="form-select" value={contact.contactCategory}  required
             onChange={(e) => setContact({...contact,contactCategory : e.target.value})}>
             <option  value="" disabled >Open this select menu</option>
@@ -84,20 +94,24 @@ function Contact(){
   
             <input type="text" placeholder="subject" value={contact.title} required minLength={3} maxLength={50}
             onChange={(e) => setContact({...contact,title : e.target.value})}/>
-            <br/>
+          
              <input type="text" placeholder="description" value={contact.description} required minLength={10} maxLength={5000}
             onChange={(e) => setContact({...contact,description : e.target.value})}/>
-            <br/>
+         
+           <div className="picture">
             <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
-            <br/>
+         
             {file && (
                 <img src={URL.createObjectURL(file)} alt="preview" width={"200px"} height={"200px"}/>
             )}
-            <br/>
-            <button className="btn btn-success" type="submit">Send</button>
-            <br/>
+        </div>
+         <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
+
+            <button className="button"  type="submit">Send</button>
+         
             
-            <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
+           
+                </div>   
             </form>
         </div>
     )

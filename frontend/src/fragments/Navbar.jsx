@@ -39,6 +39,15 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
              <Link className="dropdown-item"  to="/my-reports"> My Reports ({amountsOfReports})  </Link>
               )}
             </li>
+            
+             <li>
+              {user && (Employee || Employer) && (
+               <Link className="dropdown-item"   to="/my-reports">
+               My Reports
+              </Link>
+              )}
+            
+            </li>
             <li>
               <Link className="dropdown-item"   to="/contact">
                Contact with Us

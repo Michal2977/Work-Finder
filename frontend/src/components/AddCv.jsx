@@ -1,4 +1,6 @@
 import { useEffect, useState ,useRef} from "react";
+import "../styles/add-resume.css";
+import { Trash } from "lucide-react";
 
 
 
@@ -92,25 +94,39 @@ function AddCv(){
     return(
         <div>
 
-            {message && <h2>{message}</h2>}
-
-            {user && (
-                <div >     
-                {user?.employeeDto?.employeeCvDto?.map(cv => (
-                    <div  key={cv.id}>
-                    <button onClick={() => openCv(cv.cvFile)}>{cv.cvFileName ? cv.cvFileName : "Open Cv"}</button>
-                    <button type="button" className="btn btn-danger" onClick={() => deleteCv(cv.id)}>Deelte Cv</button>
-                    </div>
-                ))} 
-                   
+                {message && (
+                <div className="notifications">
+                <h1>{message}</h1>
                 </div>
             )}
 
-            <label>Add Resume:</label>
-            <br/>
-            <input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
+            {user && (
+                <div className="main-containers">     
+              
+                    <div className="welcome">
+                    <h1>Manage Your Resumes</h1>
+                    <p>Upload your CV in PDF format to apply for job offers faster. You can store multiple resumes and delete them whenever you want</p>
+                    </div>
+               <div className="picture">   
+               <input type="file" accept="application/pdf" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
+               </div>    
+               <button type="button" className="button" onClick={addCv}>Add Resume</button>
+                 {user?.employeeDto?.employeeCvDto?.map(cv => (
+                    
+                    <div  key={cv.id} className="cv-buttons">
+                    <button className="open" onClick={() => openCv(cv.cvFile)}>{cv.cvFileName ? cv.cvFileName : "Open Cv"}</button>
+                    
+                    <button type="button" className="delete-button" onClick={() => deleteCv(cv.id)}> <Trash size={20}/></button>
+                    </div>
+                   
+                    
+                ))} 
+                </div>
+            )}
+
+         
             
-            <button type="button" className="btn btn-success" onClick={addCv}>Add</button>
+         
         
         </div>
     )

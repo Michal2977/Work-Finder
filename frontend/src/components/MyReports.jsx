@@ -1,5 +1,7 @@
+import { CalendarDays, ChevronLeft, ChevronRight, ClipboardList, Clock, FileText, Hash, MessageCircle, Tag,  UserRound } from "lucide-react";
 import { useState,useEffect } from "react";
 import {Link } from "react-router-dom";
+import "../styles/my-reports.css";
 
 
 
@@ -45,47 +47,100 @@ function MyReports(){
 
            
           {user && admin && (
-            <div>
+            <div className="searcher">
              <form className="d-flex" role="search" onSubmit={(e) => {
             e.preventDefault(); setKeyword(keywordInput);  setPage(0);
           }}>
-          <input className="form-control me-2" type="search" placeholder="Job title, company, or SENT,IN_PROGRESS,CLOSED"  value={keywordInput}
+          <input  type="search" placeholder="Job title, company, or SENT,IN_PROGRESS,CLOSED"  value={keywordInput}
           onChange={(e) => setKeywordInput(e.target.value)}/>
-          <button className="btn btn-success" type="submit">Search</button>
+          <button className="button" type="submit">Search</button>
           </form>
             </div>
           )}
              
-        
-            {contacts.map(contact => (
-                <div key={contact.id}>
-                     {user && admin && (
-                <h1>number of reports {contact?.numberOfReports}</h1>
-            )}
-            {user && admin &&  (
-                <div>
-                  <h1>Number of reports: {amountsOfReports}</h1>
-                 <h1>admin response {contact?.adminMessageCount}</h1>
-                <h1>user response {contact?.userMessageCount}</h1>
-                </div>
-            )}
-         
-                    <h1>{contact.id}</h1>
-                    <h1>{contact.title}</h1>
-                    <h1>{contact.contactCategory}</h1>
-                    <h1>{contact.contactStatus}</h1>
-                    <h1>{new Date(contact.sentAt).toLocaleString("pl-PL")}</h1>
-                    <Link to={`/reports/${contact.id}`}>Details</Link>
-                
+            <div className="amounts">
+               <div className="report-label">
+                 <ClipboardList size={20}/>
+                  <h1>Amounts of reports: {amountsOfReports}</h1>
+                  </div>
                   
+                  </div>
+            {contacts.map(contact => (
+              
+                <div key={contact.id} className="conatiner-contact">
+                  <Link to={`/reports/${contact.id}`}>
+
+                   <div className="report-information">
+                      <div className="report-label">
+                    <Hash size={20}/>
+                    <p>Number of Report</p>
+                     </div>
+                    <h1>{contact.id}</h1>
+                    </div>
+
+
+                    <div className="report-information">
+                         <div className="report-label">
+                     < FileText size={20}/> 
+                    <p>Subject</p>
+                      </div>
+                    <h1>{contact.title}</h1>
+                    </div>
+
+                      <div className="report-information">
+                        <div className="report-label">
+                     <Tag size={20}/>   
+                    <p>Category</p>
+                     </div>
+                    <h1>{contact.contactCategory}</h1>
+                     </div>
+
+                    <div className="report-information">
+                        <div className="report-label">
+                    <Clock size={20}/>  
+                    <p>Status</p>
+                       </div>
+                    <h1>{contact.contactStatus}</h1>
+                 
+                    </div> 
+
+                    <div className="sent-at">
+                      <div className="report-label">
+                      <CalendarDays size={20}/>
+                    <span>{new Date(contact.sentAt).toLocaleString("pl-PL")}</span>
+                    </div>
+                    </div>
+                    </Link>
+               
+                {user && admin &&  (
+                  <>
+                  <hr/>
+                <div className="report-information" >
+                    <div className="report-label">
+                  <MessageCircle size={20}/>
+                  <p>admin response</p>
+                    </div>
+                  <h1>{contact?.adminMessageCount}</h1>
                 
+                  </div>
+                  <div className="report-information">
+                      <div className="report-label">
+                   <UserRound size={20}/> 
+                  <p>user response </p>
+                     </div>
+                  <h1>{contact?.userMessageCount}</h1>
+               
+                 </div>
+               </>
+            )}
                 </div>
             ))}
 
     {user && admin && (
-          <div>
+          <div className="page">
               <div className="d-flex align-items-center gap-2">
-          <button className="btn btn-outline-primary" disabled={page === 0} onClick={() => setPage(page -1)}>Previous</button>
+          <button className="btn btn-outline-primary" disabled={page === 0} onClick={() => setPage(page -1)}>
+            <ChevronLeft  size={25}/></button>
 
           {Array.from({length : totalPages}, (_,index) => (
             <button key={index} className={`btn ${page === index ? "btn-primary" : "btn-outline-secoundary"}`} 
@@ -93,7 +148,9 @@ function MyReports(){
           ))}
 
               
-          <button className="btn btn-outline-primary" disabled={page >= totalPages -1} onClick={() => setPage(page + 1)}>Next</button>
+          <button className="btn btn-outline-primary" disabled={page >= totalPages -1} onClick={() => setPage(page + 1)}>
+            <ChevronRight size={25}/>
+          </button>
         </div>
           </div>
           )}
