@@ -1,0 +1,337 @@
+
+.details-container{
+    position: relative;
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 12px;
+     padding: 20px;
+    box-sizing: border-box;
+  
+      max-width: 670px;
+    margin: 100px auto 20px;
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 12px;
+   padding: 20px;
+    box-sizing: border-box;
+ 
+   
+
+}
+.report-detailss h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 5px;
+    margin: 0 0 15px;
+    color: #0F172A;
+    font-size: 30px;
+    font-weight: 600;
+    background-color: #EAECEE;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+.picture-report {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 610px;
+    width: 100%;
+    height: 240px;
+    
+    
+    background-color: #EEF4FF;
+    box-sizing: border-box;
+    margin: 0 auto;
+      margin-bottom: 10px;
+}
+
+.picture-report img {
+    width: 250px;
+    height: 200px;
+    max-width: none;
+    object-fit: fill;
+  
+}
+.report-details{
+    display: flex;
+   
+    padding: 20px;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  
+    margin: 10px 12px;
+    background: #F8FAFC;
+    border-radius: 10px;
+}
+.report-details h1 {
+    margin: 0;
+     color: #0F172A;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: right;
+}
+.label-details{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.label-details p {
+        margin: 0;
+  color: #475569;
+    font-size: 15px;
+}
+.report-description {
+    margin-top: 10px;
+}
+
+.report-description h1 {
+    text-align: center;
+    padding: 10px;
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 600;
+    color: #0F172A;
+    background-color: #EAECEE;
+    border-radius: 10px;
+    box-sizing: border-box;
+}
+
+.report-description span {
+    display: block;
+    text-align: left;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #334155;
+     margin-left: 10px;
+    overflow-wrap: anywhere;
+}
+
+
+.conversation {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    max-width: 670px;
+    margin: 40px auto;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 16px;
+    box-shadow: 0 8px 30px rgba(15, 23, 42, 0.06);
+}
+
+
+.admin-operation {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.admin-operation .form-select {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    height: 44px;
+    padding: 0 12px;
+    box-sizing: border-box;
+    border: 1px solid #CBD5E1;
+    border-radius: 9px;
+    background-color: #FFFFFF;
+    color: #0F172A;
+    font-size: 15px;
+}
+
+.admin-operation button,
+.admin-converation button,
+.user-conversation button {
+    min-height: 42px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.admin-operation button {
+    background-color: #347FE2;
+    color: #FFFFFF;
+}
+
+.admin-operation button:hover {
+    background-color: #2563C7;
+}
+
+.admin-operation .ban-user {
+    background-color: #DC6262;
+}
+
+.admin-operation .ban-user:hover {
+    background-color: #C74747;
+}
+
+.admin-operation .unban-user {
+    background-color: #15803D;
+    color: #FFFFFF;
+}
+
+.admin-operation .unban-user:hover {
+    background-color: #166534;
+}
+
+
+.admin-converation,
+.user-conversation {
+    width: 100%;
+    padding: 22px 0;
+    box-sizing: border-box;
+    border-bottom: 1px solid #E2E8F0;
+}
+
+.admin-converation form,
+.user-conversation form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+.conversation textarea {
+    display: block;
+    width: 100%;
+    min-height: 110px;
+    padding: 14px;
+    box-sizing: border-box;
+    resize: vertical;
+    font-family: inherit;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #0F172A;
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 9px;
+    outline: none;
+}
+
+.conversation textarea:focus {
+    border-color: #347FE2;
+    box-shadow: 0 0 0 3px rgba(52, 127, 226, 0.12);
+}
+
+.conversation input[type="file"] {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    padding: 10px;
+    box-sizing: border-box;
+    color: #475569;
+    background-color: #F8FAFC;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    font-size: 14px;
+}
+
+.admin-converation form > button,
+.user-conversation form > button {
+    align-self: center;
+    min-width: 110px;
+    background-color: #347FE2;
+    color: #FFFFFF;
+}
+
+.admin-converation form > button:hover,
+.user-conversation form > button:hover {
+    background-color: #2563C7;
+}
+
+
+.admin-converation form > img,
+.user-conversation form > img {
+    display: block;
+    width: 200px;
+    max-width: 100%;
+    height: 100px;
+    object-fit: contain;
+    object-position: left center;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+}
+
+
+.conversation .responses {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    padding-top: 22px;
+    box-sizing: border-box;
+}
+
+.conversation .responses > div {
+    display: block;
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin: 0 0 14px;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #F8FAFC;
+    border: 1px solid #D9E2F0;
+    border-radius: 11px;
+    overflow-wrap: anywhere;
+}
+
+.conversation .responses > div:last-child {
+    margin-bottom: 0;
+}
+
+.responses h4 {
+    margin: 0 0 10px;
+    color: #2670D4;
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.responses h3 {
+    margin: 0 0 14px;
+    color: #334155;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
+
+.responses img {
+    display: block;
+    width: 250px;
+    max-width: 100%;
+    height: 150px;
+    margin: 12px 0;
+    object-fit: contain;
+    object-position: left center;
+    border-radius: 8px;
+}
+
+.responses p,
+.user-conversation p {
+    margin: 12px 0 0;
+    color: #64748B;
+    font-size: 14px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+}
+
+
+

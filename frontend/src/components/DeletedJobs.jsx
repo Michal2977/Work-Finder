@@ -1,11 +1,12 @@
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState,useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function DeletedJobs(){
 
     const [user,setUser] = useState(null);
     const [jobs,setJobs] = useState([]);
-
+    const navigate = useNavigate();
 
     const [page,setPage] = useState(0);
     const [size,setSize] = useState(10);
@@ -96,41 +97,51 @@ function DeletedJobs(){
   return(
         <div>
 
+         <div className="searcher">
          <form className="d-flex" role="search" onSubmit={(e) => {
          e.preventDefault(); setKeyword(keywordInput);  setPage(0);
           }}>
-          <input className="form-control me-2" type="search" placeholder="Job title, company, or keyword"  value={keywordInput}
+
+          <input  type="search" placeholder="Job title, company, or keyword"  value={keywordInput}
           onChange={(e) => setKeywordInput(e.target.value)}/>
           <button className="btn btn-success" type="submit">Search</button>
           </form>
-        <button className="btn btn-outline-primary" onClick={toggleSort}>{sort === "createAtAsc" ? "Oldest" : "Newest"}</button>
+          
+        <button  onClick={toggleSort}>{sort === "createAtAsc" ? "Oldest" : "Newest"}</button>
+        </div>
+        
         {jobs.map(job => (
-         <div className="card" width={"18rem"} key={job.id}> 
+         <div className="card"  key={job.id} onClick={() => navigate(`/jobs/${job.id}`)}    style={{cursor : "pointer"}}>  
          {job.picture && (
-            <img src={`data:${job.pictureCotentType};base64,${job.picture}`} width={"200px"} height={"200px"} alt="no image"/>
+            <img src={`data:${job.pictureCotentType};base64,${job.picture}`}  alt="no image"/>
          )}
-           <p>Expiration : {" "}</p>
-           {new Date(job.expiresAt).toLocaleDateString("pl-PL")}
-           <p>{getTimeLeft(job.expiresAt)}</p>
-           <h5 className="card-title"> {job.position}</h5>
-             <h5 className="card-title">{job.deletedAt && new Date(job.deletedAt).toLocaleString("pl-PL")}</h5>
-            <p className="card-text">{job.salary}</p>
-             <p className="card-text">{job.salaryPeriod}</p>
-               <p className="card-text">{job.salaryType}</p>
-               <p className="card-text">{job.location}</p>
-              <p className="card-text">{job.jobCategory}</p>
-              <p className="card-text">{job.employmentType}</p>
-               <p className="card-text">{job.contractType}</p>
-                 <p className="card-text">{job.jobStart}</p>
-               <p className="card-text">{job.workMode}</p>
-                  <Link to={`/jobs/${job.id}`}>Details</Link>
-                 <button type="submit" className="btn btn-success" onClick={() => revocerOffer(job.id)}>Recover Job Offer</button>
-                 <button type="submit" className="btn btn-danger" onClick={() => hardDelete(job.id)}>Delete Job Offer</button>
+
+          <span >{job.deletedAt && new Date(job.deletedAt).toLocaleString("pl-PL")}</span>
+
+           <span > {job.position}</span>
+            <span >{job.salary} {job.currency} {job.salaryPeriod} {job.salaryType}</span>
+            <span>{job?.companyName}</span>
+             <span >{job.location}</span>
+
+      
+              <span className="card-text">{job.jobCategory}</span>
+              <span className="card-text">{job.employmentType}</span>
+               <span className="card-text">{job.contractType}</span>
+                 <span className="card-text">{job.jobStart}</span>
+               <span className="card-text">{job.workMode}</span>
+
+             
+                <p>Expiration : {" "}</p>
+               <span>{new Date(job.expiresAt).toLocaleDateString("pl-PL")}</span>
+                <span>{getTimeLeft(job.expiresAt)}</span>
+
+                 <button type="submit"  onClick={() => revocerOffer(job.id)}>Recover Job Offer</button>
+                 <button type="submit"  onClick={() => hardDelete(job.id)}>Delete Job Offer</button>
          </div>
         ))}
 
-          <div className="d-flex align-items-center gap-2">
-          <button className="btn btn-outline-primary" disabled={page === 0} onClick={() => setPage(page -1)}>Previous</button>
+          <div className="page">
+          <button className="btn btn-outline-primary" disabled={page === 0} onClick={() => setPage(page -1)}><ChevronLeft size={25}/></button>
 
           {Array.from({length : totalPages}, (_,index) => (
             <button key={index} className={`btn ${page === index ? "btn-primary" : "btn-outline-secoundary"}`} 
@@ -138,7 +149,7 @@ function DeletedJobs(){
           ))}
 
               
-          <button className="btn btn-outline-primary" disabled={page >= totalPages -1} onClick={() => setPage(page + 1)}>Next</button>
+          <button className="btn btn-outline-primary" disabled={page >= totalPages -1} onClick={() => setPage(page + 1)}><ChevronRight size={25}/></button>
         </div>
 
         </div>

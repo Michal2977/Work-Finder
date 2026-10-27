@@ -1,11 +1,14 @@
+import { Pencil, Star, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import "../styles/saved-jobs.css";
 
 
 function SavedJobs(){
 
     const [favoriteJobs,setFavoriteJobs] = useState([]);
     const [user,setUser] = useState(null);
+    const navigate = useNavigate();
     const [message,setMessage] = useState("");
 
     useEffect(() => {
@@ -35,6 +38,17 @@ function SavedJobs(){
         window.location.reload();
       }
     }
+
+       const softDelete = async(id) => {
+    const token = localStorage.getItem("token");
+    if(!token) {return;}
+    const response  =  await fetch(`http://localhost:8080/api/soft-delete/${id}`,{
+        method : "DELETE",
+        headers : {Authorization : `Bearer ${token}`}
+    });
+    if(response.ok){
+     window.location.reload();
+    }};
 const getTimeLeft = (expiresAt) => {
      const now = new Date();
      const expiration = new Date(expiresAt);
@@ -63,82 +77,74 @@ const getTimeLeft = (expiresAt) => {
     }
       if(favoriteJobs.length === 0){
             return(
-       <h2>You don't have any saved jobs yet</h2> )
+         <div className="favorite-empty">       
+       <h1>You don't have any saved jobs yet</h1> 
+       </div>
+       )
             }
 
-       
+       const admin = user?.roleDto?.some(role => role.role === "ADMIN");
    return (
-        <div>
+        <div className="favorite-container">
             {favoriteJobs.map(favoriteJob => {
                    const employerOwner = user?.employerDto?.id === favoriteJob?.jobDto?.employerDto?.id;
                 return (
-                  
-                    <div className="card" key={favoriteJob.id}>
+                    <div className="favorite-card" key={favoriteJob.id} 
+                    onClick={() => navigate(`/jobs/${favoriteJob.jobDto.id}`)}
+                    style={{cursor : "pointer"}}>
                         {favoriteJob.jobDto.picture && (
-                          
-                            <img
-                                src={`data:${favoriteJob.jobDto.pictureContentType};base64,${favoriteJob.jobDto.picture}`}
-                                width={"200px"}
-                                height={"200px"}
-                                alt="empty"
-                            />
+                            
+                            <img src={`data:${favoriteJob.jobDto.pictureContentType};base64,${favoriteJob.jobDto.picture}`}
+                                width={"200px"} height={"200px"} alt="empty" />
                         )}
                         
-                        <div className="card-body">
-                          {user && employerOwner && (
-                            <Link to={`/update-job/${favoriteJob.jobDto.id}`}>Update Job Offer</Link>
+                        <div className="favorite-icons">
+                       
+                          {user && (admin || employerOwner) && (
+                            <div className="favorite-operations">
+                            <Link to={`/update-job/${favoriteJob.jobDto.id}`}
+                             onClick={(e) =>{e.stopPropagation()}}><Pencil size={22}/></Link>
+                            <button  type="button" 
+                            onClick={(e) => {e.stopPropagation();softDelete(job.id)}}className="favorite-delete"><Trash2 size={22}/></button>
+                             
+                             </div>
+                           
                           )}
-                 <button className="btn btn-danger" type="button" onClick={() => deleteFavoriteJobOffer(favoriteJob.id)}>Delete</button>
-                            <Link to={`/jobs/${favoriteJob.jobDto.id}`}>
-                                Details
-                            </Link>
-                            <p>
-                                Expiration:{" "}
-                                {new Date(favoriteJob.jobDto.expiresAt).toLocaleDateString("pl-PL")}
-                            </p>
-                            <button
-                                type="button"
-                                className="btn btn-success"
-                                onClick={() => saveJobOffer(favoriteJob.jobDto.id)}
-                            >
-                                Save Job Offer
-                            </button>
-                            <p>
-                                {getTimeLeft(favoriteJob.jobDto.expiresAt)}
-                            </p>
-                            <h5 className="card-title">
-                                {favoriteJob.jobDto.position}
-                            </h5>
-                            <p className="card-text">
-                                {favoriteJob.jobDto.salary}
-                            </p>
-                            <p className="card-text">
-                                {favoriteJob.jobDto.salaryPeriod}
-                            </p>
-                            <p className="card-text">
-                                {favoriteJob.jobDto.salaryType}
-                            </p>
-                            <p className="card-text">
-                                {favoriteJob.jobDto.location}
-                            </p>
-                            <p className="card-text">
-                                {favoriteJob.jobDto.jobCategory}
-                            </p>
+                      <button  type="button" className="favorite-save" onClick={() => deleteFavoriteJobOffer(favoriteJob.id)}><Star size={22}/></button>
+                      </div>
+                   
+                      
+                    
+                            <div className="favorite-info">
+                            <h1 > {favoriteJob.jobDto.position}</h1>  
+                            <span >{favoriteJob.jobDto.salary} {favoriteJob?.jobDto?.currency}  {favoriteJob.jobDto.salaryPeriod}  {favoriteJob.jobDto.salaryType}
+                            </span>
+                          <p  > {favoriteJob.jobDto.companyName}</p>
+                          <span > {favoriteJob.jobDto.location}</span>
+                       </div>
+                              <div className="favorite-details">
+                                <span >{favoriteJob.jobDto.jobCategory}</span>
+                                <span >{favoriteJob.jobDto.employmentType}</span>
+                                <span >{favoriteJob.jobDto.contractType}</span>
+                              <span >{favoriteJob.jobDto.jobStart}</span>
+                               <span >{favoriteJob.jobDto.workMode}</span>
+                                  </div>
 
-                            <p className="card-text">
-                                {favoriteJob.jobDto.employmentType}
-                            </p>
-                            <p className="card-text">
-                                {favoriteJob.jobDto.contractType}
-                            </p>
-                            <p className="card-text">
-                                {favoriteJob.jobDto.jobStart}
-                            </p>
-                            <p className="card-text">
-                                {favoriteJob.jobDto.workMode}
-                            </p>
+                                <hr/>
+
+                             <div className="favorite-publication">
+                             <span>Publication :{new Date(favoriteJob.jobDto.createAt).toLocaleDateString("pl-PL")}</span>
+                            </div>
+                            
+                                <div className="favorite-application">
+                                <span >{favoriteJob.jobDto.applicationType === "QUICK" && "QUICK Application"}</span>
+                                <span >{favoriteJob.jobDto.applicationType === "FORM" && "Form Application"}</span>
+                                </div>
+                               
+        
                         </div>
-                    </div> ); })}
+                        
+                    ); })}
                     </div>
     );
 }

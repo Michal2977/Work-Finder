@@ -42,7 +42,7 @@ function Navbar({ user, Employee, Employer, Admin, logout,displayName, amountsOf
             
              <li>
               {user && (Employee || Employer) && (
-               <Link className="dropdown-item"   to="/my-reports">
+               <Link className="dropdown-item"   to="/my-reports" >
                My Reports
               </Link>
               )}

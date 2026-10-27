@@ -1,5 +1,7 @@
 import { useState ,useEffect, useRef} from "react";
 import {useParams } from "react-router-dom";
+import "../styles/report-details.css";
+import { Calendar, CalendarDays, Clock, FileText, Hash, Tag, User } from "lucide-react";
 
 
 
@@ -152,24 +154,81 @@ function ReportDetails(){
 
     return(
         <div>
-         {message && <h1>{message}</h1>}
+              {message && (
+            <div className="notifications">
+                <h1>{message}</h1>
+            </div>
+        )}
       
-            <h1>{report?.id}</h1>
-            
-            <h1>{report?.userDto?.banned ? "User is Banned " : "User has no ban"}</h1>
-             <h1>{report?.contactStatus}</h1>
-            <h1>{report?.title}</h1>
-            <h1>{report?.contactCategory}</h1>
-            <h1>{report?.description}</h1>
+            <div className="details-container" >
+             <div className="report-detailss">
+                 <h1>Report Details</h1>
+                 </div>   
+           
+            <div className="picture-report">
             {report?.picture && (
-                <img src={`data:${report.pictureContentType};base64,${report.picture}`} width={"200"} height={"200px"}/>
+                <img src={`data:${report.pictureContentType};base64,${report.picture}`} />
             )}
-            <h1>{new Date(report?.sentAt).toLocaleString("pl-PL")}</h1>
-             <h1>{report?.contactStatus}</h1>
-          
+            </div>
+
+            <div className="report-details">
+             <div className="label-details">  
+             <Hash size={20}/>
+             <p>Number of Report</p>
+             </div> 
+            <h1>{report?.id}</h1>
+           </div>
+
+            <div className="report-details">
+                <div className="label-details">
+                <CalendarDays size={20}/>
+                </div>
+               <span>{new Date(report?.sentAt).toLocaleString("pl-PL")}</span>
+            </div>
+            
+            
+
+
+             <div className="report-details">
+                <div className="label-details">
+                 <FileText size={20}/>
+                 <p>Subject</p>
+                </div>
+                 <h1>{report?.title}</h1>
+            </div>
+
+            <div className="report-details">
+                  <User size={20}/>
+                  <h1>{report?.userDto?.banned ? "User is Banned " : "User has no ban"}</h1>
+            </div>
+
+            <div className="report-details">
+                <div className="label-details">
+                    <Tag size={20}/>
+                    <p>Category</p>
+                </div>
+                 <h1>{report?.contactCategory}</h1>
+            </div>
+      
+             <div className="report-details">
+             <div className="label-details">
+              <Clock size={20}/>  
+             <p>Status</p>
+             </div>
+               <h1>{report?.contactStatus}</h1>
+             </div>
+
+            <div className="report-description">
+             <h1>Description</h1>   
+            <span>{report?.description}</span>
+            </div>
+    
+            </div>
+
+            <div className="conversation">
              {user && admin && (
                 <div>
-                <div>
+                <div className="admin-operation">
             <select className="form-select" value={report?.contactStatus || ""}  
             onChange={(e) => setReport({...report,contactStatus : e.target.value})}>
             <option  value="" disabled >Open this select menu</option>
@@ -177,28 +236,31 @@ function ReportDetails(){
             <option value="IN_PROGRESS">IN_PROGRESS</option>
             <option value="CLOSED">CLOSED</option>
            </select>
-            <button type="button" className="btn btn-success" onClick={changeReportStatus}>Change Status</button>
+            <button type="button"  onClick={changeReportStatus}>Change Status</button>
           
-                    <button className="btn btn-danger" type="button" onClick={banUser}>Ban User</button>
-                    <button className="btn btn-success" type="button" onClick={unbanUser}>unban User</button>
+                    <button className="ban-user" type="button" onClick={banUser}>Ban User</button>
+                    <button className="unban-user" type="button" onClick={unbanUser}>unban User</button>
                 </div>
+                <div className="admin-converation">
                     <form onSubmit={adminResponse}>
-                  <input type="text" placeholder="message" value={contactMessage.message} required maxLength={5000} minLength={1}
+                  <textarea type="text" placeholder="message" value={contactMessage.message} required maxLength={5000} minLength={1}
                   onChange={(e) => sendContactMessage({...contactMessage,message : e.target.value})}/>
-                  <br/>
+                 
+                 
                   <input type="file" accept="image/jpeg,image/png,image/webp" 
                   onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef} />
-                  <br/>
+                  
                   {file && (
                     <img src={URL.createObjectURL(file)} alt="previw" width={"200px"} height={"200px"} />
                   )}
-                  <br/>
-                  <button className="btn btn-success" type="submit">Send</button>
+                  
+                  <button  type="submit">Send</button>
                   </form>
+                  </div>
                 </div>
              )} 
 
-             <div>
+             <div className="responses">
         
              {report?.contactMessageDto?.map(message => (
              <div key={message.id}>
@@ -219,25 +281,28 @@ function ReportDetails(){
     ))}
 </div>
 
-
-
-
              {user && employerOrEmploee && (
-                <div>
+                <div className="user-conversation">
                     <form onSubmit={userResponse}>
-                    <input type="text" placeholder="respond" value={contactMessage.message} required minLength={1} maxLength={5000}
+                    <textarea type="text" placeholder="respond" value={contactMessage.message} required minLength={1} maxLength={5000}
                     onChange={(e) => sendContactMessage({...contactMessage,message : e.target.value})}/>
-                    <br/>
+                  
+                
                     <input type="file" accept="image/jpeg,image/png,image/webp" onChange={(e) => setFile(e.target.files[0])} ref={fileInputRef}/>
-                    <br/>
+                      <button className="send-button" type="submit"> Send</button>
+                
                     {message.picture && (
                         <img  src={`data:${file.pictureContentType};base64,${message.picture}`} width={"200px"} height={"200px"} />
                     )}
+                   
+                 
                     <p>{message.respondAt}</p>
-                    <button className="btn btn-success" type="submit"> Send</button>
+                  
                   </form>
                 </div>
              )}
+       
+        </div>
         </div>
     );
 

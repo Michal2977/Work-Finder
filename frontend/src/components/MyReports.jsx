@@ -58,13 +58,14 @@ function MyReports(){
             </div>
           )}
              
+       
             <div className="amounts">
                <div className="report-label">
                  <ClipboardList size={20}/>
-                  <h1>Amounts of reports: {amountsOfReports}</h1>
+                 <h1>{user && admin ? `Amounts of reports: ${amountsOfReports}` : "My Reports"}</h1>
                   </div>
-                  
                   </div>
+
             {contacts.map(contact => (
               
                 <div key={contact.id} className="conatiner-contact">
