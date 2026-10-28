@@ -1,6 +1,7 @@
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, RotateCcw, Trash2 } from "lucide-react";
 import { useState,useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import "../styles/deleted-jobs.css";
 
 function DeletedJobs(){
 
@@ -97,6 +98,7 @@ function DeletedJobs(){
   return(
         <div>
 
+        
          <div className="searcher">
          <form className="d-flex" role="search" onSubmit={(e) => {
          e.preventDefault(); setKeyword(keywordInput);  setPage(0);
@@ -107,40 +109,54 @@ function DeletedJobs(){
           <button className="btn btn-success" type="submit">Search</button>
           </form>
           
-        <button  onClick={toggleSort}>{sort === "createAtAsc" ? "Oldest" : "Newest"}</button>
+        <button className="sorting" onClick={toggleSort}>{sort === "createAtAsc" ? "Oldest" : "Newest"}</button>
         </div>
         
+        <div className="fallen-container">
+         
+          <h1 className="all-deleted">All Deleted Job Offers</h1>
         {jobs.map(job => (
          <div className="card"  key={job.id} onClick={() => navigate(`/jobs/${job.id}`)}    style={{cursor : "pointer"}}>  
          {job.picture && (
             <img src={`data:${job.pictureCotentType};base64,${job.picture}`}  alt="no image"/>
          )}
+           
+          <div className="fallen-operations">
+                 <button type="submit" className="fallen-delete" onClick={(e) => {e.stopPropagation();hardDelete(job.id)}}><Trash2 size={22}/></button>
+                 <button type="submit" className="fallen-recover"  onClick={(e) => {e.stopPropagation();revocerOffer(job.id)}}><RotateCcw size={22}/></button> 
+            </div>
+     
 
-          <span >{job.deletedAt && new Date(job.deletedAt).toLocaleString("pl-PL")}</span>
-
-           <span > {job.position}</span>
-            <span >{job.salary} {job.currency} {job.salaryPeriod} {job.salaryType}</span>
-            <span>{job?.companyName}</span>
+           <div className="fallen-info">
+           <h1 > {job.position}</h1>
+            <p >{job.salary} {job.currency} {job.salaryPeriod} {job.salaryType}</p>
+            <p >{job?.companyName}</p>
              <span >{job.location}</span>
-
+             </div>
       
-              <span className="card-text">{job.jobCategory}</span>
-              <span className="card-text">{job.employmentType}</span>
-               <span className="card-text">{job.contractType}</span>
-                 <span className="card-text">{job.jobStart}</span>
-               <span className="card-text">{job.workMode}</span>
-
+              <div className="fallen-details">
+              <span >{job.jobCategory}</span>
+              <span>{job.employmentType}</span>
+               <span>{job.contractType}</span>
+                <span >{job.jobStart}</span>
+               <span >{job.workMode}</span>
+              </div>
+              <hr/>
              
-                <p>Expiration : {" "}</p>
-               <span>{new Date(job.expiresAt).toLocaleDateString("pl-PL")}</span>
-                <span>{getTimeLeft(job.expiresAt)}</span>
+             <div className="fallen-date">
+              <div className="deleted-date">
+                 <span >Deleted At {job.deletedAt && new Date(job.deletedAt).toLocaleString("pl-PL")}</span>
+              </div>
+               <div className="expires-date">
+               <span> {getTimeLeft(job.expiresAt)}</span>
+               </div>
+               </div>
+          
 
-                 <button type="submit"  onClick={() => revocerOffer(job.id)}>Recover Job Offer</button>
-                 <button type="submit"  onClick={() => hardDelete(job.id)}>Delete Job Offer</button>
          </div>
-        ))}
 
-          <div className="page">
+        ))}
+            <div className="page">
           <button className="btn btn-outline-primary" disabled={page === 0} onClick={() => setPage(page -1)}><ChevronLeft size={25}/></button>
 
           {Array.from({length : totalPages}, (_,index) => (
@@ -151,8 +167,11 @@ function DeletedJobs(){
               
           <button className="btn btn-outline-primary" disabled={page >= totalPages -1} onClick={() => setPage(page + 1)}><ChevronRight size={25}/></button>
         </div>
+</div>
+      
 
         </div>
+      
     )
 
 

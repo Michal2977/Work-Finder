@@ -1,0 +1,42 @@
+.applicaiton-submitted {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 600px;
+    max-width: calc(100% - 40px);
+    min-height: 195px;
+    margin: 0 auto;
+    padding: 30px;
+    box-sizing: border-box;
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 16px;
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+    gap: 15px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.applicaiton-submitted h1:first-child {
+    font-size: 26px;
+    color: #1E293B;
+    margin: 0;
+}
+
+.applicaiton-submitted h1:nth-child(2) {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.6;
+    color: #475569;
+    margin: 0;
+}
+
+.applicaiton-submitted p {
+    font-size: 14px;
+    color: #64748B;
+    margin: 5px 0 0;
+}

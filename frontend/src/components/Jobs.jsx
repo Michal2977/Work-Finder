@@ -12,7 +12,7 @@ function Jobs(){
     const [user,setUser] = useState(null);
 
     const [page,setPage] = useState(0);
-    const [size ,setSize] = useState(3);
+    const [size ,setSize] = useState(5);
     const [totalPages,setTotalPages] = useState(0);
 
     const [keyword,setKeyword] = useState("");

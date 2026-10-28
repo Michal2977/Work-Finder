@@ -1,5 +1,6 @@
+import { ClipboardList, Pencil, Star, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
-import {Link, useParams } from "react-router-dom";
+import {Link, useNavigate, useParams } from "react-router-dom";
 
 
 
@@ -9,6 +10,7 @@ function EmployerJobs(){
     const [jobs,setJobs] = useState([]);
     const [amountsOfApplications,setAmountsOfApplications ] = useState({});
     const [countQuickApplications,setCountQuickApplications] = useState({});
+    const navigate = useNavigate();
     
 
 
@@ -92,50 +94,64 @@ function EmployerJobs(){
     
     return(
         <div>
+
+         <div className="favorite-container">
         {jobs.map(job => {
     
           return(
-            <div className="card" width={"18rem"} key={job.id}  >
+            <div className="favorite-card" key={job.id} onClick={() => navigate(`/jobs/${job.id}`) }   style={{cursor : "pointer"}}  >
                  {job.picture && (
-                   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  width={"200px"} height={"200px"} alt="empty"/>
+                   <img src={`data:${job.pictureContentType};base64,${job.picture}`}  alt="empty"/>
                     )}
-                    <div className="card-body">
-    <Link to={`/jobs/${job.id}`}>Details</Link>
-     <Link to={`/all-applications/${job.id}`}>All Applications </Link>
-     {job.applicationType === "FORM" && (
-       <h1>{amountsOfApplications[job.id] ?? 0}</h1>
+
+     
+     <div className="amount-applications">
+      {job.applicationType === "FORM" && (
+       <h1>All Applications{amountsOfApplications[job.id] ?? 0}</h1>
      )}
      {job.applicationType === "QUICK" && (
-      <h1>{countQuickApplications[job.id] ?? 0}</h1>
-     )}
+      <h1> All Applications {countQuickApplications[job.id] ?? 0}</h1>
+     )}       
+     </div>
+  
+    <div className="favorite-icons">
+     <Link to={`/update-job/${job.id}`} onClick={(e) => {e.stopPropagation()}}  className="fallen-update"><Pencil size={22}/></Link>
+     <button  type="button"  className="favorite-delete" 
+     onClick={(e) => {e.stopPropagation(); softDelete(job.id)}}><Trash2 size={22}/></button>
+       <Link to={`/all-applications/${job.id}`}
+        onClick={(e) => {e.stopPropagation()}} className="fallen-update"><ClipboardList size={22}/></Link>
+    </div> 
+        <div className="card-body">
+
    
-   
-    <div>
-     <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
-     <button  type="button" onClick={() => softDelete(job.id)}className="btn btn-danger">Delete Job</button>
-    </div>     
-   
-     <p>Expiration : {" "}</p>  
-     {new Date(job.expiresAt).toLocaleDateString("pl-PL")}
-     <button type="button" className="btn btn-success" onClick={() => saveJobOffer(job?.id)}>Save Job Offer</button>
-     <p>{getTimeLeft(job.expiresAt)}</p>
-    
-      <h5 className="card-title"> {job.id}</h5>
-    <h5 className="card-title"> {job.position}</h5>
-    <p className="card-text">{job.salary}</p>
-     <p className="card-text">{job.salaryPeriod}</p>
-      <p className="card-text">{job.salaryType}</p>
-       <p className="card-text">{job.location}</p>
-       <p className="card-text">{job.jobCategory}</p>
-       <p className="card-text">{job.employmentType}</p>
-        <p className="card-text">{job.contractType}</p>
-        <p className="card-text">{job.jobStart}</p>
-        <p className="card-text">{job.workMode}</p>
-      <h2 className="card-text">{job.applicationType === "QUICK" && "QUICK Application"}</h2>
+        <div className="favorite-info">
+        <h1 > {job.position}</h1>  
+        <span >{job.salary} {job.currency}  {job.salaryPeriod}  {job.salaryType}
+        </span>
+        <p> {job.companyName}</p>
+        <span > {job.location}</span>
+        </div>
+        <div className="favorite-details">
+        <span >{job.jobCategory}</span>
+        <span >{job.employmentType}</span>
+       <span >{job.contractType}</span>
+      <span >{job.jobStart}</span>
+      <span >{job.workMode}</span>
+      </div>
+      <hr/>
+      <div className="favorite-publication">
+     <span>Expires At :{new Date(job.expiresAt).toLocaleDateString("pl-PL")}</span>
+      </div>
+                            
+      <div className="favorite-application">
+      <span >{job.applicationType === "QUICK" && "QUICK Application"}</span>
+      <span >{job.applicationType === "FORM" && "Form Application"}</span>
+     </div>
          </div> 
   </div>
   );
 })}
+</div> 
         </div>
     );
     

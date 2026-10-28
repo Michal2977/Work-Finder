@@ -1,0 +1,154 @@
+
+
+.sorting{
+    display: flex;
+    margin-top: 10px;
+    justify-content: center;
+    align-items: center;
+}
+.fallen-container{
+  position: absolute;
+  top: 32%;
+  left: 49%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 40%;
+}
+.fallen-container hr{
+        border: none;
+    height: 1px;
+    background-color: #E2E8F0;
+    margin: 10px 0;
+    opacity: 1;
+}
+.all-deleted{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: rgb(56, 53, 53);
+    font-size: 30px;
+    font-weight: 500;
+}
+.card{
+    position: relative;
+    height: auto !important;
+
+    box-sizing: border-box;
+    flex-shrink: 0;
+    border-radius: 20px;
+    border: 1px solid black;
+    
+}
+.card img {
+    padding: 10px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.fallen-info{
+    position: absolute;
+    top: 15px;
+    left: 140px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: calc(100% - 150px);
+}
+.fallen-info h1 {
+   
+    margin: 0;
+    padding: 0;
+    color: #1F39CC;
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.fallen-info p {
+   
+    margin: 0;
+    padding: 0;
+  color: #334155;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.fallen-info span {
+    color: #64748B;
+    font-size: 14px;
+    font-weight: 400;
+}
+.fallen-details{
+display: flex;
+flex-direction: row;
+gap: 5px;  
+width: 600px;
+margin-left: 140px;
+flex-wrap: wrap;
+
+}
+.fallen-date{
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding:  10px;
+    margin-top: -10px;
+    
+}.fallen-date span {
+    color: #64748B;
+    font-size: 14px;
+    font-weight: 400;
+}
+.deleted-date{
+    display: flex;
+    justify-content: flex-start;
+}
+.expires-date{
+    display: flex;
+    justify-content: flex-end;
+}
+
+.fallen-operations{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    z-index: 10;
+    gap: 10px;
+}
+.fallen-delete {
+    background-color: #FEF2F2;
+    color: #DC2626;
+    border: 1px solid #FECACA;
+}
+.fallen-update {
+    padding: 5px;
+    background-color: #EFF6FF;
+    color: #2563EB;
+    border: 1px solid #BFDBFE;
+}
+
+.fallen-update:hover {
+    background-color: #2563EB;
+    color: #FFFFFF;
+}
+
+.fallen-delete:hover {
+    background-color: #DC2626;
+    color: #FFFFFF;
+}
+
+.fallen-recover {
+    background-color: #F0FDF4;
+    color: #15803D;
+    border: 1px solid #BBF7D0;
+}
+
+.fallen-recover:hover {
+    background-color: #15803D;
+    color: #FFFFFF;
+}

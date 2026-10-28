@@ -1,10 +1,12 @@
+import { ChevronLeft, ChevronRight, Pencil, Trash2 } from "lucide-react";
 import { useState ,useEffect} from "react";
-import {  Link } from "react-router-dom";
+import {  Link, useNavigate } from "react-router-dom";
 
 function ExpiredJobs(){
 
     const [user,setUser] = useState(null);
     const [jobs,setJobs] = useState([]);
+    const navigate = useNavigate();
 
     const [keyword,setKeyword] = useState("");
     const [sort,setSort] = useState("expiresAtDesc");
@@ -13,6 +15,31 @@ function ExpiredJobs(){
     const [totalPages,setTotalPages] = useState(0);
     const [keywordInput,setKeywordInput] = useState("");
     
+
+    const getTimeLeft = (expiresAt) => {
+      const now = new Date();
+      const expiration = new Date(expiresAt);
+
+      const diff = expiration - now;
+
+      if(diff <= 0 ){
+         return "The listing has expired";
+      }
+
+      const minutes = Math.floor(diff / (1000 * 60));
+      const days = Math.floor(minutes / (60 * 24));
+
+      if(days >= 1) {
+          return `Left: ${days}days`;
+      }
+       
+      const hours = Math.floor(minutes / 60);
+      if(hours >= 1){
+          return `Left: ${hours}hours`;
+      }
+       return `Left: ${minutes}minutes`;
+    }
+
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -53,48 +80,63 @@ function ExpiredJobs(){
     }
     return(
     <div>
-        {user && (
-            <div>
-            {user?.email}
-            </div>
-        )}
+       
+            <div className="searcher">
            <form className="d-flex" role="search" onSubmit={(e) => {
             e.preventDefault(); setKeyword(keywordInput);  setPage(0);
           }}>
-          <input className="form-control me-2" type="search" placeholder="Job title, company, or keyword"  value={keywordInput}
+          <input  type="search" placeholder="Job title, company, or keyword"  value={keywordInput}
           onChange={(e) => setKeywordInput(e.target.value)}/>
-          <button className="btn btn-success" type="submit">Search</button>
+          <button  type="submit">Search</button>
           </form>
-        <button className="btn btn-outline-primary" onClick={toggleSort}>{sort === "expiresAtAsc" ? "Oldest" : "Newest"}</button>
-
+            <button className="sorting" onClick={toggleSort}>{sort === "expiresAtAsc" ? "Oldest" : "Newest"}</button>
+          </div>
+      
+       
+         <div className="fallen-container">
+              <h1 className="all-deleted">All Expires Job Offers</h1>
         {jobs.map(job => (
-            <div className="card" width={"18rem"} key={job.id}>
+            <div className="card"  key={job.id} onClick={() => navigate(`/jobs/${job.id}`)} style={{cursor : "pointer"}}>
                 {job.picture &&  (
-                <img src={`data:${job.pictureContentType};base64,${job.picture}`} width={"200px"} height={"200px"} alt="no image"/>
+                <img src={`data:${job.pictureContentType};base64,${job.picture}`} alt="no image"/>
                 )}
+                   <div className="fallen-operations">
+                 <button type="submit" className="fallen-delete" onClick={(e) => {e.stopPropagation();softDelete(job.id)}}><Trash2 size={22}/></button>
+               <Link to={`/update-job/${job.id}`} className="fallen-update" onClick={(e) => (e.stopPropagation())}><Pencil size={22}/></Link>
+            </div>
+              
 
-                <div className="card-body">
-                     <h1>The offer has expired</h1>
-                        <h5 className="card-title"> {job.id}</h5>
-                    <h5 className="card-title"> {job.position}</h5>
-                    <p className="card-text">{job.salary}</p>
-                    <p className="card-text">{job.salaryPeriod}</p>
-                    <p className="card-text">{job.salaryType}</p>
-                     <p className="card-text">{job.location}</p>
-                     <p className="card-text">{job.jobCategory}</p>
-                     <p className="card-text">{job.employmentType}</p>
-                     <p className="card-text">{job.contractType}</p>
-                     <p className="card-text">{job.jobStart}</p>
-                     <p className="card-text">{job.workMode}</p>
-                     <Link to={`/jobs/${job.id}`}>offer Details</Link>
-                     <Link to={`/update-job/${job.id}`}>Update Job Offer</Link>
-                     <button  type="button" onClick={() => softDelete(job.id)}className="btn btn-danger">Delete Job</button>
+                <div className="fallen-info">
+                 <h1 > {job.position}</h1>
+                <p >{job.salary} {job.currency} {job.salaryPeriod} {job.salaryType}</p>
+               <p >{job?.companyName}</p>
+                <span >{job.location}</span>
                 </div>
+             <div className="fallen-details">
+              <span >{job.jobCategory}</span>
+              <span>{job.employmentType}</span>
+               <span>{job.contractType}</span>
+                <span >{job.jobStart}</span>
+               <span >{job.workMode}</span>
+              </div>
+               <hr/>
+            <div className="fallen-date">
+              <div className="deleted-date">
+                 <span >Create At {job.createAt && new Date(job.createAt).toLocaleString("pl-PL")}</span>
+              </div>
+               <div className="expires-date">
+               <span> {getTimeLeft(job.expiresAt)}</span>
+               </div>
+               </div>
+                
+                    
+                     
+               
             </div>
         ))}
 
-        <div className="d-flex align-items-center gap-2">
-          <button className="btn btn-outline-primary" disabled={page === 0} onClick={() => setPage(page -1)}>Previous</button>
+            <div className="page">
+          <button className="btn btn-outline-primary" disabled={page === 0} onClick={() => setPage(page -1)}><ChevronLeft size={25}/></button>
 
           {Array.from({length : totalPages}, (_,index) => (
             <button key={index} className={`btn ${page === index ? "btn-primary" : "btn-outline-secoundary"}`} 
@@ -102,8 +144,9 @@ function ExpiredJobs(){
           ))}
 
               
-          <button className="btn btn-outline-primary" disabled={page >= totalPages -1} onClick={() => setPage(page + 1)}>Next</button>
+          <button className="btn btn-outline-primary" disabled={page >= totalPages -1} onClick={() => setPage(page + 1)}><ChevronRight size={25}/></button>
         </div>
+    </div>
     </div>
     );
     

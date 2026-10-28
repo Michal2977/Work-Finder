@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import {  useNavigate, useParams } from "react-router-dom";
+import "../styles/form-application.css";
 
 
 function FormApplication(){
@@ -137,12 +138,15 @@ function FormApplication(){
 
       
         <div>
+         {message && (
+          <div className="notifications">
+            <h1>{message}</h1>
+         </div>
+          )}    
+          <div className="application-form">
+            <h1>Answer the Employer's Questions</h1>
          <form onSubmit={sendApplication}>
-
-          <div>
-            {message && <h1>{message}</h1>}
-            
-
+          <div className="application-cv">
              <select  value={selectedCv} onChange={(e) => { handleCvChange(e); setSelectedFile(null);  fileInputRef.current.value = "";}} >
             <option value="">Select You'r Resume</option>
 
@@ -153,31 +157,25 @@ function FormApplication(){
               </option>
           )})}
           </select>
-   
             <input type="file" ref={fileInputRef} accept=".pdf,application/pdf" onChange={(e) => { setSelectedFile(e.target.files[0])
               setSeletedCv(""); localStorage.removeItem("selectedCv");
             }}/>
-
           {selectedCvObject && (
             <>
             <button onClick={() => openCv(selectedCvObject.cvFile)}>
               {selectedCvObject.cvFileName ? `Preview ${selectedCvObject.cvFileName}` : "Preview Cv"}
             </button>
-          
-            </>
-          )} 
-           
+             </>
+          )}  
           </div>
-
-
            {application?.applicationField?.map((field,index) => (
-            <div key={index}>
+            <div key={index} className="application-select">
               {field === "EXPECTED_SALARY" && (
                 <select value={applicationAnswer[`field-${index}`] || ""}
                  onChange={(e) => {
                   setApplicationAnswer({...applicationAnswer,[`field-${index}`] : e.target.value})
                  }} required>
-                <option value="">Select your expected salary</option>
+                <option value="" disabled>Select your expected salary</option>
                 <option value="BELOW_5000">Below  5000</option>
                 <option value="FROM_5000_TO_10000">5000 - 10000</option>
                 <option value="FROM_10000_TO_15000">10000 - 15000</option>
@@ -189,7 +187,7 @@ function FormApplication(){
                  onChange={(e) => {
                   setApplicationAnswer({...applicationAnswer,[`field-${index}`] : e.target.value})
                  }} required>
-                <option value="">Select your experience</option>
+                <option value="" disabled>Select your experience</option>
                 <option value="NO_EXPERIENCE">NO EXPERIENCE</option>
                 <option value="LESS_THAN_ONE_YEAR">LESS THAN ONE YEAR</option>
                 <option value="ONE_TO_TWO_YEARS">ONE TO TWO YEARS</option>
@@ -202,7 +200,7 @@ function FormApplication(){
                  onChange={(e) => {
                   setApplicationAnswer({...applicationAnswer,[`field-${index}`] : e.target.value})
                  }} required>
-                <option value="">Select your availability</option>
+                <option value="" disabled>Select your availability</option>
                 <option value="IMMEDIATELY">IMMEDIATELY</option>
                 <option value="WITHIN_ONE_WEEK">WITHIN ONE WEEK</option>
                 <option value="WITHIN_TWO_WEEKS">WITHIN TWO WEEKSS</option>
@@ -212,27 +210,19 @@ function FormApplication(){
               )}
             </div>
            ))}
+
+      
  {application?.question?.map((question, index) => (
-    <div key={index}>
+    <div key={index} className="application-answers">
         <label>{question}</label>
-        <br />
-        <input
-            type="text"
-            value={applicationAnswer[`question-${index}`] || ""}
-            required
-            minLength={5}
-            maxLength={255}
-            onChange={(e) => {
-                setApplicationAnswer({
-                    ...applicationAnswer,
-                    [`question-${index}`]: e.target.value
-                });
-            }}
-        />
+        <textarea type="text" value={applicationAnswer[`question-${index}`] || ""}  required
+            minLength={5} maxLength={255}
+           onChange={(e) => {setApplicationAnswer({ ...applicationAnswer,[`question-${index}`]: e.target.value });}}/>
     </div>
 ))}
-          <button type="submit" className="btn btn-success" >Send Application</button>
+          <button type="submit" className="applicaiton-button"  >Send Application</button>
           </form>
+          </div>
         </div>
     );
 }
