@@ -96,9 +96,13 @@ function EmployerJobs(){
         <div>
 
          <div className="favorite-container">
+             <div className="favorite-introduction">       
+            <h1>Manage Your Job Listings</h1>
+              </div> 
         {jobs.map(job => {
     
           return(
+            
             <div className="favorite-card" key={job.id} onClick={() => navigate(`/jobs/${job.id}`) }   style={{cursor : "pointer"}}  >
                  {job.picture && (
                    <img src={`data:${job.pictureContentType};base64,${job.picture}`}  alt="empty"/>
@@ -131,6 +135,7 @@ function EmployerJobs(){
         <p> {job.companyName}</p>
         <span > {job.location}</span>
         </div>
+        
         <div className="favorite-details">
         <span >{job.jobCategory}</span>
         <span >{job.employmentType}</span>

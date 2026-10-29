@@ -193,3 +193,9 @@ left: 100px;
     text-shadow: 0 1px 4px #000000;
     -webkit-text-stroke: 0.4px #000000;
 }
+.favorite-introduction{
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%);
+}

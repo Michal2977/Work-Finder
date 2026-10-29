@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
+import "../styles/all-applications.css";
 
 function AllApplications(){
     
@@ -74,10 +74,16 @@ function AllApplications(){
 
     return(
         <div>
-            {message && <h1>{message}</h1>}
+            {message && (
+             <div className="notifications">
+               {message && <h1>{message}</h1>}
+            </div>
+            )}
+            
           {applications.length === 0 && (
             <h1>No one has applied yet.</h1>
         )}
+
         {applications.map(application => {
         const employeeName =`${application?.userDto?.employeeDto?.firstName ?? ""}
          ${application?.userDto?.employeeDto?.lastName ?? ""}`.trim();

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 function FindEmployeeAplications(){
 
     const [applicationSubmission,setApplicationSubmissions] = useState([]);
+    const navigate = useNavigate();
 
     useEffect(() => {
     const token = localStorage.getItem("token");
@@ -41,38 +42,60 @@ function FindEmployeeAplications(){
 
     }
 
+   
     return(
-        applicationSubmission.map(application => {
+        <div className="favorite-container">
+      <div className="favorite-introduction">       
+        <h1>Track Your Job Applications</h1>
+       </div>   
+        {applicationSubmission.map(application => {
     return(     
-                <div className="card" width={"18rem"}  key={application.jobDto.id}>
+                <div className="favorite-card"  key={application.jobDto.id} onClick={() => navigate(`/jobs/${application.jobDto.id}`) } style={{cursor : "pointer"}} >
                    {application.jobDto.picture && (
-                   <img src={`data:${application.jobDto.pictureContentType};base64,${application.jobDto.picture}`}  width={"200px"} height={"200px"} alt="empty"/>
+                   <img src={`data:${application.jobDto.pictureContentType};base64,${application.jobDto.picture}`} alt="empty"/>
                     )}
                    
   <div className="card-body">
-    <Link to={`/jobs/${application?.jobDto?.id}`}>Details</Link>
-     <p>Expiration : {" "}</p>  
-     {new Date(application.jobDto.expiresAt).toLocaleDateString("pl-PL")}
-     <p>{getTimeLeft(application.jobDto.expiresAt)}</p>
-    <h5 className="card-title"> {application.jobDto.position}</h5>
-    <p className="card-text">{application.jobDto.salary}</p>
-     <p className="card-text">{application.jobDto.salaryPeriod}</p>
-      <p className="card-text">{application.jobDto.salaryType}</p>
-       <p className="card-text">{application.jobDto.location}</p>
-       <p className="card-text">{application.jobDto.jobCategory}</p>
-       <p className="card-text">{application.jobDto.employmentType}</p>
-        <p className="card-text">{application.jobDto.contractType}</p>
-        <p className="card-text">{application.jobDto.jobStart}</p>
-        <p className="card-text">{application.jobDto.workMode}</p>
-         <p className="card-text">{application.applicationStatus}</p>
-      <h2 className="card-text">{application.jobDto.applicationType === "QUICK" && "QUICK Application"}</h2>
-      <h2 className="card-text">{application.jobDto.applicationType === "FORM" && "Form Application"}</h2>
+    
+
+    <div className="amount-applications">
+        <h1>Status &nbsp; {application.applicationStatus}</h1>  
+     </div>
+
+     <div className="favorite-info">
+    <h1 > {application.jobDto.position}</h1>
+    <span >{application.jobDto.salary} {application.jobDto.currency}
+         {application.jobDto.salaryPeriod} {application.jobDto.salaryType}</span>
+         <span>{application.jobDto.comapnyName}</span>
+       <p >{application.jobDto.location}</p>
+       </div>
+
+       <div className="favorite-details">
+       <span >{application.jobDto.jobCategory}</span>
+       <span >{application.jobDto.employmentType}</span>
+        <span >{application.jobDto.contractType}</span>
+        <span >{application.jobDto.jobStart}</span>
+        <span >{application.jobDto.workMode}</span>
+         </div>
+        <hr/>
+      <div className="favorite-publication">
+     <span>Expires At :{new Date(application.jobDto.expiresAt).toLocaleDateString("pl-PL")}</span>
+      </div>
+        
+     
+         <div className="favorite-application">
+      <span className="card-text">{application.jobDto.applicationType === "QUICK" && "QUICK Application"}</span>
+      <span className="card-text">{application.jobDto.applicationType === "FORM" && "Form Application"}</span>
+      </div>
          </div> 
   </div>
-  );
-})
   
+  );
+  
+})}
+  </div>
     );
+    
 }
 
 export default FindEmployeeAplications;

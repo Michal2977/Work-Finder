@@ -86,6 +86,9 @@ const getTimeLeft = (expiresAt) => {
        const admin = user?.roleDto?.some(role => role.role === "ADMIN");
    return (
         <div className="favorite-container">
+              <div className="favorite-introduction">       
+             <h1>Your Saved Jobs</h1>
+              </div>  
             {favoriteJobs.map(favoriteJob => {
                    const employerOwner = user?.employerDto?.id === favoriteJob?.jobDto?.employerDto?.id;
                 return (
