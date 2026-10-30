@@ -1,10 +1,6 @@
 import { useState ,useEffect, useRef} from "react";
 import  {Turnstile, useTurnstile } from "react-turnstile";
 
-
-
-
-
 function Contact(){
     const [user,setUser] = useState(null);
     const [file,setFile] = useState(null);
@@ -108,9 +104,7 @@ function Contact(){
          <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
 
             <button className="button"  type="submit">Send</button>
-         
-            
-           
+              
                 </div>   
             </form>
         </div>

@@ -1,8 +1,7 @@
 import { useState ,useEffect, useRef} from "react";
 import {useParams } from "react-router-dom";
 import "../styles/report-details.css";
-import { Calendar, CalendarDays, Clock, FileText, Hash, Tag, User } from "lucide-react";
-
+import { CalendarDays, Clock, FileText, Hash, Tag, User } from "lucide-react";
 
 
 function ReportDetails(){
@@ -100,8 +99,6 @@ function ReportDetails(){
     }
 
     }
-
-
      const banUser = async() => {
         const token = localStorage.getItem("token");
         const response = await fetch(`http://localhost:8080/api/ban-user/${report.id}`,{
@@ -149,9 +146,6 @@ function ReportDetails(){
         }
      }
 
- 
-
-
     return(
         <div>
               {message && (
@@ -186,8 +180,6 @@ function ReportDetails(){
                <span>{new Date(report?.sentAt).toLocaleString("pl-PL")}</span>
             </div>
             
-            
-
 
              <div className="report-details">
                 <div className="label-details">

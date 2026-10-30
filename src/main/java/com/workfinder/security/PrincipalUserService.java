@@ -2,7 +2,6 @@ package com.workfinder.security;
 
 import com.workfinder.entity.User;
 import com.workfinder.repository.UserRepository;
-import lombok.Setter;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

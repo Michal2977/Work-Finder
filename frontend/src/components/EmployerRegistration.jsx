@@ -28,6 +28,7 @@ function EmployerRegistration(){
         });
 
         const text = await response.json();
+       
         if(response.ok){
             if(text.status === "SUCCESS"){
                 navigate("/verify-email");

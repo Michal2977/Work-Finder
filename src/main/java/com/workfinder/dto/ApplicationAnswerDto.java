@@ -1,6 +1,5 @@
 package com.workfinder.dto;
 
-import com.workfinder.entity.ApplicationSubmission;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -4,7 +4,6 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
-import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.crypto.SecretKey;
 import java.util.Date;
@@ -12,7 +11,7 @@ import java.util.Date;
 @Service
 public class JWTService  {
 
-    private final String SECRET = "SDAlNOLSDJIUSS987374298*^&^3298OUJNDAS781213";
+    private final String SECRET = "SDAlNOLSDJIUSS987374298*^&^3298OUJNDAS781218";
 
     public SecretKey secretKey(){
         return Keys.hmacShaKeyFor(SECRET.getBytes());

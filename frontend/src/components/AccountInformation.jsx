@@ -4,8 +4,7 @@ import {useNavigate } from "react-router-dom";
 import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import "../styles/account-information.css";
-import { Mail ,Lock, User, Building, Building2, FileText} from "lucide-react";
-
+import { Mail ,Lock, User, Building2, FileText} from "lucide-react";
 
 function AccountInformation(){
 
@@ -14,8 +13,6 @@ function AccountInformation(){
     const [user,setUser] = useState(null);
     const [message,setMessage] = useState("");
     const [file,setFile] = useState(null);
-
-    
 
     useEffect(() => {
 
@@ -31,7 +28,6 @@ function AccountInformation(){
     const employee = user?.roleDto?.some(role => role.role === "EMPLOYEE");
     const employer = user?.roleDto?.some(role => role.role === "EMPLOYER");
 
-
     const changeAdminData = async() => {
        
       const token = localStorage.getItem("token");
@@ -46,7 +42,6 @@ function AccountInformation(){
         }) 
       });
     }
-
     const changeEmployeeData = async() => {
       const token = localStorage.getItem("token");
       const formData = new FormData();
@@ -83,7 +78,6 @@ function AccountInformation(){
       }
     }
 
-   
     const changeEmployerData = async() => {
       const token = localStorage.getItem("token");
 
@@ -119,7 +113,6 @@ function AccountInformation(){
         setMessage(text.message);
       }
     }
-
 
     return(
         <div>

@@ -2,13 +2,11 @@ package com.workfinder.repository;
 
 import com.workfinder.entity.Job;
 import com.workfinder.enums.*;
-import com.workfinder.mapper.JobMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
 
 

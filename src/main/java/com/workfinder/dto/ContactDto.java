@@ -1,9 +1,7 @@
 package com.workfinder.dto;
 
-import com.workfinder.entity.ContactMessage;
 import com.workfinder.enums.ContactCategory;
 import com.workfinder.enums.ContactStatus;
-import jakarta.persistence.Column;
 import lombok.Getter;
 import lombok.Setter;
 

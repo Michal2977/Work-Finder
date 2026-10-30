@@ -40,8 +40,6 @@ function MyReports(){
         }).then(response => response.json()).then(data => setamountOfReports(data)) ;
     },[admin,page,size,keyword,sort]);
 
-  
-
     return(
         <div>
 

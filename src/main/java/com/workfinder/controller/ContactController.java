@@ -1,6 +1,5 @@
 package com.workfinder.controller;
 
-import com.workfinder.Util.Utility;
 import com.workfinder.dto.ContactMessageDto;
 import com.workfinder.entity.User;
 import com.workfinder.exception.InvalidFileException;
@@ -14,7 +13,6 @@ import com.workfinder.security.PrincipalUser;
 import com.workfinder.service.impl.AuthServiceImpl;
 import com.workfinder.service.impl.ContactServiceImpl;
 import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

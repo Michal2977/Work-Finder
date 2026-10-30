@@ -4,7 +4,6 @@ import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
 import "../styles/create-job-offer.css";
 
-
 function CreateJobOfferPage(){
 
     const [user,setUser] = useState("");
@@ -17,8 +16,7 @@ function CreateJobOfferPage(){
         weOffer : "",jobCategory: "",salaryPeriod : "", salaryType : ""
     ,companyName : "",shiftSystem : "",workingHours :"",nightShift: null,aboutCompany : "",
     salarySystem : "",benefit : [],phoneNumber : "",expiresAt : "",applicationType : "", applicationDto : [] });
-    
-    
+      
 
     useEffect(() => {
         const token = localStorage.getItem("token");
@@ -114,8 +112,6 @@ console.log(JSON.stringify(request, null, 2));
             setMessage(text.message)
         }
     }
-
-
     return(
        
         <form onSubmit={createJobOffer}>
@@ -366,19 +362,13 @@ console.log(JSON.stringify(request, null, 2));
             APPRENTICESHIP
         </label>
         </div> 
-
-
-        
+       
        <input type="text" placeholder="work schedule" value={data.workSchedule} minLength={5} maxLength={40}
          onChange={(e) => setData({...data,workSchedule : e.target.value})}/>
         
-
-        
          <input type="text" placeholder="working Hours " value={data.workingHours} minLength={5} maxLength={40}
          onChange={(e) => setData({...data,workingHours : e.target.value})}/>
-        
-
-            
+                
         <input type="text" placeholder="shiftSystem" value={data.shiftSystem} minLength={3} maxLength={50}
          onChange={(e) => setData({...data,shiftSystem : e.target.value})}/>
         

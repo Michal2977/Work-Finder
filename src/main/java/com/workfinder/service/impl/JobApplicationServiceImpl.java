@@ -16,14 +16,12 @@ import com.workfinder.repository.*;
 import com.workfinder.request.FormApplicationAnswerRequest;
 import com.workfinder.request.QuickApplicationRequest;
 import com.workfinder.service.JobApplicationService;
-import jakarta.persistence.Transient;
 import jakarta.transaction.Transactional;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.DocFlavor;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;

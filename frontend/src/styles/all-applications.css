@@ -1,0 +1,228 @@
+.all-container-application{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 380px);
+    gap: 30px;
+    width: 100%;
+    max-width: 1700px;
+    min-height: calc(100vh - 78px);
+    margin: 0 auto;
+    padding: 20px;
+    box-sizing: border-box;
+    justify-content: center;
+    align-content: center;
+    align-items: start;
+}
+
+.all-quick {
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+     align-items: center;
+    justify-content: center;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 15px;
+    width: 380px;
+    height: 330px;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+}
+.all-quick h1 {
+    font-size: 22px;
+    color: #0F172A;
+} 
+.all-icons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #EFF6FF;
+    padding: 10px;
+    border-radius: 10px;
+    color: #1D4ED8;
+    gap: 5px;
+}
+.all-status {
+    display: flex;
+    justify-content: center;
+}
+
+.all-status h1 {
+    background-color: #DCFCE7;
+    color: #166534;
+    border: 1px solid #BBF7D0;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 0;
+    width: 200px;
+    text-align: center;
+}
+
+.all-icons svg {
+    
+    flex-shrink: 0;
+    color: #3B82F6;
+}
+.all-icons button {
+    min-width: 0;
+    max-width: 220px;
+    padding: 8px 10px;
+    background-color: #FFFFFF;
+    color: #334155;
+    border: 1px solid #CBD5E1;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
+.all-icons button:hover {
+    background-color: #F8FAFC;
+    border-color: #94A3B8;
+}
+
+.all-iconss {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: #FEF2F2;
+    border-radius: 12px;
+    height: 40px;
+    box-sizing: border-box;
+}
+
+.all-iconss button {
+    padding: 0 12px;
+    background-color: #FFFFFF;
+    color: #B91C1C;
+    border: 1px solid #FECACA;
+    border-radius: 10px;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    cursor: pointer;
+}
+
+.all-iconss button:hover {
+    background-color: #FEE2E2;
+}
+
+.all-iconss svg {
+    color: #DC2626;
+    flex-shrink: 0;
+}
+
+.quick-center{
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+.quick-center h1{
+    font-size: 30px;
+    font-weight: 500;
+      color: #0F172A;
+}
+
+
+.form-center h1{
+    position: absolute;
+    top: 13%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.all-form{
+    background-color: #FFFFFF;
+    border: 1px solid #CBD5E1;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    margin-top: 50px;
+    flex-direction: column;
+    text-align: center;
+    justify-content: flex-start;
+    align-items: stretch;
+    gap: 15px;
+    width: 380px;
+    min-height: 600px;
+    box-sizing: border-box;
+    overflow-wrap: anywhere;
+}
+
+.all-form h1 {
+      font-size: 22px;
+    color: #0F172A;
+}
+.form-icons{
+     display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #EFF6FF;
+    padding: 10px;
+    border-radius: 10px;
+    color: #1D4ED8;
+    gap: 5px;
+}
+
+.form-select-new {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.form-select-new label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748B;
+    margin-bottom: 5px;
+}
+
+.form-select-new p {
+    margin: 0;
+    padding: 10px 12px;
+    background-color: #F1F5F9;
+    border: 1px solid #E2E8F0;
+    border-radius: 8px;
+    color: #1E293B;
+    font-size: 14px;
+}
+.result {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.result label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #334155;
+    margin-bottom: 8px;
+}
+
+.result textarea {
+    width: 100%;
+    min-height: 90px;
+    padding: 12px;
+    box-sizing: border-box;
+    resize: vertical;
+    background-color: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 10px;
+    color: #334155;
+    font-size: 14px;
+    line-height: 1.5;
+    font-family: inherit;
+}
+

@@ -55,8 +55,6 @@ function ForgotPassword(){
             onChange={(e) => setEmail(e.target.value)}/>
             </div>
 
-        
-
             <button onClick={ForgotPassword} className="button">Send</button>
    <Turnstile sitekey="0x4AAAAAADsdFGr1bVY65jeD" onSuccess={(token) => {setTurnstileToken(token);setMessage("");}}/>
              <span>Already have an account? <Link to={"/login"}>Back to Login</Link></span>

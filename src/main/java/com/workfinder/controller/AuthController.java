@@ -1,7 +1,6 @@
 package com.workfinder.controller;
 
 import com.workfinder.Util.Utility;
-import com.workfinder.dto.UserDto;
 import com.workfinder.entity.User;
 import com.workfinder.enums.OAuth2UserProvider;
 import com.workfinder.exception.EmailUpdateException;
@@ -13,16 +12,13 @@ import com.workfinder.response.ApiResponse;
 import com.workfinder.response.JWTResponse;
 import com.workfinder.security.JWTService;
 import com.workfinder.service.impl.AuthServiceImpl;
-import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.net.URI;
 import java.time.LocalDateTime;
 

@@ -69,8 +69,6 @@ function ExpiredJobs(){
      window.location.reload();
     }};
 
-    
-
     const toggleSort = () => {
         if(sort === "expiresAt"){
             setSort("expiresAtAsc");
@@ -127,10 +125,7 @@ function ExpiredJobs(){
                <div className="expires-date">
                <span> {getTimeLeft(job.expiresAt)}</span>
                </div>
-               </div>
-                
-                    
-                     
+               </div>             
                
             </div>
         ))}

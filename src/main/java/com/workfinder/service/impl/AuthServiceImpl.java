@@ -8,7 +8,6 @@ import com.workfinder.exception.EmailUpdateException;
 import com.workfinder.exception.InvalidFileException;
 import com.workfinder.exception.PasswordChangeNotAllowedException;
 import com.workfinder.mapper.EmployeeMapper;
-import com.workfinder.mapper.EmployerMapper;
 import com.workfinder.mapper.UserMapper;
 import com.workfinder.repository.EmployeeCvRepository;
 import com.workfinder.repository.JobRepository;
@@ -18,7 +17,6 @@ import com.workfinder.request.*;
 import com.workfinder.response.TurnstileResponse;
 import com.workfinder.service.AuthService;
 import jakarta.mail.MessagingException;
-import jakarta.mail.Multipart;
 import jakarta.transaction.Transactional;
 import net.bytebuddy.utility.RandomString;
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
 
 @Service

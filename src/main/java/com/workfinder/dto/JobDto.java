@@ -1,13 +1,11 @@
 package com.workfinder.dto;
 
-import com.workfinder.entity.Application;
 import com.workfinder.enums.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Getter

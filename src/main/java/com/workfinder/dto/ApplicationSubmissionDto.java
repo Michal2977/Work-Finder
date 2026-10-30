@@ -1,7 +1,5 @@
 package com.workfinder.dto;
 
-import com.workfinder.entity.Application;
-import com.workfinder.entity.ApplicationAnswer;
 import com.workfinder.enums.ApplicationStatus;
 import lombok.Getter;
 import lombok.Setter;

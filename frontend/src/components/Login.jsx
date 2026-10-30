@@ -52,13 +52,14 @@ function Login({fetchUser}){
     }
 
     return(
+        
         <div className="login-container">
-          {message && (
+
+            {message && (
           <div className="notifications">
             <h1>{message}</h1>
          </div>
           )} 
-  
            <div className="welcome">
             <h1>Welcome Back</h1>
             <span>Logn in to your WorkFinder account</span >  

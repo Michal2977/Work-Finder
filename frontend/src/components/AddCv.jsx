@@ -3,7 +3,6 @@ import "../styles/add-resume.css";
 import { Trash } from "lucide-react";
 
 
-
 function AddCv(){
 
     const fileInputRef = useRef(null);
@@ -57,7 +56,6 @@ function AddCv(){
         }
     }
 
-
     const openCv = (base64) => {
         const binary = atob(base64);
         const bytes = new Uint8Array(binary.length);
@@ -88,8 +86,6 @@ function AddCv(){
             },2000)
         }
     }
-
-
 
     return(
         <div>
@@ -123,11 +119,7 @@ function AddCv(){
                 ))} 
                 </div>
             )}
-
-         
-            
-         
-        
+       
         </div>
     )
 }

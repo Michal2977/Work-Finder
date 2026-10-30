@@ -1,12 +1,8 @@
 package com.workfinder.mapper;
 
 import com.workfinder.dto.ApplicationSubmissionDto;
-import com.workfinder.entity.ApplicationAnswer;
 import com.workfinder.entity.ApplicationSubmission;
-
-
 import java.util.Base64;
-import java.util.List;
 
 public class ApplicationSubmissionMapper {
     public static ApplicationSubmissionDto applicationSubmissionDto(ApplicationSubmission applicationSubmission){

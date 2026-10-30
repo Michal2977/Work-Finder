@@ -2,7 +2,6 @@ package com.workfinder.mapper;
 
 import com.workfinder.dto.ContactDto;
 import com.workfinder.entity.Contact;
-
 import java.util.Base64;
 
 public class ContactMapper {

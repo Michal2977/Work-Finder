@@ -136,8 +136,7 @@ function FormApplication(){
   
     return(
 
-      
-        <div>
+       <div>
          {message && (
           <div className="notifications">
             <h1>{message}</h1>

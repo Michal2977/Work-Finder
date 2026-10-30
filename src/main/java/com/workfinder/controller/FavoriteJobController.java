@@ -1,7 +1,5 @@
 package com.workfinder.controller;
 
-import com.workfinder.dto.UserDto;
-import com.workfinder.entity.User;
 import com.workfinder.exception.FavoriteJobAlreadyExistsException;
 import com.workfinder.response.ApiResponse;
 import com.workfinder.service.impl.FavoriteJobImpl;

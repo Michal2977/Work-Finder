@@ -5,8 +5,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
