@@ -189,8 +189,10 @@ console.log(JSON.stringify(request, null, 2));
 
          <select value={data.currency} onChange={(e) => setData({...data, currency : e.target.value})} required>
           <option value="" disabled>Choose currency</option>
-          <option value="PLN">PLN</option>
+         
           <option value="EUR">EUR</option>
+          <option value="PLN">PLN</option>
+          
           <option value="USD">USD</option>
           <option value="GBP">GBP</option>
           
@@ -436,7 +438,7 @@ console.log(JSON.stringify(request, null, 2));
                 }
            
             }}/>
-                 <label className="form-check-label" htmlFor="MULTISPORT"> PRIVATE_MEDICAL_CARE</label>
+                 <label className="form-check-label" htmlFor="MULTISPORT"> MULTISPORT</label>
           </div>
         
                <div className="form-check">
